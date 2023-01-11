@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Team Spyder Scouting</title>
+  <link href="CSS/generalStyle.css" rel="stylesheet" type="text/css"/>
+  <link href="CSS/index.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<div id="nav">
+  <img id="menubars" src="Images/menubars.png" onclick="toggleSidebar();">
+  <img id="x" src="Images/x.png" onclick="toggleSidebar();">
+  <img id="spyderLogo" src="Images/spyderLogo.png">
+  <p id="greetingText">Ello there</p>
+</div>
+
+<div id="sidebar">
+  <p class="sidebarButton">Login to continue</p>
+</div>
+
+<body>
+  <h1 id="welcomeText">Welcome to Team Spyder's Scouting Site</h1>
+
+  <div id="loginDiv">
+    <h2 id="loginText">Log In</h2>
+
+    <p class="inputText">Username</p>
+    <input id="userInput" class="infoInput"></input>
+
+    <p class="inputText">Password</p>
+    <input id="passInput" class="infoInput" type="password" required></input>
+
+    <p id="notifText">You did not enter a username!</p>
+
+    <br>
+    <p id="loginButton" class="button" onclick="login();">Log In</p>
+  </div>
+</body>
+
+<script src="JS/config.js"></script>
+<script src="JS/Functions/generalFunctions.js"></script>
+<script src="JS/Functions/buttonFunctions.js"></script>
+<script src="JS/Functions/sheetsFunctions.js"></script>
+<script src="JS/Pages/index.js"></script>
+
+</html>
