@@ -10,10 +10,12 @@
 </head>
 
 <div id="nav">
-  <img id="menubars" src="Images/menubars.png" onclick="toggleSidebar();">
-  <img id="x" src="Images/x.png" onclick="toggleSidebar();">
-  <img id="spyderLogo" src="Images/spyderLogo.png">
-  <p id="greetingText">Ello there</p>
+  <div id="innerNav">
+    <img id="menubars" src="Images/menubars.png" onclick="toggleSidebar();">
+    <img id="x" src="Images/x.png" onclick="toggleSidebar();">
+    <img id="spyderLogo" src="Images/spyderLogo.png">
+    <p id="greetingText">Ello there</p>
+  </div>
 </div>
 
 <div id="sidebar">
@@ -32,7 +34,7 @@
     <p class="inputText">Password</p>
     <input id="passInput" class="infoInput" type="password" required></input>
 
-    <p id="notifText">You did not enter a username!</p>
+    <p id="notifText">!</p>
 
     <br>
     <p id="loginButton" class="button" onclick="login();">Log In</p>

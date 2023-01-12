@@ -21,9 +21,9 @@ function changeNotif(notifId, text) {
 
 function wait(ms) {
   return new Promise((resolve, reject) => {
-    setTimeout(()=>{
+    setTimeout(() => {
       resolve();
-      }, ms
+    }, ms
     );
   });
 }
@@ -32,9 +32,9 @@ function toggleSidebar() {
   var sidebar = document.getElementById("sidebar");
   var menubars = document.getElementById("menubars");
   var x = document.getElementById("x");
-  
+
   if (sidebar.style.marginLeft == "0px") {
-    sidebar.style.marginLeft = "-400px";
+    sidebar.style.marginLeft = "-200px";
     menubars.style.opacity = "100";
     x.style.opacity = "0";
   } else {
@@ -43,3 +43,9 @@ function toggleSidebar() {
     x.style.opacity = "100";
   }
 }
+
+function setGreeting() {
+  console.log(new Date().getTime());
+}
+
+setGreeting();

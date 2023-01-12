@@ -1,15 +1,15 @@
 #loginDiv {
     position: relative;
     text-align: center;
-    width: 10%;
-    height: 40%;
+    width: 60%;
+    height: 400px;
     margin: auto;
     border-radius: 5px;
     box-shadow: 5px 6px 6px 6px #888888;
 }
 
 #welcomeText {
-    margin-top: 60px;
+    margin-top: 20px;
     text-align: center;
     font-size: 30px;
     font-weight: bolder;
