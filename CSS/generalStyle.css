@@ -8,6 +8,8 @@ html, body {
 body {
     overflow: hidden;
     margin-top: 40px;
+    user-zoom: fixed;
+    position: fixed;
 }
 
 #nav {
