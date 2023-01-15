@@ -15,14 +15,37 @@
     <p id="greetingText"></p>
 </div>
 
+<div id="subNav">
+  <p id="preButton" class="subNavButton">Pre</p>
+  <p class="subNavDivider"></p>
+  <p id="pitButton" class="subNavButton">Pit</p>
+  <p class="subNavDivider"></p>
+  <p id="matchButton" class="subNavButton" style="border:none;">Match</p>
+</div>
+
 <div id="sidebar">
-  <p class="sidebarButton selectedButton">Home</p>
-  <p class="sidebarButton" onclick="window.location.replace('forms.html');">Forms</p>
+  <p class="sidebarButton" onclick="window.location.replace('home.html');">Home</p>
+  <p class="sidebarButton selectedButton">Forms</p>
   <p class="sidebarButton" onclick="window.location.replace('displays.html');">Displays</p>
   <p class="sidebarButton" onclick="window.location.replace('recruiting.html');">Recruiting</p>
 </div>
 
 <body>
+  <div id="mainDiv" class="subNavDiv">
+    <h1>General</h1>
+  </div>
+
+  <div id="preDiv" class="subNavDiv" style="display:none">
+    <h1>Pre</h1>
+  </div>
+
+  <div id="pitDiv" class="subNavDiv" style="display:none">
+    <h1>Pit</h1>
+  </div>
+
+  <div id="matchDiv" class="subNavDiv" style="display:none">
+    <h1>Match</h1>
+  </div>
 </body>
 
 <script src="../JS/config.js"></script>
@@ -33,5 +56,6 @@
 <script src="../JS/Functions/sheetsFunctions.js"></script>
 <script src="../JS/Functions/tbaFunctions.js"></script>
 <script src="../JS/Functions/globalDataFunctions.js"></script>
+<script src="../JS/Pages/index.js"></script>
 
 </html>

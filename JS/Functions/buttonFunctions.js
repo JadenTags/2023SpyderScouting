@@ -1,7 +1,7 @@
 var pressedButtons = {};
 
 function activateButtons() {
-    buttons = Array.from(document.getElementsByClassName("button"));
+    var buttons = Array.from(document.getElementsByClassName("button"));
 
     buttons.forEach(button => {
         let onclickFormat = "(async () => {" + "toggleButton('" + button.getAttribute("id") + "');";
@@ -14,8 +14,18 @@ function activateButtons() {
     });
 }
 
+function activateSubNavButtons() {
+    var buttons = Array.from(document.getElementsByClassName("subNavButton"));
+
+    buttons.forEach(button => {
+        let divId = button.id.replace("Button", "") + "Div";
+
+        button.setAttribute("onclick", JSON.stringify(buttons.map(x => x.id)) + ".forEach(button => {document.getElementById(button).style.backgroundColor = '#141414';let divId = button.replace('Button', '') + 'Div'; if (divId != '" + divId + "') {hideElement(divId)}}); toggleElement('" + divId + "'); if (document.getElementById('" + divId + "').style.display == 'none') {document.getElementById('" + button.id + "').style.backgroundColor = '#141414';showElement('mainDiv')} else {document.getElementById('" + button.id + "').style.backgroundColor = '#575653';hideElement('mainDiv')};");
+    });
+}
+
 function toggleButton(buttonId) {
-    button = document.getElementById(buttonId);
+    var button = document.getElementById(buttonId);
 
     if (pressedButtons[buttonId] != "" && pressedButtons[buttonId]) {
         button.setAttribute("onclick", pressedButtons[buttonId]);
@@ -33,3 +43,4 @@ function toggleButton(buttonId) {
 }
 
 activateButtons();
+activateSubNavButtons();

@@ -48,13 +48,13 @@ body {
 
 #menubars {
     width: 40px;
+    opacity: 0;
 }
 
 #x {
     margin-left: -36px;
     margin-bottom: 5px;
     height: 25px;
-    opacity: 0;
 }
 
 .button {
@@ -79,7 +79,6 @@ body {
     margin: 0;
     z-index: 99;
     position: fixed;
-    margin-left: -200px;
     transition-duration: 400ms;
     height: 100%;
     left: 0;
@@ -92,13 +91,44 @@ body {
 .sidebarButton{
     display: inline-block;
     color: white;
-    padding: 5px;
+    padding: 0px;
     padding-top: 40px;
     padding-bottom: 40px;
-    margin: 0vw;
+    margin: auto;
     font-size: 16px;
     font-weight: bold;
     font-family: Verdana;
     width: 100%;
     text-align: center;
+    border-bottom: 1px solid #575653;
+}
+
+#subNav {
+    height: 40px;
+    width: 100%;
+    background-color: #141414;
+    border-top: 1px solid #575653;
+    display: flex;
+}
+
+.subNavButton, .subNavDivider {
+    display: inline-block;
+    flex: 1;
+    color: white;
+    padding: 0px;
+    margin: auto;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+}
+
+.subNavDivider {
+    flex: 0;
+    text-align: center;
+    border-left: 1px solid #575653;
+    height: 20px;
 }

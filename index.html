@@ -10,15 +10,13 @@
 </head>
 
 <div id="nav">
-  <div id="innerNav">
-    <img id="menubars" src="Images/menubars.png" onclick="toggleSidebar();">
-    <img id="x" src="Images/x.png" onclick="toggleSidebar();">
+    <img id="menubars" src="Images/menubars.png" onclick="toggleSidebar();" style="opacity: 100;">
+    <img id="x" src="Images/x.png" onclick="toggleSidebar();" style="opacity: 0;">
     <img id="spyderLogo" src="Images/spyderLogo.png">
-    <p id="greetingText">Ello there</p>
-  </div>
+    <p id="greetingText"></p>
 </div>
 
-<div id="sidebar">
+<div id="sidebar" style="margin-left: -200px;">
   <p class="sidebarButton">Login to continue</p>
 </div>
 
@@ -41,10 +39,15 @@
   </div>
 </body>
 
+<script>localStorage.clear();</script>
 <script src="JS/config.js"></script>
+<script src="JS/simuVars.js"></script>
 <script src="JS/Functions/generalFunctions.js"></script>
+<script src="JS/Functions/navFunctions.js"></script>
 <script src="JS/Functions/buttonFunctions.js"></script>
 <script src="JS/Functions/sheetsFunctions.js"></script>
+<script src="JS/Functions/tbaFunctions.js"></script>
+<script src="JS/Functions/globalDataFunctions.js"></script>
 <script src="JS/Pages/index.js"></script>
 
 </html>

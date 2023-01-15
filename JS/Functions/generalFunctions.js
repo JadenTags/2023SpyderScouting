@@ -28,24 +28,20 @@ function wait(ms) {
   });
 }
 
-function toggleSidebar() {
-  var sidebar = document.getElementById("sidebar");
-  var menubars = document.getElementById("menubars");
-  var x = document.getElementById("x");
-
-  if (sidebar.style.marginLeft == "0px") {
-    sidebar.style.marginLeft = "-200px";
-    menubars.style.opacity = "100";
-    x.style.opacity = "0";
+function toggleElement(elementId) {
+  var element = document.getElementById(elementId);
+  
+  if (element.style.display == "none") {
+    element.style.display = "initial";
   } else {
-    sidebar.style.marginLeft = "0";
-    menubars.style.opacity = "0";
-    x.style.opacity = "100";
+    element.style.display = "none";
   }
 }
 
-function setGreeting() {
-  console.log(new Date().getTime());
+function showElement(elementId) {
+  document.getElementById(elementId).style.display = "initial";
 }
 
-setGreeting();
+function hideElement(elementId) {
+  document.getElementById(elementId).style.display = "none";
+}

@@ -28,12 +28,11 @@ async function login() {
     getOrder(orderNum).forEach(pairs => {
         users[pairs[0].toLowerCase()] = pairs[1];
     });
-    
-    console.log(users);
 
     if (Object.keys(users).includes(user)) {
         if (users[user] == pass) {
-            window.location.replace("Pages/home.html");
+            localStorage.setItem("user", user[0].toUpperCase() + user.slice(1));
+            window.location.replace("../../Pages/home.html");
         } else {
             changeNotif("notifText", "That is not the correct password!");
             userInput.style.border = "1px solid #c5c7c5";
