@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width">
   <title>Team Spyder Scouting</title>
   <link href="../CSS/generalStyle.css" rel="stylesheet" type="text/css"/>
+  <link href="../CSS/forms.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <div id="nav">
@@ -33,21 +34,48 @@
 </div>
 
 <body>
-  <div id="mainDiv" class="subNavDiv">
-    <h1>General</h1>
-  </div>
+    <div id="mainDiv" class="subNavDiv">
+      <h1>General</h1>
+    </div>
 
-  <div id="preDiv" class="subNavDiv" style="display:none">
-    <h1>Pre</h1>
-  </div>
+    <div id="preDiv" class="subNavDiv" style="display:none">
+      <div class="wrapperDiv">
+        <h1 class="teamName">Team Name</h1>
+        <h1 class="teamNum">Team Number</h1>
 
-  <div id="pitDiv" class="subNavDiv" style="display:none">
-    <h1>Pit</h1>
-  </div>
+        <input id="lengthInput" class="measurementInput" placeholder="LENGTH" type="number"></input>
+        <label class="measurementText"> in. X</label>
+        <input id="widthInput" class="measurementInput" placeholder="WIDTH" type="number"></input>
+        <label class="measurementText"> in. X</label>
+        <input id="heightInput" class="measurementInput" placeholder="HEIGHT" type="number"></input>
+        <label class="measurementText"> in.</label>
 
-  <div id="matchDiv" class="subNavDiv" style="display:none">
-    <h1>Match</h1>
-  </div>
+        <br>
+
+        <input id="dbTypeInput" placeholder="DB Type" type="tel"></input>
+        <input id="dbMotorInput" placeholder="DB Motors" type="tel"></input>
+
+        <br>
+
+        <p id="hasGOMButton" class="pushButton">Has GOM</p>
+
+        <br>
+
+        <textarea class="notesArea" placeholder="Notes"></textarea>
+
+        <br>
+        
+        <p id="submitPreButton" class="button" onclick="submitPreForm();">Submit</p>
+      </div>
+    </div>
+
+    <div id="pitDiv" class="subNavDiv" style="display:none">
+      <h1>Pit</h1>
+    </div>
+
+    <div id="matchDiv" class="subNavDiv" style="display:none">
+      <h1>Match</h1>
+    </div>
 </body>
 
 <script src="../JS/config.js"></script>
@@ -58,6 +86,6 @@
 <script src="../JS/Functions/sheetsFunctions.js"></script>
 <script src="../JS/Functions/tbaFunctions.js"></script>
 <script src="../JS/Functions/globalDataFunctions.js"></script>
-<script src="../JS/Pages/index.js"></script>
+<script src="../JS/Pages/forms.js"></script>
 
 </html>

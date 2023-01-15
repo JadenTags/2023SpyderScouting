@@ -12,15 +12,19 @@ function activateButtons() {
 
         button.setAttribute("onclick", onclickFormat);
     });
-}
 
-function activateSubNavButtons() {
-    var buttons = Array.from(document.getElementsByClassName("subNavButton"));
+    buttons = Array.from(document.getElementsByClassName("subNavButton"));
 
     buttons.forEach(button => {
         let divId = button.id.replace("Button", "") + "Div";
 
         button.setAttribute("onclick", JSON.stringify(buttons.map(x => x.id)) + ".forEach(button => {document.getElementById(button).style.backgroundColor = '#141414';let divId = button.replace('Button', '') + 'Div'; if (divId != '" + divId + "') {hideElement(divId)}}); toggleElement('" + divId + "'); if (document.getElementById('" + divId + "').style.display == 'none') {document.getElementById('" + button.id + "').style.backgroundColor = '#141414';showElement('mainDiv')} else {document.getElementById('" + button.id + "').style.backgroundColor = '#575653';hideElement('mainDiv')};");
+    });
+
+    buttons = Array.from(document.getElementsByClassName("pushButton"));
+
+    buttons.forEach(button => {
+        button.setAttribute("onclick", "togglePushButton('" + button.id + "');" + button.getAttribute("onclick"));
     });
 }
 
@@ -42,5 +46,17 @@ function toggleButton(buttonId) {
     }
 }
 
+function togglePushButton(buttonId) {
+    var button = document.getElementById(buttonId);
+
+    if (button.value) {
+        button.value = null;
+        button.setAttribute("class", button.getAttribute("class").split(" ").splice(1).join(" "));
+    } else {
+        button.value = true;
+        button.setAttribute("class", "selectedButton " + button.getAttribute("class"));
+
+    }
+}
+
 activateButtons();
-activateSubNavButtons();

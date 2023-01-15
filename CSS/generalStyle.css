@@ -32,7 +32,6 @@ body {
     height: 40px;
     color: white;
     display: inline-flex;
-    font-weight: bolder;
     padding-left: 20px;
     padding-right: 20px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -59,7 +58,7 @@ body {
     height: 25px;
 }
 
-.button {
+.button, .pushButton, .groupedButton, .startGroupedButton, .endGroupedButton {
     display: inline-block;
     background-color: #141414;
     color: white;
@@ -69,7 +68,19 @@ body {
     font-weight: bold;
     font-family: Verdana;
     border-radius: 5px;
-  }
+}
+
+.groupedButton {
+    border-radius: 0;
+}
+
+.startGroupedButton {
+    border-radius: 10px 0px 0px 10px;
+}
+
+.endGroupedButton {
+    border-radius: 0px 10px 10px 0px;
+}
   
 .selectedButton {
     background-color: #787878;
@@ -133,4 +144,8 @@ body {
     text-align: center;
     border-left: 1px solid #575653;
     height: 20px;
+}
+
+.subNavDiv {
+    text-align: center;
 }

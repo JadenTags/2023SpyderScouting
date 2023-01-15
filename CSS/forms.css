@@ -1,0 +1,41 @@
+.teamName {
+    margin-top: 20px;
+    margin-bottom: 0;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bolder;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.teamNum {
+    margin: 0;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bolder;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.measurementInput, #dbTypeInput, #dbMotorInput {
+    display: inline-block;
+    border-radius: 5px 5px 5px 5px;
+    width: 10%;
+    border: 1px solid #c5c7c5;
+}
+
+::placeholder, .measurementText {
+    margin: 0;
+    text-align: center;
+    font-size: 15px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+#hasGOMButton, #dbTypeInput, #lengthInput {
+    margin-top: 10px;
+}
+
+.notesArea {
+    margin-top: 10px;
+    height: 100px;
+    width: 50%;
+    resize: none;
+}
