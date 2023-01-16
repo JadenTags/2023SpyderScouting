@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>Team Spyder Scouting</title>
-  <link href="../CSS/generalStyle.css" rel="stylesheet" type="text/css"/>
-  <link href="../CSS/forms.css" rel="stylesheet" type="text/css"/>
+  <link href="../CSS/generalStyle.css" rel="stylesheet" type="text/css" />
+  <link href="../CSS/forms.css" rel="stylesheet" type="text/css" />
 </head>
 
 <div id="nav">
@@ -28,54 +28,70 @@
 
 <div id="sidebar">
   <p class="sidebarButton" onclick="window.location.replace('home.html');">Home</p>
+  <p class="sidebarButton" onclick="window.location.replace('general.html');">General Info</p>
   <p class="sidebarButton selectedButton">Forms</p>
   <p class="sidebarButton" onclick="window.location.replace('displays.html');">Displays</p>
   <p class="sidebarButton" onclick="window.location.replace('recruiting.html');">Recruiting</p>
 </div>
 
 <body>
-    <div id="mainDiv" class="subNavDiv">
-      <h1>General</h1>
+  <div id="mainDiv" class="subNavDiv">
+    <h1>General</h1>
+  </div>
+
+  <div id="preDiv" class="subNavDiv" style="display:none">
+    <div id="preDivWrapper" class="wrapperDiv">
+      <h1 id="preTeamName" class="teamName">Team Spyder</h1>
+      
+      <select id="preTeamNumDropdown" class="teamNumDropdown" onchange="changeTeamName('pre');"></select>
+
+      <p class="formSubheader">Dimensions</p>
+      <input id="lengthInput" class="measurementInput" placeholder="L" type="number" max="999"></input>
+      <label class="measurementText">" x</label>
+
+      <input id="widthInput" class="measurementInput" placeholder="W" type="number" max="999"></input>
+      <label class="measurementText">" x</label>
+
+      <input id="heightInput" class="measurementInput" placeholder="H" type="number" max="999"></input>
+      <label class="measurementText">"</label>
+
+      <br>
+
+      <p class="formSubheader">Drivebase Information</p>
+      <input id="dbTypeInput" placeholder="Type" type="text"></input>
+      <input id="dbMotorInput" placeholder="Motors" type="text"></input>
+
+      <br>
+
+      <p id="hasGOMButton" class="pushButton">Has Object Manipulator</p>
+
+      <br>
+
+      <textarea id="preExtraNotes" class="notesArea" placeholder="Notes"></textarea>
+
+      <br>
+
+      <p id="preSubmitButton" class="submitButton" onclick="secureSubmit('pre');">Submit</p>
+      <p id="preUndoSubmitButton" class="button" onclick="undoSubmit('pre');" style="display: none;">Undo</p>
     </div>
 
-    <div id="preDiv" class="subNavDiv" style="display:none">
-      <div class="wrapperDiv">
-        <h1 class="teamName">Team Name</h1>
-        <h1 class="teamNum">Team Number</h1>
-
-        <input id="lengthInput" class="measurementInput" placeholder="LENGTH" type="number"></input>
-        <label class="measurementText"> in. X</label>
-        <input id="widthInput" class="measurementInput" placeholder="WIDTH" type="number"></input>
-        <label class="measurementText"> in. X</label>
-        <input id="heightInput" class="measurementInput" placeholder="HEIGHT" type="number"></input>
-        <label class="measurementText"> in.</label>
-
-        <br>
-
-        <input id="dbTypeInput" placeholder="DB Type" type="tel"></input>
-        <input id="dbMotorInput" placeholder="DB Motors" type="tel"></input>
-
-        <br>
-
-        <p id="hasGOMButton" class="pushButton">Has GOM</p>
-
-        <br>
-
-        <textarea class="notesArea" placeholder="Notes"></textarea>
-
-        <br>
-        
-        <p id="submitPreButton" class="button" onclick="submitPreForm();">Submit</p>
-      </div>
+    <div id="preRefreshDiv" class="wrapperDiv">
+      <p class="formSubheader">Thank You For Submitting A Form!</p>
+      <p id="preRefreshButton" class="button" onclick="refreshForm('pre');" style="margin-top: 10px;">Submit Another Form</p>
     </div>
+  </div>
 
-    <div id="pitDiv" class="subNavDiv" style="display:none">
-      <h1>Pit</h1>
+  <div id="pitDiv" class="subNavDiv" style="display:none">
+    <div id="pitDivWrapper" class="wrapperDiv">
     </div>
+    <h1>Pit</h1>
+  </div>
 
-    <div id="matchDiv" class="subNavDiv" style="display:none">
-      <h1>Match</h1>
+  <div id="matchDiv" class="subNavDiv" style="display:none">
+    <div id="matchDivWrapper" class="wrapperDiv">
     </div>
+    <h1>Match</h1>
+  </div>
 </body>
 
 <script src="../JS/config.js"></script>

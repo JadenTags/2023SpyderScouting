@@ -1,1 +1,2 @@
 var testDate = new Date(); //IF NO TEST LEAVE DATE BLANK ELSE TYPE TEST DATE IN XX-XX-XX FORM
+var sheetName = "TEST"; //IF NO COMP LEAVE AS "TEST"

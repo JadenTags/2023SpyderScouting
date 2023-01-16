@@ -5,7 +5,7 @@ var tbaKeyBody = 'X-TBA-Auth-Key=' + config.tbaKey;
 var tbaApiRoot = 'https://www.thebluealliance.com/api/v3/';
 
 async function getTBAData(link, orderNum) {
-    fetch(link, {
+    fetch(tbaApiRoot + link, {
         method: 'GET',
         headers: tbaHeaders,
     })

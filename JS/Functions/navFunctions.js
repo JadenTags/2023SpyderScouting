@@ -4,13 +4,29 @@ function toggleSidebar() {
     var x = document.getElementById("x");
   
     if (["0px", ""].includes(sidebar.style.marginLeft)) {
-      sidebar.style.marginLeft = "-200px";
-      menubars.style.opacity = "100";
-      x.style.opacity = "0";
+        sidebar.style.transitionDuration = "400ms";
+        menubars.style.transitionDuration = "200ms";
+        x.style.transitionDuration = "200ms";
+
+        sidebar.style.marginLeft = "-200px";
+        menubars.style.opacity = "100";
+        x.style.opacity = "0";
+
+        sidebar.style.transitionDuration = "0";
+        menubars.style.transitionDuration = "0";
+        x.style.transitionDuration = "0";
     } else {
-      sidebar.style.marginLeft = "0";
-      menubars.style.opacity = "0";
-      x.style.opacity = "100";
+        sidebar.style.transitionDuration = "400ms";
+        menubars.style.transitionDuration = "200ms";
+        x.style.transitionDuration = "200ms";
+
+        sidebar.style.marginLeft = "0";
+        menubars.style.opacity = "0";
+        x.style.opacity = "100";
+
+        sidebar.style.transitionDuration = "0";
+        menubars.style.transitionDuration = "0";
+        x.style.transitionDuration = "0";
     }
 }
 

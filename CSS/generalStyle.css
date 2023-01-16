@@ -1,4 +1,5 @@
 html, body {
+    background-color: white;
     height: 100%;
     width: 100%;
     margin: 0;
@@ -44,7 +45,6 @@ body {
     padding: 0;
     height: 35px;
     line-height: 35px;
-    transition-duration: 200ms;
 }
 
 #menubars {
@@ -58,7 +58,7 @@ body {
     height: 25px;
 }
 
-.button, .pushButton, .groupedButton, .startGroupedButton, .endGroupedButton {
+.button, .submitButton, .pushButton, .groupedButton, .startGroupedButton, .endGroupedButton {
     display: inline-block;
     background-color: #141414;
     color: white;
@@ -92,7 +92,6 @@ body {
     margin: 0;
     z-index: 99;
     position: fixed;
-    transition-duration: 400ms;
     height: 100%;
     left: 0;
     overflow-x: hidden;
@@ -146,6 +145,7 @@ body {
     height: 20px;
 }
 
-.subNavDiv {
+.wrapperDiv, .subNavDiv {
     text-align: center;
+    width: 100%;
 }
