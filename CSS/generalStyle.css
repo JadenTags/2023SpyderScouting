@@ -39,7 +39,6 @@ body {
     float: right;
 }
 
-
 #menubars, #spyderLogo, #x {
     margin: 0;
     padding: 0;
@@ -148,4 +147,13 @@ body {
 .innerDiv, .subNavDiv {
     text-align: center;
     width: 100%;
+}
+
+.title {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }

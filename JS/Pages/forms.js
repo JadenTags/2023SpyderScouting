@@ -10,51 +10,52 @@ async function fillTeamDropdown(selector) {
     await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
     var teams = getOrder(orderNum);
 
-    if (teams != "none" && document.getElementById(selector + "RefreshDiv").style.display == "none") {
-        if (!dropdown) {
-            document.getElementById(selector + "NoTeamsDiv").style.display = "none";
-            await refreshForm(selector);
-            dropdown = document.getElementById(selector + "TeamNumDropdown");
-        }
+    if (document.getElementById(selector + "NoTeamsDiv").style.display == "none") {
+        if (teams != "none") {
+            if (!dropdown) {
+                document.getElementById(selector + "NoTeamsDiv").style.display = "none";
+                await refreshForm(selector);
+                dropdown = document.getElementById(selector + "TeamNumDropdown");
+            }
 
-        teams = teams[0]
-        
-        if (dropdown.childNodes.length == 0) {
-            dropdown.innerHTML = "";
-            await teams.forEach(team => {
-                let option = document.createElement("option");
-                option.value = team;
-                option.innerHTML = "#" + team;
-                dropdown.appendChild(option);
-            });
+            teams = teams[0]
+            if (dropdown.childNodes.length == 0) {
+                dropdown.innerHTML = "";
+                await teams.forEach(team => {
+                    let option = document.createElement("option");
+                    option.value = team;
+                    option.innerHTML = "#" + team;
+                    dropdown.appendChild(option);
+                });
+            } else {
+                var childNodes = [];
+                var toRemove = [];
+
+                dropdown.childNodes.forEach(option => {
+                    let num = option.value.toString();
+                    if (!teams.includes(num)) {
+                        toRemove.push(option);
+                    } else {
+                        childNodes.push(num);
+                    }
+                });
+
+                toRemove.forEach(option => option.remove());
+
+                teams.filter(x => !childNodes.includes(x) && x != "").forEach(team => {
+                    let option = document.createElement("option");
+                    option.value = team;
+                    option.innerHTML = "#" + team;
+                    dropdown.appendChild(option);
+                });
+            }
+
+            changeTeamName(selector);
         } else {
-            var childNodes = [];
-            var toRemove = [];
-
-            dropdown.childNodes.forEach(option => {
-                let num = option.value.toString();
-                if (!teams.includes(num)) {
-                    toRemove.push(option);
-                } else {
-                    childNodes.push(num);
-                }
-            });
-
-            toRemove.forEach(option => option.remove());
-
-            teams.filter(x => !childNodes.includes(x) && x != "").forEach(team => {
-                let option = document.createElement("option");
-                option.value = team;
-                option.innerHTML = "#" + team;
-                dropdown.appendChild(option);
-            });
+            document.getElementById(selector + "FormDiv").remove();
+            document.getElementById(selector + "NoTeamsDiv").style.display = "inline";
+            return;
         }
-
-        changeTeamName(selector);
-    } else {
-        document.getElementById(selector + "FormDiv").remove();
-        document.getElementById(selector + "NoTeamsDiv").style.display = "inline";
-        return;
     }
 }
 
@@ -81,6 +82,8 @@ function submitForm(selector) {
         form.push(document.getElementById("preExtraNotes").innerHTML);
         
         appendData(config.preGSID, sheetName, form);
+    } else if (selector == "pit") {
+        
     }
 }
 
@@ -139,3 +142,4 @@ async function cycleCheckDropdown(selector) {
 }
 
 cycleCheckDropdown("pre");
+cycleCheckDropdown("pit");

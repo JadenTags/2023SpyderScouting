@@ -41,7 +41,7 @@
 
   <div id="preDiv" class="subNavDiv" style="display:none">
     <div id="preNoTeamsDiv" class="innerDiv" style="display:none;">
-      <p class="formSubheader">There Are No More Teams To Pre-Scout!</p>
+      <p class="title">There Are No More Teams To Pre-Scout!</p>
     </div>
 
     <div id="preFormDiv" class="innerDiv">
@@ -80,15 +80,49 @@
     </div>
 
     <div id="preRefreshDiv" class="innerDiv" style="display:none;">
-      <p class="formSubheader">Thank You For Submitting A Form!</p>
+      <p class="title">Thank You For Submitting A Form!</p>
       <p id="preRefreshButton" class="button" onclick="refreshForm('pre');" style="margin-top: 10px;">Submit Another Form</p>
     </div>
   </div>
 
   <div id="pitDiv" class="subNavDiv" style="display:none">
-    <div id="pitFormDiv" class="innerDiv">
+    <div id="pitNoTeamsDiv" class="innerDiv" style="display:none;">
+      <p class="title">There Are No More Teams To Pit-Scout!</p>
     </div>
-    <h1>Pit</h1>
+
+    <div id="pitFormDiv" class="innerDiv">
+      <h1 id="pitTeamName" class="teamName"></h1>
+      
+      <select id="pitTeamNumDropdown" class="teamNumDropdown" onchange="changeTeamName('pit');"></select>
+
+      <img class="grid" src="../Images/coneGrid.PNG">
+
+      <div id="autoCones">
+        <p id="autoConeHighRow" class="pushButton">High Row</p>
+        <p id="autoConeMidRow" class="pushButton">Mid Row</p>
+        <p id="autoConeBotRow" class="pushButton">Bot Row</p>
+      </div>
+
+      <img class="grid" src="../Images/cubeGrid.PNG">
+
+      <div id="autoCubes">
+        <p id="autoCubeHighRow" class="pushButton">High Row</p>
+        <p id="autoCubeMidRow" class="pushButton">Mid Row</p>
+        <p id="autoCubeBotRow" class="pushButton">Bot Row</p>
+      </div>
+      
+      <textarea id="preExtraNotes" class="notesArea" placeholder="Notes"></textarea>
+
+      <br>
+
+      <p id="pitSubmitButton" class="submitButton" onclick="secureSubmit('pit');">Submit</p>
+      <p id="pitUndoSubmitButton" class="button" onclick="undoSubmit('pit');" style="display: none;">Undo</p>
+    </div>
+    
+    <div id="pitRefreshDiv" class="innerDiv" style="display:none;">
+      <p class="title">Thank You For Submitting A Form!</p>
+      <p id="pitRefreshButton" class="button" onclick="refreshForm('pit');" style="margin-top: 10px;">Submit Another Form</p>
+    </div>
   </div>
 
   <div id="matchDiv" class="subNavDiv" style="display:none">

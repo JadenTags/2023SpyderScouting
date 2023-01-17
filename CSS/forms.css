@@ -70,3 +70,14 @@ body {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   color: black;
 }
+
+.grid {
+  display: block;
+  margin: auto;
+  width: 60%;
+  margin-top: 40px;
+}
+
+#autoCones, #autoCubes {
+  margin-top: 10px;
+}

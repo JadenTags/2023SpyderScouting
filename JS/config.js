@@ -7,7 +7,7 @@ var config = {
   refreshToken: '1//048G3gEx6ha14CgYIARAAGAQSNwF-L9IrlxEAsYjXM4QL4yJVbWVeTDI4gzcJ7Y9KGh2gNlyw9kVS8xFsxG1lqQskwod9Vt1ZwBk',
   userDatabaseGSID: '1mzkuHHLonKO10spvtKyDiqLP9OBwvpH9kr--1rlDA2I',
   matchGSID: '1EyS5XVJtnQsq4N8wv6kC91DbrzBDKiQIqCjVwXtQxDA',
-  pitGSID: '17nIqUwNFmR7yCaeMNNzv3oP95C0B_nyGOfT1EaeAPMQ',
+  pitGSID: '10Wj38-hrNQFcSW0vvcub3uV83KpauFQDP714uLyiK4E',
   preGSID: '1A_GuiZSyPxeYM1r1JAyanLawNvMn45_YrVk1tTT7u5E',
   assignmentsGSID: '1Y7pu07TuiSjTLr_OSHiwZhlh_RUj2qY9o9OPKnk5Gwg',
   twitchAPIClientID: 'uh5s5en9bs63i2ysx7j70qlp8ycder',
