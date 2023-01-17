@@ -10,7 +10,7 @@ async function fillTeamDropdown(selector) {
     await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
     var teams = getOrder(orderNum);
 
-    if (teams != "none") {
+    if (teams != "none" && document.getElementById(selector + "RefreshDiv").style.display == "none") {
         if (!dropdown) {
             document.getElementById(selector + "NoTeamsDiv").style.display = "none";
             await refreshForm(selector);
