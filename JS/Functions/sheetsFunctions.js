@@ -38,11 +38,15 @@ async function getSheetData(gsId, sheet, mainOrderNum) {
   }) 
     .then(response => response.json())
     .then(data => {
-      if (!data.values) {
+      if (!data.range) {
         console.log("GET NEW REFRESH KEY");
       }
-      
-      orders[mainOrderNum] = data.values;
+
+      if (!data.values) {
+        orders[mainOrderNum] = "none";
+      } else {
+        orders[mainOrderNum] = data.values;
+      }
     });
 
     while (!orders[mainOrderNum]) {

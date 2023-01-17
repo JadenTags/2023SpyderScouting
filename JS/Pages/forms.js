@@ -1,24 +1,58 @@
 const formDivs = {
-    "pre": document.getElementById("preDivWrapper").cloneNode(true),
-    "pit": document.getElementById("pitDivWrapper").cloneNode(true),
-    "match": document.getElementById("matchDivWrapper").cloneNode(true),
+    "pre": document.getElementById("preFormDiv").cloneNode(true),
+    "pit": document.getElementById("pitFormDiv").cloneNode(true),
+    "match": document.getElementById("matchFormDiv").cloneNode(true),
 };
 
 async function fillTeamDropdown(selector) {
     var dropdown = document.getElementById(selector + "TeamNumDropdown");
-    
-    dropdown.innerHTML = "";
-    var orderNum = curOrderNum++;
-    await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
-    
-    await getOrder(orderNum)[0].forEach(team => {
-        let option = document.createElement("option");
-        option.value = team;
-        option.innerHTML = "#" + team;
-        dropdown.appendChild(option);
-    });
 
-    changeTeamName(selector);
+    if (dropdown) {
+        var orderNum = curOrderNum++;
+        await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
+        var teams = getOrder(orderNum);
+
+        if (teams == "none") {
+            document.getElementById(selector + "FormDiv").remove();
+            document.getElementById(selector + "NoTeamsDiv").style.display = "inline";
+            return;
+        }
+
+        teams = teams[0]
+        
+        if (dropdown.childNodes.length == 0) {
+            dropdown.innerHTML = "";
+            await teams.forEach(team => {
+                let option = document.createElement("option");
+                option.value = team;
+                option.innerHTML = "#" + team;
+                dropdown.appendChild(option);
+            });
+        } else {
+            var childNodes = [];
+            var toRemove = [];
+
+            dropdown.childNodes.forEach(option => {
+                let num = option.value.toString();
+                if (!teams.includes(num)) {
+                    toRemove.push(option);
+                } else {
+                    childNodes.push(num);
+                }
+            });
+
+            toRemove.forEach(option => option.remove());
+
+            teams.filter(x => !childNodes.includes(x) && x != "").forEach(team => {
+                let option = document.createElement("option");
+                option.value = team;
+                option.innerHTML = "#" + team;
+                dropdown.appendChild(option);
+            });
+        }
+
+        changeTeamName(selector);
+    }
 }
 
 function submitForm(selector) {
@@ -62,11 +96,11 @@ async function secureSubmit(selector) {
             var team = document.getElementById(selector + "TeamNumDropdown").value;
             
             await clearData(config.assignmentsGSID, selector + sheetName);
-            appendData(config.assignmentsGSID, selector + sheetName, getOrder(orderNum)[0].filter(x => parseInt(x) != team));
+            appendData(config.assignmentsGSID, selector + sheetName, getOrder(orderNum)[0].filter(x => parseInt(x) != team && x != ""));
         }
 
         submitForm(selector);
-        document.getElementById(selector + "DivWrapper").remove();
+        document.getElementById(selector + "FormDiv").remove();
         
         document.getElementById(selector + "RefreshDiv").style.display = "inline-block";
     }
@@ -93,4 +127,12 @@ async function changeTeamName(selector) {
     document.getElementById(selector + "TeamName").innerHTML = getOrder(orderNum).nickname;
 }
 
-fillTeamDropdown("pre");
+async function cycleCheckDropdown(selector) {
+    while (true) {
+        await fillTeamDropdown(selector);
+        
+        await wait(10000);
+    }
+}
+
+cycleCheckDropdown("pre");

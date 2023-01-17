@@ -145,7 +145,7 @@ body {
     height: 20px;
 }
 
-.wrapperDiv, .subNavDiv {
+.innerDiv, .subNavDiv {
     text-align: center;
     width: 100%;
 }

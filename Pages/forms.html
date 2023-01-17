@@ -40,8 +40,12 @@
   </div>
 
   <div id="preDiv" class="subNavDiv" style="display:none">
-    <div id="preDivWrapper" class="wrapperDiv">
-      <h1 id="preTeamName" class="teamName">Team Spyder</h1>
+    <div id="preNoTeamsDiv" class="innerDiv" style="display:none;">
+      <p class="formSubheader">There Are No More Teams To Pre-Scout!</p>
+    </div>
+
+    <div id="preFormDiv" class="innerDiv">
+      <h1 id="preTeamName" class="teamName"></h1>
       
       <select id="preTeamNumDropdown" class="teamNumDropdown" onchange="changeTeamName('pre');"></select>
 
@@ -75,20 +79,20 @@
       <p id="preUndoSubmitButton" class="button" onclick="undoSubmit('pre');" style="display: none;">Undo</p>
     </div>
 
-    <div id="preRefreshDiv" class="wrapperDiv">
+    <div id="preRefreshDiv" class="innerDiv" style="display:none;">
       <p class="formSubheader">Thank You For Submitting A Form!</p>
       <p id="preRefreshButton" class="button" onclick="refreshForm('pre');" style="margin-top: 10px;">Submit Another Form</p>
     </div>
   </div>
 
   <div id="pitDiv" class="subNavDiv" style="display:none">
-    <div id="pitDivWrapper" class="wrapperDiv">
+    <div id="pitFormDiv" class="innerDiv">
     </div>
     <h1>Pit</h1>
   </div>
 
   <div id="matchDiv" class="subNavDiv" style="display:none">
-    <div id="matchDivWrapper" class="wrapperDiv">
+    <div id="matchFormDiv" class="innerDiv">
     </div>
     <h1>Match</h1>
   </div>
