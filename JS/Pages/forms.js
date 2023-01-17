@@ -6,16 +6,15 @@ const formDivs = {
 
 async function fillTeamDropdown(selector) {
     var dropdown = document.getElementById(selector + "TeamNumDropdown");
+    var orderNum = curOrderNum++;
+    await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
+    var teams = getOrder(orderNum);
 
-    if (dropdown) {
-        var orderNum = curOrderNum++;
-        await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
-        var teams = getOrder(orderNum);
-
-        if (teams == "none") {
-            document.getElementById(selector + "FormDiv").remove();
-            document.getElementById(selector + "NoTeamsDiv").style.display = "inline";
-            return;
+    if (teams != "none") {
+        if (!dropdown) {
+            document.getElementById(selector + "NoTeamsDiv").style.display = "none";
+            await refreshForm(selector);
+            dropdown = document.getElementById(selector + "TeamNumDropdown");
         }
 
         teams = teams[0]
@@ -52,6 +51,10 @@ async function fillTeamDropdown(selector) {
         }
 
         changeTeamName(selector);
+    } else {
+        document.getElementById(selector + "FormDiv").remove();
+        document.getElementById(selector + "NoTeamsDiv").style.display = "inline";
+        return;
     }
 }
 
