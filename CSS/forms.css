@@ -85,7 +85,7 @@ body {
   width: 60%;
 }
 
-#canCreateAutoButton, #canDockButton {
+#canCreateAutoButton, #canDockButton, .canCreateAuto {
   margin-top: 10px;
 }
 
@@ -101,6 +101,13 @@ body {
   padding: 0;
   flex: 1;
   display: inline-box;
-  /* width: 25%; */
-  height:25vw;
+  width: 25%;
+  height: 25vw;
+}
+
+.cone {
+  /* position: absolute; */
+  margin-left: 4%;
+  margin-right: 4%;
+  width: 17%;
 }

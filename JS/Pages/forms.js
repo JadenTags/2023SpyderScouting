@@ -152,8 +152,36 @@ function adjustMatchPlural() {
 
 function leftCycleSetup(num) {
     var element = document.getElementById("requiredSetup" + num);
+    if (!element.value) {
+        element.value = 0;
+    }
+    
+    element.value = (parseInt(element.value) + 2) % 3;
+    element.setAttribute("src", "../Images/" + elementsCycle[element.value] + ".png");
 
-    element.setAttribute("src", "../Images/" + elementsCycle[(elementsCycle.indexOf(element.value) + 2) % 3] + ".png");
+    var classes = element.getAttribute("class");
+    if (elementsCycle[element.value] == "cone") {
+        element.setAttribute("class", "cone " + classes);
+    } else if (classes.includes("cone ")) {
+        element.setAttribute("class", classes.replace("cone ", ""));
+    }
+}
+
+function rightCycleSetup(num) {
+    var element = document.getElementById("requiredSetup" + num);
+    if (!element.value) {
+        element.value = 0;
+    }
+    console.log(element.value)
+    element.value = (parseInt(element.value) + 1) % 3;
+    element.setAttribute("src", "../Images/" + elementsCycle[element.value] + ".png");
+
+    var classes = element.getAttribute("class");
+    if (elementsCycle[element.value] == "cone") {
+        element.setAttribute("class", "cone " + classes);
+    } else if (classes.includes("cone ")) {
+        element.setAttribute("class", classes.replace("cone ", ""));
+    }
 }
 
 cycleCheckDropdown("pre");
