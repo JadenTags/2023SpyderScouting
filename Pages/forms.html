@@ -94,6 +94,53 @@
       <h1 id="pitTeamName" class="teamName"></h1>
       
       <select id="pitTeamNumDropdown" class="teamNumDropdown" onchange="changeTeamName('pit');"></select>
+      
+      <p id="hasAutoButton" class="pushButton">Has Auto</p>
+
+      <br>
+
+      <p id="canCreateAutoButton" class="pushButton">Can Create New Auto On The Fly</p>
+
+      <div id="canCreateAuto">
+        <label class="formSubheader">It Would Take </label>
+        <input id="matchInput" class="measurementInput" placeholder="#" type="number" min="0" onchange="adjustMatchPlural();"></input>
+        <label id="matchesLabel" class="formSubheader"> Matches</label>
+
+        <p class="formSubheader">How Reliable Would It Be?</p>
+        <label class="reliableSliderText">Unreliable <input type="range" min="1" max="100" value="50" id="reliabilitySlider"> Reliable</label>
+      </div>
+      
+      <p id="canDockButton" class="pushButton">Can Dock</p>
+      <p id="canEngageButton" class="pushButton">Can Engage</p>
+
+      <p class="formSubheader">Required Setup</p>
+      <div id="requiredSetupDiv">
+        <img id="requiredSetupOne" class="requiredSetupPiece" value="either" src="../Images/either.png">
+        <img id="requiredSetupTwo" class="requiredSetupPiece" value="either" src="../Images/either.png">
+        <img id="requiredSetupThree" class="requiredSetupPiece" value="either" src="../Images/either.png">
+        <img id="requiredSetupFour" class="requiredSetupPiece" value="either" src="../Images/either.png">
+      </div>
+      <div id="requiredSetupButtons">
+        <div class="requiredSetupPieceDiv">
+          <p id="leftCycleOne" class="button" onclick="console.log('balls');leftCycleSetup('One')">&lt;</p>
+          <p id="rightCycleOne" class="button" onclick="">&gt;</p>
+        </div>
+        
+        <div class="requiredSetupPieceDiv">
+          <p id="leftCycleTwo" class="button" onclick="">&lt;</p>
+          <p id="rightCycleTwo" class="button" onclick="">&gt;</p>
+        </div>
+        
+        <div class="requiredSetupPieceDiv">
+          <p id="leftCycleThree" class="button" onclick="">&lt;</p>
+          <p id="rightCycleThree" class="button" onclick="">&gt;</p>
+        </div>
+        
+        <div class="requiredSetupPieceDiv">
+          <p id="leftCycleOneFour" class="button" onclick="">&lt;</p>
+          <p id="rightCycleOneFour" class="button" onclick="">&gt;</p>
+        </div>
+      </div>  
 
       <img class="grid" src="../Images/coneGrid.PNG">
 

@@ -3,6 +3,7 @@ const formDivs = {
     "pit": document.getElementById("pitFormDiv").cloneNode(true),
     "match": document.getElementById("matchFormDiv").cloneNode(true),
 };
+const elementsCycle = ["either", "cube", "cone"];
 
 async function fillTeamDropdown(selector) {
     var dropdown = document.getElementById(selector + "TeamNumDropdown");
@@ -10,7 +11,6 @@ async function fillTeamDropdown(selector) {
     await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
     var teams = getOrder(orderNum);
 
-    if (document.getElementById(selector + "NoTeamsDiv").style.display == "none") {
         if (teams != "none") {
             if (!dropdown) {
                 document.getElementById(selector + "NoTeamsDiv").style.display = "none";
@@ -56,7 +56,6 @@ async function fillTeamDropdown(selector) {
             document.getElementById(selector + "NoTeamsDiv").style.display = "inline";
             return;
         }
-    }
 }
 
 function submitForm(selector) {
@@ -139,6 +138,22 @@ async function cycleCheckDropdown(selector) {
         
         await wait(10000);
     }
+}
+
+function adjustMatchPlural() {
+    var matchesLabel = document.getElementById("matchesLabel");
+    console.log(document.getElementById("matchInput").value)
+    if (document.getElementById("matchInput").value == "1") {
+        matchesLabel.innerHTML = "Match";
+    } else {
+        matchesLabel.innerHTML = "Matches";
+    }
+}
+
+function leftCycleSetup(num) {
+    var element = document.getElementById("requiredSetup" + num);
+
+    element.setAttribute("src", "../Images/" + elementsCycle[(elementsCycle.indexOf(element.value) + 2) % 3] + ".png");
 }
 
 cycleCheckDropdown("pre");
