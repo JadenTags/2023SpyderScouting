@@ -30,7 +30,9 @@ function activateButtons() {
     buttons = Array.from(document.getElementsByClassName("groupedButton"));
 
     buttons.forEach(button => {
+        let divId = button.getAttribute("class").split(" ")[0];
         
+        button.setAttribute("onclick", JSON.stringify(Array.from(document.getElementsByClassName(divId)).map(x => x.id)) + ".forEach(divButton => {if (divButton != '" + button.id + "' && document.getElementById(divButton).getAttribute('class').split(' ').includes('selectedButton')) {togglePushButton(divButton)}}); togglePushButton('" + button.id + "');");
     });
 }
 

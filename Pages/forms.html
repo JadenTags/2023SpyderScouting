@@ -48,7 +48,6 @@
       <h1 id="preTeamName" class="teamName"></h1>
       
       <select id="preTeamNumDropdown" class="teamNumDropdown" onchange="changeTeamName('pre');"></select>
-
       
       <p class="sectionHeader">General Info</p>
       <hr class="sectionLine">
@@ -75,10 +74,6 @@
 
       <br>
 
-      <textarea id="preExtraNotes" class="notesArea" placeholder="Notes"></textarea>
-
-      <br>
-
       <p class="sectionHeader">Autonomous</p>
       <hr class="sectionLine">
 
@@ -99,8 +94,8 @@
           <br>
         </div>
         
-        <p id="canDockButton" class="pushButton" onclick="toggleElement('canEngageButton');">Can Dock</p>
-        <p id="canEngageButton" class="pushButton" style="display:none;">Can Engage</p>
+        <p id="canDockButtonAuto" class="pushButton" onclick="toggleElement('canEngageButtonAuto');">Can Dock</p>
+        <p id="canEngageButtonAuto" class="pushButton" style="display:none;">Can Engage</p>
 
         <p class="formSubheader">Required Setup (Facing Center)</p>
         <div id="requiredSetupDiv">
@@ -168,7 +163,7 @@
       <p id="cubeMidRowButton" class="pushButton" onclick="toggleGamePiece('cubeMidRow');">Mid Row</p>
       <p id="cubeBotRowButton" class="pushButton" onclick="toggleGamePiece('cubeBotRow');">Bot Row</p>
 
-      <p class="formSubheader">Preferred Playstyles</p>
+      <p class="formSubheader">Preferred Playstyle</p>
       <p id="preferOffButton" class="preferButton startGroupedButton groupedButton">Offensive</p>
       <p id="preferDefButton" class="preferButton groupedButton">Defensive</p>
       <p id="preferHybButton" class="preferButton endGroupedButton groupedButton">Hybrid</p>
@@ -178,6 +173,20 @@
       <p id="ableDefButton" class="pushButton">Defensive</p>
 
       <br>
+      <p id="canDockButtonTele" class="pushButton" onclick="toggleElement('teleDockDiv');">Can Dock</p>
+      
+      <div id="teleDockDiv" style="display:none;">
+        <p id="canEngageButtonTele" class="pushButton">Can Engage</p>
+        
+        <p class="formSubheader">Time To Balance</p>
+        <input id="balanceTimeInput" placeholder="Seconds" type="text"></input>
+      </div>
+
+      <br>
+
+      <textarea id="preExtraNotes" class="notesArea" placeholder="Notes"></textarea>
+      
+      <br>
 
       <p id="preSubmitButton" class="submitButton" onclick="secureSubmit('pre');">Submit</p>
       <p id="preUndoSubmitButton" class="button" onclick="undoSubmit('pre');" style="display: none;">Undo</p>
@@ -185,7 +194,7 @@
 
     <div id="preRefreshDiv" class="innerDiv" style="display:none;">
       <p class="title">Thank You For Submitting A Form!</p>
-      <p id="preRefreshButton" class="button" onclick="refreshForm('pre');" style="margin-top: 10px;">Submit Another Form</p>
+      <p id="preRefreshButton" class="button" onclick="refreshForm('pre');unlockBody();" style="margin-top: 10px;">Submit Another Form</p>
     </div>
   </div>
 

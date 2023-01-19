@@ -11,51 +11,53 @@ async function fillTeamDropdown(selector) {
     await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
     var teams = getOrder(orderNum);
 
-        if (teams != "none") {
-            if (!dropdown) {
-                document.getElementById(selector + "NoTeamsDiv").style.display = "none";
-                await refreshForm(selector);
-                dropdown = document.getElementById(selector + "TeamNumDropdown");
-            }
+    if (teams != "none" && !dropdown && document.getElementById(selector + "NoTeamsDiv").style.display != "none") {
+        console.log("vasl")
+        document.getElementById(selector + "NoTeamsDiv").style.display = "none";
+        await refreshForm(selector);
+        dropdown = document.getElementById(selector + "TeamNumDropdown");
+    }
 
-            teams = teams[0]
-            if (dropdown.childNodes.length == 0) {
-                dropdown.innerHTML = "";
-                await teams.forEach(team => {
-                    let option = document.createElement("option");
-                    option.value = team;
-                    option.innerHTML = "#" + team;
-                    dropdown.appendChild(option);
-                });
-            } else {
-                var childNodes = [];
-                var toRemove = [];
-
-                dropdown.childNodes.forEach(option => {
-                    let num = option.value.toString();
-                    if (!teams.includes(num)) {
-                        toRemove.push(option);
-                    } else {
-                        childNodes.push(num);
-                    }
-                });
-
-                toRemove.forEach(option => option.remove());
-
-                teams.filter(x => !childNodes.includes(x) && x != "").forEach(team => {
-                    let option = document.createElement("option");
-                    option.value = team;
-                    option.innerHTML = "#" + team;
-                    dropdown.appendChild(option);
-                });
-            }
-
-            changeTeamName(selector);
+    if (teams != "none" && dropdown && document.getElementById(selector + "NoTeamsDiv").style.display == "none") {
+        console.log("asdasc")
+        teams = teams[0]
+        if (dropdown.childNodes.length == 0) {
+            dropdown.innerHTML = "";
+            await teams.forEach(team => {
+                let option = document.createElement("option");
+                option.value = team;
+                option.innerHTML = "#" + team;
+                dropdown.appendChild(option);
+            });
         } else {
-            document.getElementById(selector + "FormDiv").remove();
-            document.getElementById(selector + "NoTeamsDiv").style.display = "inline";
-            return;
+            var childNodes = [];
+            var toRemove = [];
+
+            dropdown.childNodes.forEach(option => {
+                let num = option.value.toString();
+                if (!teams.includes(num)) {
+                    toRemove.push(option);
+                } else {
+                    childNodes.push(num);
+                }
+            });
+
+            toRemove.forEach(option => option.remove());
+
+            teams.filter(x => !childNodes.includes(x) && x != "").forEach(team => {
+                let option = document.createElement("option");
+                option.value = team;
+                option.innerHTML = "#" + team;
+                dropdown.appendChild(option);
+            });
         }
+
+        changeTeamName(selector);
+    } else if (document.getElementById(selector + "FormDiv")) {
+        document.getElementById(selector + "FormDiv").remove();
+        document.getElementById(selector + "NoTeamsDiv").style.display = "inline";
+        return;
+    }
 }
 
 function submitForm(selector) {
@@ -77,10 +79,102 @@ function submitForm(selector) {
         //HAS GOM
         form.push(document.getElementById("hasGOMButton").value == true);
     
-        //NOTES
-        form.push(document.getElementById("preExtraNotes").innerHTML);
+        //NO AUTO
+        form.push(document.getElementById("noAutoButton").value == true);
+
+        //CAN CREATE AUTO
+        form.push(document.getElementById("canCreateAutoButton").value == true);
+
+        //AUTO CREATING TIME
+        form.push(document.getElementById("matchInput").value);
+
+        //RELIABILITY LEVEL
+        form.push(document.getElementById("reliabilitySlider").value);
+
+        //AUTO DOCKING
+        form.push(document.getElementById("canDockButtonAuto").value == true);
+
+        //AUTO ENGAGING
+        form.push(document.getElementById("canEngageButtonAuto").value == true);
         
+        //REQUIRED SETUP
+        var setup = [];
+        ["One", "Two", "Three", "Four"].forEach(num => {
+            setup.push(elementsCycle[document.getElementById("requiredSetup" + num).value]);
+        });
+
+        form.push(JSON.stringify(setup.map(x => {
+            if (!x) {return "either";} else {return x;}
+        })));
+
+        //FIXED POS
+        form.push(document.getElementById("setPosButton").value == true);
+
+        //FIELD POS
+        var posCoords = JSON.stringify(document.getElementById("fieldPin").value);
+        if (!posCoords) {
+            posCoords = "";
+        }
+
+        form.push(posCoords);
+
+        //CYCLE TIME
+        form.push(document.getElementById("cycleTimeInput").value);
+
+        //CONE REACH
+        var coneReach = [];
+        ["High", "Mid", "Bot"].forEach(row => {
+            coneReach.push(document.getElementById("cone" + row + "RowButton").value == true);
+        });
+        form.push(JSON.stringify(coneReach));
+        
+        //CUBE REACH
+        var cubeReach = [];
+        ["High", "Mid", "Bot"].forEach(row => {
+            cubeReach.push(document.getElementById("cube" + row + "RowButton").value == true);
+        });
+        form.push(JSON.stringify(cubeReach));
+
+        //PREFERRED PLAYSTYLE
+        var preferredPlaystyle;
+        Array.from(document.getElementsByClassName("preferButton")).forEach(button => {
+            if (button.value) {
+                preferredPlaystyle = button.innerHTML;
+            }
+        });
+        if (!preferredPlaystyle) {
+            preferredPlaystyle = "none";
+        }
+
+        form.push(preferredPlaystyle);
+
+        //ABLE PLAYSTYLES
+        var ablePlaystyles = [];
+        ["Off", "Def"].forEach(playstyle => {
+            let button = document.getElementById("able" + playstyle + "Button");
+
+            if (button.value) {
+                ablePlaystyles.push(button.innerHTML);
+            }
+        });
+
+        form.push(JSON.stringify(ablePlaystyles));
+
+        //TELE DOCKING
+        form.push(document.getElementById("canDockButtonTele").value == true);
+
+        //TELE ENGAGING
+        form.push(document.getElementById("canEngageButtonTele").value == true);
+
+        //TELE DOCKING TIME
+        form.push(document.getElementById("balanceTimeInput").value);
+
+        //EXTRA NOTES
+        form.push(document.getElementById("preExtraNotes").value);
+
+        console.log(form)
         appendData(config.preGSID, sheetName, form);
+        lockBody();
     } else if (selector == "pit") {
         
     }
@@ -196,4 +290,4 @@ function toggleGamePiece(gpId) {
 
 activatePin("field", "fieldPin");
 cycleCheckDropdown("pre");
-cycleCheckDropdown("pit");
+// cycleCheckDropdown("pit");

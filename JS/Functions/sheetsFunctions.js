@@ -67,6 +67,7 @@ async function appendData(gsId, sheet, data) {
   })
     .then(response => response.json())
     .then(data => {
+      console.log(data)
       if (!data.spreadsheetId) {
         console.log("GET NEW REFRESH KEY");
       }
