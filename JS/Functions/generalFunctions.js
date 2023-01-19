@@ -45,3 +45,17 @@ function showElement(elementId) {
 function hideElement(elementId) {
   document.getElementById(elementId).style.display = "none";
 }
+
+function lockBody() {
+  document.body.style.overflow = "hidden";
+  document.body.style.userZoom = "fixed";
+  document.body.style.position = "fixed";
+  document.body.scrollTo(0, 0);
+}
+
+function unlockBody() {
+  document.body.style.overflow = "scroll";
+  document.body.style.userZoom = "initial";
+  document.body.style.position = "initial";
+  document.body.scrollTo(0, 0);
+}

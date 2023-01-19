@@ -18,13 +18,19 @@ function activateButtons() {
     buttons.forEach(button => {
         let divId = button.id.replace("Button", "") + "Div";
 
-        button.setAttribute("onclick", JSON.stringify(buttons.map(x => x.id)) + ".forEach(button => {document.getElementById(button).style.backgroundColor = '#141414';let divId = button.replace('Button', '') + 'Div'; if (divId != '" + divId + "') {hideElement(divId)}}); toggleElement('" + divId + "'); if (document.getElementById('" + divId + "').style.display == 'none') {document.getElementById('" + button.id + "').style.backgroundColor = '#141414';showElement('mainDiv')} else {document.getElementById('" + button.id + "').style.backgroundColor = '#575653';hideElement('mainDiv')};");
+        button.setAttribute("onclick", JSON.stringify(buttons.map(x => x.id)) + ".forEach(button => {document.getElementById(button).style.backgroundColor = '#141414';let divId = button.replace('Button', '') + 'Div'; if (divId != '" + divId + "') {hideElement(divId)}}); lockBody();toggleElement('" + divId + "'); if (document.getElementById('" + divId + "').style.display == 'none') {document.getElementById('" + button.id + "').style.backgroundColor = '#141414';showElement('mainDiv')} else {document.getElementById('" + button.id + "').style.backgroundColor = '#575653';hideElement('mainDiv')};" + button.getAttribute("onclick"));
     });
 
     buttons = Array.from(document.getElementsByClassName("pushButton"));
 
     buttons.forEach(button => {
         button.setAttribute("onclick", "togglePushButton('" + button.id + "');" + button.getAttribute("onclick"));
+    });
+
+    buttons = Array.from(document.getElementsByClassName("groupedButton"));
+
+    buttons.forEach(button => {
+        
     });
 }
 
@@ -55,7 +61,6 @@ function togglePushButton(buttonId) {
     } else {
         button.value = true;
         button.setAttribute("class", "selectedButton " + button.getAttribute("class"));
-
     }
 }
 

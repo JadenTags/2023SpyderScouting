@@ -19,7 +19,7 @@
 </div>
 
 <div id="subNav">
-  <p id="preButton" class="subNavButton">Pre</p>
+  <p id="preButton" class="subNavButton" onclick="unlockBody();">Pre</p>
   <p class="subNavDivider"></p>
   <p id="pitButton" class="subNavButton">Pit</p>
   <p class="subNavDivider"></p>
@@ -34,7 +34,7 @@
   <p class="sidebarButton" onclick="window.location.replace('recruiting.html');">Recruiting</p>
 </div>
 
-<body>
+<body style="overflow: auto;">
   <div id="mainDiv" class="subNavDiv">
     <h1>General</h1>
   </div>
@@ -48,6 +48,10 @@
       <h1 id="preTeamName" class="teamName"></h1>
       
       <select id="preTeamNumDropdown" class="teamNumDropdown" onchange="changeTeamName('pre');"></select>
+
+      
+      <p class="sectionHeader">General Info</p>
+      <hr class="sectionLine">
 
       <p class="formSubheader">Dimensions</p>
       <input id="lengthInput" class="measurementInput" placeholder="L" type="number" max="999"></input>
@@ -75,6 +79,106 @@
 
       <br>
 
+      <p class="sectionHeader">Autonomous</p>
+      <hr class="sectionLine">
+
+      <p id="noAutoButton" class="pushButton" onclick="toggleElement('autoDiv');">No Auto</p>
+
+      <br>
+
+      <div id="autoDiv">
+        <p id="canCreateAutoButton" class="pushButton" onclick="toggleElement('canCreateAuto');">Can Create New Auto On The Fly</p>
+        <br>
+        <div id="canCreateAuto" style="display: none;">
+          <label class="formSubheader">It Would Take </label>
+          <input id="matchInput" class="measurementInput" placeholder="#" type="number" min="0" onchange="adjustMatchPlural();"></input>
+          <label id="matchesLabel" class="formSubheader"> Matches</label>
+
+          <p class="formSubheader">How Reliable Would It Be?</p>
+          <label class="reliableSliderText">Unreliable <input type="range" min="1" max="100" value="50" id="reliabilitySlider"> Reliable</label>
+          <br>
+        </div>
+        
+        <p id="canDockButton" class="pushButton" onclick="toggleElement('canEngageButton');">Can Dock</p>
+        <p id="canEngageButton" class="pushButton" style="display:none;">Can Engage</p>
+
+        <p class="formSubheader">Required Setup (Facing Center)</p>
+        <div id="requiredSetupDiv">
+          <img id="requiredSetupOne" class="requiredSetupPiece" value="either" src="../Images/either.png">
+          <img id="requiredSetupTwo" class="requiredSetupPiece" value="either" src="../Images/either.png">
+          <img id="requiredSetupThree" class="requiredSetupPiece" value="either" src="../Images/either.png">
+          <img id="requiredSetupFour" class="requiredSetupPiece" value="either" src="../Images/either.png">
+        </div>
+        <div id="requiredSetupButtons">
+          <div class="requiredSetupPieceDiv">
+            <p id="leftCycleOne" class="button" onclick="leftCycleSetup('One');">&lt;</p>
+            <p id="rightCycleOne" class="button" onclick="rightCycleSetup('One');">&gt;</p>
+          </div>
+          
+          <div class="requiredSetupPieceDiv">
+            <p id="leftCycleTwo" class="button" onclick="leftCycleSetup('Two');">&lt;</p>
+            <p id="rightCycleTwo" class="button" onclick="rightCycleSetup('Two');">&gt;</p>
+          </div>
+          
+          <div class="requiredSetupPieceDiv">
+            <p id="leftCycleThree" class="button" onclick="leftCycleSetup('Three');">&lt;</p>
+            <p id="rightCycleThree" class="button" onclick="rightCycleSetup('Three');">&gt;</p>
+          </div>
+          
+          <div class="requiredSetupPieceDiv">
+            <p id="leftCycleOneFour" class="button" onclick="leftCycleSetup('Four');">&lt;</p>
+            <p id="rightCycleOneFour" class="button" onclick="rightCycleSetup('Four');">&gt;</p>
+          </div>
+        </div>  
+
+        <p id="setPosButton" class="pushButton" onclick="toggleElement('fieldPosDiv');">Fixed Position</p>
+        <div id="fieldPosDiv" style="display: none;">
+          <img id="field" src="../Images/field.png">
+          <img id="fieldPin" src="../Images/pin.png">
+        </div>
+      </div>
+      
+      <p class="sectionHeader">Teleop</p>
+      <hr class="sectionLine">
+
+      <p class="formSubheader">Cycle Time</p>
+      <input id="cycleTimeInput" placeholder="Seconds" type="text"></input>
+
+      <p class="formSubheader">Cone Reach</p>
+      <br>
+      <img id="coneTopRow" class="cone" src="../Images/cone.png" style="opacity: 0%;">
+      <br>
+      <img id="coneMidRow" class="cone" src="../Images/cone.png" style="opacity: 0%;">
+      <br>
+      <img id="coneBotRow" class="cone" src="../Images/cone.png" style="opacity: 0%;">
+      <img id="coneGrid" class="grid" src="../Images/coneGrid.PNG">
+      <p id="coneHighRowButton" class="pushButton" onclick="toggleGamePiece('coneTopRow');">High Row</p>
+      <p id="coneMidRowButton" class="pushButton" onclick="toggleGamePiece('coneMidRow');">Mid Row</p>
+      <p id="coneBotRowButton" class="pushButton" onclick="toggleGamePiece('coneBotRow');">Bot Row</p>
+
+      <p class="formSubheader">Cube Reach</p>
+      <br>
+      <img id="cubeTopRow" class="cube" src="../Images/cube.png" style="opacity: 0%;">
+      <br>
+      <img id="cubeMidRow" class="cube" src="../Images/cube.png" style="opacity: 0%;">
+      <br>
+      <img id="cubeBotRow" class="cube" src="../Images/cube.png" style="opacity: 0%;">
+      <img class="grid" src="../Images/cubeGrid.PNG">
+      <p id="cubeHighRowButton" class="pushButton" onclick="toggleGamePiece('cubeTopRow');">High Row</p>
+      <p id="cubeMidRowButton" class="pushButton" onclick="toggleGamePiece('cubeMidRow');">Mid Row</p>
+      <p id="cubeBotRowButton" class="pushButton" onclick="toggleGamePiece('cubeBotRow');">Bot Row</p>
+
+      <p class="formSubheader">Preferred Playstyles</p>
+      <p id="preferOffButton" class="preferButton startGroupedButton groupedButton">Offensive</p>
+      <p id="preferDefButton" class="preferButton groupedButton">Defensive</p>
+      <p id="preferHybButton" class="preferButton endGroupedButton groupedButton">Hybrid</p>
+      
+      <p class="formSubheader">Able Playstyles</p>
+      <p id="ableOffButton" class="pushButton">Offensive</p>
+      <p id="ableDefButton" class="pushButton">Defensive</p>
+
+      <br>
+
       <p id="preSubmitButton" class="submitButton" onclick="secureSubmit('pre');">Submit</p>
       <p id="preUndoSubmitButton" class="button" onclick="undoSubmit('pre');" style="display: none;">Undo</p>
     </div>
@@ -94,76 +198,14 @@
       <h1 id="pitTeamName" class="teamName"></h1>
       
       <select id="pitTeamNumDropdown" class="teamNumDropdown" onchange="changeTeamName('pit');"></select>
-      
-      <p id="hasAutoButton" class="pushButton">Has Auto</p>
-
-      <br>
-
-      <p id="canCreateAutoButton" class="pushButton">Can Create New Auto On The Fly</p>
-
-      <div id="canCreateAuto">
-        <label class="formSubheader">It Would Take </label>
-        <input id="matchInput" class="measurementInput" placeholder="#" type="number" min="0" onchange="adjustMatchPlural();"></input>
-        <label id="matchesLabel" class="formSubheader"> Matches</label>
-
-        <p class="formSubheader">How Reliable Would It Be?</p>
-        <label class="reliableSliderText">Unreliable <input type="range" min="1" max="100" value="50" id="reliabilitySlider"> Reliable</label>
-      </div>
-      
-      <p id="canDockButton" class="pushButton">Can Dock</p>
-      <p id="canEngageButton" class="pushButton">Can Engage</p>
-
-      <p class="formSubheader">Required Setup</p>
-      <div id="requiredSetupDiv">
-        <img id="requiredSetupOne" class="requiredSetupPiece" value="either" src="../Images/either.png">
-        <img id="requiredSetupTwo" class="requiredSetupPiece" value="either" src="../Images/either.png">
-        <img id="requiredSetupThree" class="requiredSetupPiece" value="either" src="../Images/either.png">
-        <img id="requiredSetupFour" class="requiredSetupPiece" value="either" src="../Images/either.png">
-      </div>
-      <div id="requiredSetupButtons">
-        <div class="requiredSetupPieceDiv">
-          <p id="leftCycleOne" class="button" onclick="leftCycleSetup('One');">&lt;</p>
-          <p id="rightCycleOne" class="button" onclick="rightCycleSetup('One');">&gt;</p>
-        </div>
         
-        <div class="requiredSetupPieceDiv">
-          <p id="leftCycleTwo" class="button" onclick="">&lt;</p>
-          <p id="rightCycleTwo" class="button" onclick="">&gt;</p>
-        </div>
-        
-        <div class="requiredSetupPieceDiv">
-          <p id="leftCycleThree" class="button" onclick="">&lt;</p>
-          <p id="rightCycleThree" class="button" onclick="">&gt;</p>
-        </div>
-        
-        <div class="requiredSetupPieceDiv">
-          <p id="leftCycleOneFour" class="button" onclick="">&lt;</p>
-          <p id="rightCycleOneFour" class="button" onclick="">&gt;</p>
-        </div>
-      </div>  
+        <textarea id="preExtraNotes" class="notesArea" placeholder="Notes"></textarea>
 
-      <img class="grid" src="../Images/coneGrid.PNG">
+        <br>
 
-      <div id="autoCones">
-        <p id="autoConeHighRow" class="pushButton">High Row</p>
-        <p id="autoConeMidRow" class="pushButton">Mid Row</p>
-        <p id="autoConeBotRow" class="pushButton">Bot Row</p>
-      </div>
-
-      <img class="grid" src="../Images/cubeGrid.PNG">
-
-      <div id="autoCubes">
-        <p id="autoCubeHighRow" class="pushButton">High Row</p>
-        <p id="autoCubeMidRow" class="pushButton">Mid Row</p>
-        <p id="autoCubeBotRow" class="pushButton">Bot Row</p>
-      </div>
-      
-      <textarea id="preExtraNotes" class="notesArea" placeholder="Notes"></textarea>
-
-      <br>
-
-      <p id="pitSubmitButton" class="submitButton" onclick="secureSubmit('pit');">Submit</p>
-      <p id="pitUndoSubmitButton" class="button" onclick="undoSubmit('pit');" style="display: none;">Undo</p>
+        <p id="pitSubmitButton" class="submitButton" onclick="secureSubmit('pit');">Submit</p>
+        <p id="pitUndoSubmitButton" class="button" onclick="undoSubmit('pit');" style="display: none;">Undo</p>
+      </div> 
     </div>
     
     <div id="pitRefreshDiv" class="innerDiv" style="display:none;">
@@ -186,6 +228,7 @@
 <script src="../JS/Functions/buttonFunctions.js"></script>
 <script src="../JS/Functions/sheetsFunctions.js"></script>
 <script src="../JS/Functions/tbaFunctions.js"></script>
+<script src="../JS/Functions/pinDropFunctions.js"></script>
 <script src="../JS/Functions/globalDataFunctions.js"></script>
 <script src="../JS/Pages/forms.js"></script>
 

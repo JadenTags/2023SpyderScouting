@@ -172,7 +172,7 @@ function rightCycleSetup(num) {
     if (!element.value) {
         element.value = 0;
     }
-    console.log(element.value)
+    
     element.value = (parseInt(element.value) + 1) % 3;
     element.setAttribute("src", "../Images/" + elementsCycle[element.value] + ".png");
 
@@ -184,5 +184,16 @@ function rightCycleSetup(num) {
     }
 }
 
+function toggleGamePiece(gpId) {
+    var gamepiece = document.getElementById(gpId);
+    
+    if (gamepiece.style.opacity == "0") {
+        gamepiece.style.opacity = "100%";
+    } else {
+        gamepiece.style.opacity = "0";
+    }
+}
+
+activatePin("field", "fieldPin");
 cycleCheckDropdown("pre");
 cycleCheckDropdown("pit");
