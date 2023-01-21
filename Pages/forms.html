@@ -19,7 +19,7 @@
 </div>
 
 <div id="subNav">
-  <p id="preButton" class="subNavButton" onclick="unlockBody();">Pre</p>
+  <p id="preButton" class="subNavButton">Pre</p>
   <p class="subNavDivider"></p>
   <p id="pitButton" class="subNavButton">Pit</p>
   <p class="subNavDivider"></p>
@@ -168,16 +168,31 @@
       <p id="preferDefButton" class="preferButton groupedButton">Defensive</p>
       <p id="preferHybButton" class="preferButton endGroupedButton groupedButton">Hybrid</p>
       
+      <p class="formSubheader">Preferred Game Piece</p>
+      <p id="preferGPConeButton" class="preferGPButton startGroupedButton groupedButton">Cone</p>
+      <p id="preferGPCubeButton" class="preferGPButton endGroupedButton groupedButton">Cube</p>
+
       <p class="formSubheader">Able Playstyles</p>
       <p id="ableOffButton" class="pushButton">Offensive</p>
-      <p id="ableDefButton" class="pushButton">Defensive</p>
+      <p id="ableDefButton" class="pushButton" onclick="toggleElement('defenseStrategyNotesDiv');">Defensive</p>
+
+      <div id="defenseStrategyNotesDiv" style="display: none;">
+        <br>
+        <textarea id="defenseStrategyNotes" class="notesArea" placeholder="Defense Strategy"></textarea>
+      </div>
 
       <br>
       <p id="canDockButtonTele" class="pushButton" onclick="toggleElement('teleDockDiv');">Can Dock</p>
       
       <div id="teleDockDiv" style="display:none;">
-        <p id="canEngageButtonTele" class="pushButton">Can Engage</p>
-        
+        <p id="canEngageButtonTele" class="pushButton" onclick="toggleElement('hasAutoBalanceButtonDiv');">Can Engage</p>
+
+        <br>
+
+        <div id="hasAutoBalanceButtonDiv" style="display: none;">
+          <p id="hasAutoBalanceButton" class="pushButton">Has Auto Balance</p>
+        </div>
+
         <p class="formSubheader">Time To Balance</p>
         <input id="balanceTimeInput" placeholder="Seconds" type="text"></input>
       </div>
@@ -194,11 +209,11 @@
 
     <div id="preRefreshDiv" class="innerDiv" style="display:none;">
       <p class="title">Thank You For Submitting A Form!</p>
-      <p id="preRefreshButton" class="button" onclick="refreshForm('pre');unlockBody();" style="margin-top: 10px;">Submit Another Form</p>
+      <p id="preRefreshButton" class="button" onclick="refreshForm('pre');" style="margin-top: 10px;">Submit Another Form</p>
     </div>
   </div>
 
-  <div id="pitDiv" class="subNavDiv" style="display:none">
+  <div id="pitDiv" class="subNavDiv" style="display:none;">
     <div id="pitNoTeamsDiv" class="innerDiv" style="display:none;">
       <p class="title">There Are No More Teams To Pit-Scout!</p>
     </div>

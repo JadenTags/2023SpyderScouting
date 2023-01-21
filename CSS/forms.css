@@ -1,9 +1,3 @@
-body {
-  overflow: auto;
-  user-zoom:initial;
-  position: initial;
-}
-
 .teamName {
     margin: 0;
     text-align: center;
@@ -171,6 +165,6 @@ body {
   margin-bottom: -35.5%;
 }
 
-#coneHighRowButton, #cubeHighRowButton, #canDockButtonTele, #canCreateAutoButton, #canDockButtonAuto, .canCreateAuto, #teleDockDiv {
+#hasAutoBalanceButton, #coneHighRowButton, #cubeHighRowButton, #canDockButtonTele, #canCreateAutoButton, #canDockButtonAuto, .canCreateAuto, #teleDockDiv {
   margin-top: 10px;
 }

@@ -18,7 +18,7 @@ function activateButtons() {
     buttons.forEach(button => {
         let divId = button.id.replace("Button", "") + "Div";
 
-        button.setAttribute("onclick", JSON.stringify(buttons.map(x => x.id)) + ".forEach(button => {document.getElementById(button).style.backgroundColor = '#141414';let divId = button.replace('Button', '') + 'Div'; if (divId != '" + divId + "') {hideElement(divId)}}); lockBody();toggleElement('" + divId + "'); if (document.getElementById('" + divId + "').style.display == 'none') {document.getElementById('" + button.id + "').style.backgroundColor = '#141414';showElement('mainDiv')} else {document.getElementById('" + button.id + "').style.backgroundColor = '#575653';hideElement('mainDiv')};" + button.getAttribute("onclick"));
+        button.setAttribute("onclick", JSON.stringify(buttons.map(x => x.id)) + ".forEach(button => {document.getElementById(button).style.backgroundColor = '#141414';let divId = button.replace('Button', '') + 'Div'; if (divId != '" + divId + "') {hideElement(divId)}});" + button.getAttribute("onclick") + ";toggleElement('" + divId + "'); if (document.getElementById('" + divId + "').style.display == 'none') {document.getElementById('" + button.id + "').style.backgroundColor = '#141414';showElement('mainDiv');curDiv = 'mainDiv';} else {document.getElementById('" + button.id + "').style.backgroundColor = '#575653';hideElement('mainDiv');curDiv = '" + divId +"';}; if (lockedDivs['" + divId + "'] == 'locked' || document.getElementById('mainDiv').style.display != 'none') {lockBody();} else {unlockBody();};");
     });
 
     buttons = Array.from(document.getElementsByClassName("pushButton"));

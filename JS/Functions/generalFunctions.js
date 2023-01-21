@@ -59,3 +59,19 @@ function unlockBody() {
   document.body.style.position = "initial";
   document.body.scrollTo(0, 0);
 }
+
+function lockDiv(lockObj, curDiv, lockDiv) {
+  if (curDiv == lockDiv) {
+    lockBody();
+  }
+
+  lockObj[lockDiv] = "locked";
+}
+
+function unlockDiv(lockObj, curDiv, lockDiv) {
+  if (curDiv == lockDiv) {
+    unlockBody();
+  }
+
+  lockObj[lockDiv] = "unlocked";
+}

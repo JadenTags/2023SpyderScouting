@@ -4,6 +4,13 @@ const formDivs = {
     "match": document.getElementById("matchFormDiv").cloneNode(true),
 };
 const elementsCycle = ["either", "cube", "cone"];
+var lockedDivs = {
+    "mainDiv": "locked",
+    "preDiv": "unlocked",
+    "pitDiv": "locked",
+    "matchDiv": "locked",
+};
+var curDiv = "mainDiv";
 
 async function fillTeamDropdown(selector) {
     var dropdown = document.getElementById(selector + "TeamNumDropdown");
@@ -12,14 +19,13 @@ async function fillTeamDropdown(selector) {
     var teams = getOrder(orderNum);
 
     if (teams != "none" && !dropdown && document.getElementById(selector + "NoTeamsDiv").style.display != "none") {
-        console.log("vasl")
+        unlockDiv(lockedDivs, curDiv, selector + "Div")
         document.getElementById(selector + "NoTeamsDiv").style.display = "none";
         await refreshForm(selector);
         dropdown = document.getElementById(selector + "TeamNumDropdown");
     }
 
     if (teams != "none" && dropdown && document.getElementById(selector + "NoTeamsDiv").style.display == "none") {
-        console.log("asdasc")
         teams = teams[0]
         if (dropdown.childNodes.length == 0) {
             dropdown.innerHTML = "";
@@ -54,6 +60,7 @@ async function fillTeamDropdown(selector) {
 
         changeTeamName(selector);
     } else if (document.getElementById(selector + "FormDiv")) {
+        lockDiv(lockedDivs, curDiv, selector + "Div");
         document.getElementById(selector + "FormDiv").remove();
         document.getElementById(selector + "NoTeamsDiv").style.display = "inline";
         return;
@@ -148,6 +155,19 @@ function submitForm(selector) {
 
         form.push(preferredPlaystyle);
 
+        //PREFERRED GAME PIECE
+        var preferredGamePiece;
+        Array.from(document.getElementsByClassName("preferGPButton")).forEach(button => {
+            if (button.value) {
+                preferredGamePiece = button.innerHTML;
+            }
+        });
+        if (!preferredGamePiece) {
+            preferredGamePiece = "none";
+        }
+
+        form.push(preferredGamePiece);
+
         //ABLE PLAYSTYLES
         var ablePlaystyles = [];
         ["Off", "Def"].forEach(playstyle => {
@@ -157,8 +177,14 @@ function submitForm(selector) {
                 ablePlaystyles.push(button.innerHTML);
             }
         });
+        if (ablePlaystyles.length == 0) {
+            ablePlaystyles = "none";
+        }
 
         form.push(JSON.stringify(ablePlaystyles));
+
+        //DEFENSE STRATEGY NOTES 
+        form.push(document.getElementById("defenseStrategyNotes").value);
 
         //TELE DOCKING
         form.push(document.getElementById("canDockButtonTele").value == true);
@@ -166,15 +192,17 @@ function submitForm(selector) {
         //TELE ENGAGING
         form.push(document.getElementById("canEngageButtonTele").value == true);
 
+        //TELE AUTO ENGAGE
+        form.push(document.getElementById("hasAutoBalanceButton").value == true);
+
         //TELE DOCKING TIME
         form.push(document.getElementById("balanceTimeInput").value);
 
         //EXTRA NOTES
         form.push(document.getElementById("preExtraNotes").value);
 
-        console.log(form)
         appendData(config.preGSID, sheetName, form);
-        lockBody();
+        lockDiv(lockedDivs, curDiv, selector + "Div")
     } else if (selector == "pit") {
         
     }
@@ -217,7 +245,9 @@ function undoSubmit(selector) {
 function refreshForm(selector) {
     document.getElementById(selector + "RefreshDiv").style.display = "none";
     document.getElementById(selector + "Div").appendChild(formDivs[selector].cloneNode(true));
+    activatePin("field", "fieldPin");
     fillTeamDropdown(selector);
+    unlockDiv(lockedDivs, curDiv, selector + "Div");
 }
 
 async function changeTeamName(selector) {
@@ -236,7 +266,6 @@ async function cycleCheckDropdown(selector) {
 
 function adjustMatchPlural() {
     var matchesLabel = document.getElementById("matchesLabel");
-    console.log(document.getElementById("matchInput").value)
     if (document.getElementById("matchInput").value == "1") {
         matchesLabel.innerHTML = "Match";
     } else {
