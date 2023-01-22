@@ -7,7 +7,7 @@ const elementsCycle = ["either", "cube", "cone"];
 var lockedDivs = {
     "mainDiv": "locked",
     "preDiv": "unlocked",
-    "pitDiv": "locked",
+    "pitDiv": "unlocked",
     "matchDiv": "locked",
 };
 var curDiv = "mainDiv";
@@ -69,13 +69,33 @@ async function fillTeamDropdown(selector) {
 
 function submitForm(selector) {
     var form = [];
+    var end = false;
     
     if (selector == "pre") {
         //TEAM NUM
         form.push(document.getElementById("preTeamNumDropdown").value);
     
         //DIMENSIONS
-        form.push(JSON.stringify([document.getElementById("lengthInput").value, document.getElementById("widthInput").value, document.getElementById("heightInput").value]));
+        var dimensions = [document.getElementById("lengthInput").value, document.getElementById("widthInput").value, document.getElementById("heightInput").value];
+        
+        dimensions.forEach(dimension => {
+            if (dimension != "" && isNaN(parseInt(dimension))) {
+                showElement("dimensionsNotifText");
+                document.getElementById("lengthInput").style.border = "1px solid #eb776e";
+                document.getElementById("widthInput").style.border = "1px solid #eb776e";
+                document.getElementById("heightInput").style.border = "1px solid #eb776e";
+                end = true;
+            }
+        });
+
+        if (!end) {
+            hideElement("dimensionsNotifText");
+            document.getElementById("lengthInput").style.border = "1px solid #888888";
+            document.getElementById("widthInput").style.border = "1px solid #888888";
+            document.getElementById("heightInput").style.border = "1px solid #888888";
+        }
+
+        form.push(JSON.stringify(dimensions.map(x => parseFloat(x))));
     
         //DRIVEBASE TYPE
         form.push(document.getElementById("dbTypeInput").value);
@@ -89,44 +109,76 @@ function submitForm(selector) {
         //NO AUTO
         form.push(document.getElementById("noAutoButton").value == true);
 
-        //CAN CREATE AUTO
-        form.push(document.getElementById("canCreateAutoButton").value == true);
+        if (!form[5]) {
+            //CAN CREATE AUTO
+            form.push(document.getElementById("canCreateAutoButton").value == true);
 
-        //AUTO CREATING TIME
-        form.push(document.getElementById("matchInput").value);
+            if (form[6] ) {
+                //AUTO CREATING TIME
+                form.push(document.getElementById("matchInput").value);
 
-        //RELIABILITY LEVEL
-        form.push(document.getElementById("reliabilitySlider").value);
+                //RELIABILITY LEVEL
+                form.push(document.getElementById("reliabilitySlider").value);
+            } else {
+                for (var i = 0; i < 2; i++) {
+                    form.push("");
+                }
+            }
 
-        //AUTO DOCKING
-        form.push(document.getElementById("canDockButtonAuto").value == true);
+            //AUTO DOCKING
+            form.push(document.getElementById("canDockButtonAuto").value == true);
 
-        //AUTO ENGAGING
-        form.push(document.getElementById("canEngageButtonAuto").value == true);
-        
-        //REQUIRED SETUP
-        var setup = [];
-        ["One", "Two", "Three", "Four"].forEach(num => {
-            setup.push(elementsCycle[document.getElementById("requiredSetup" + num).value]);
-        });
+            if (form[9]) {
+                //AUTO ENGAGING
+                form.push(document.getElementById("canEngageButtonAuto").value == true);
+            } else {
+                form.push("");
+            }
+            
+            //REQUIRED SETUP
+            var setup = [];
+            ["One", "Two", "Three", "Four"].forEach(num => {
+                setup.push(elementsCycle[document.getElementById("requiredSetup" + num).value]);
+            });
 
-        form.push(JSON.stringify(setup.map(x => {
-            if (!x) {return "either";} else {return x;}
-        })));
+            form.push(JSON.stringify(setup.map(x => {
+                if (!x) {return "either";} else {return x;}
+            })));
 
-        //FIXED POS
-        form.push(document.getElementById("setPosButton").value == true);
+            //FIXED POS
+            form.push(document.getElementById("setPosButton").value == true);
 
-        //FIELD POS
-        var posCoords = JSON.stringify(document.getElementById("fieldPin").value);
-        if (!posCoords) {
-            posCoords = "";
+
+            if (form[12]) {
+                //FIELD POS
+                var posCoords = JSON.stringify(document.getElementById("fieldPin").value);
+                if (!posCoords) {
+                    posCoords = "";
+                }
+    
+                form.push(posCoords);
+            } else {
+                form.push("");
+            }
+        } else {
+            for (var i = 0; i < 8; i++) {
+                form.push("");
+            }
         }
 
-        form.push(posCoords);
-
         //CYCLE TIME
-        form.push(document.getElementById("cycleTimeInput").value);
+        var cycleTime = document.getElementById("cycleTimeInput").value;
+
+        if (cycleTime != "" && isNaN(parseInt(cycleTime))) {
+            showElement("cycleTimeNotifText");
+            document.getElementById("cycleTimeInput").style.border = "1px solid #eb776e";
+            end = true;
+        } else {
+            hideElement("cycleTimeNotifText");
+            document.getElementById("cycleTimeInput").style.border = "1px solid #888888";
+        }
+
+        form.push(parseFloat(cycleTime));
 
         //CONE REACH
         var coneReach = [];
@@ -183,28 +235,54 @@ function submitForm(selector) {
 
         form.push(JSON.stringify(ablePlaystyles));
 
-        //DEFENSE STRATEGY NOTES 
-        form.push(document.getElementById("defenseStrategyNotes").value);
+        if (form[19].includes["Defensive"]) {
+            //DEFENSE STRATEGY NOTES 
+            form.push(document.getElementById("defenseStrategyNotes").value);
+        } else {
+            form.push("");
+        }
 
         //TELE DOCKING
         form.push(document.getElementById("canDockButtonTele").value == true);
 
-        //TELE ENGAGING
-        form.push(document.getElementById("canEngageButtonTele").value == true);
+        if (form[21]) {
+            //TELE ENGAGING
+            form.push(document.getElementById("canEngageButtonTele").value == true);
 
-        //TELE AUTO ENGAGE
-        form.push(document.getElementById("hasAutoBalanceButton").value == true);
-
-        //TELE DOCKING TIME
-        form.push(document.getElementById("balanceTimeInput").value);
+            if (form[22]) {
+                //TELE AUTO ENGAGE
+                form.push(document.getElementById("hasAutoBalanceButton").value == true);
+            } else {
+                form.push("");
+            }
+    
+            //TELE DOCKING TIME
+            form.push(document.getElementById("balanceTimeInput").value);
+        } else {
+            for (var i = 0; i < 3; i++) {
+                form.push("");
+            }
+        }
 
         //EXTRA NOTES
         form.push(document.getElementById("preExtraNotes").value);
 
+        if (end) {
+            return true;
+        }
+
+        form = form.map(x => {
+            if (x == "") {
+                return "none";
+            } else {
+                return x;
+            }
+        });
+
         appendData(config.preGSID, sheetName, form);
-        lockDiv(lockedDivs, curDiv, selector + "Div")
+        lockDiv(lockedDivs, curDiv, selector + "Div");
     } else if (selector == "pit") {
-        
+        lockDiv(lockedDivs, curDiv, selector + "Div");
     }
 }
 
@@ -217,19 +295,23 @@ async function secureSubmit(selector) {
         button.value = 1;
         document.getElementById(selector + "UndoSubmitButton").style.display = "initial";
     } else {
-        if (["pre", "pit"].includes(selector)) {
-            var orderNum = curOrderNum++;
-            await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
-            var team = document.getElementById(selector + "TeamNumDropdown").value;
-            
-            await clearData(config.assignmentsGSID, selector + sheetName);
-            appendData(config.assignmentsGSID, selector + sheetName, getOrder(orderNum)[0].filter(x => parseInt(x) != team && x != ""));
-        }
+        if (!submitForm(selector)) {
+            if (["pre", "pit"].includes(selector)) {
+                var orderNum = curOrderNum++;
+                await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
+                var team = document.getElementById(selector + "TeamNumDropdown").value;
+                
+                await clearData(config.assignmentsGSID, selector + sheetName);
+                appendData(config.assignmentsGSID, selector + sheetName, getOrder(orderNum)[0].filter(x => parseInt(x) != team && x != ""));
+            }
 
-        submitForm(selector);
-        document.getElementById(selector + "FormDiv").remove();
-        
-        document.getElementById(selector + "RefreshDiv").style.display = "inline-block";
+            document.getElementById(selector + "FormDiv").remove();
+            
+            document.getElementById(selector + "RefreshDiv").style.display = "inline-block";
+        } else {
+            undoSubmit(selector);
+            window.scrollTo(0, 0);
+        }
     }
 }
 
@@ -318,5 +400,6 @@ function toggleGamePiece(gpId) {
 }
 
 activatePin("field", "fieldPin");
+activatePin("fieldChanges", "fieldPinChanges");
 cycleCheckDropdown("pre");
-// cycleCheckDropdown("pit");
+cycleCheckDropdown("pit");

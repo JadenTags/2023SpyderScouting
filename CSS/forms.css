@@ -6,7 +6,7 @@
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-.measurementInput, #dbTypeInput, #dbMotorInput, #cycleTimeInput, #balanceTimeInput {
+.measurementInput, #dbTypeInput, #dbMotorInput, #cycleTimeInput, #cycleTimeInputChanges, #balanceTimeInput {
     display: inline-block;
     border-radius: 5px 5px 5px 5px;
     width: 20%;
@@ -80,14 +80,14 @@
   width: 60%;
 }
 
-#requiredSetupDiv, #requiredSetupButtons {
+#requiredSetupDiv, #requiredSetupDivChanges , #requiredSetupButtons, #requiredSetupButtonsChanges {
   margin: 0;
   padding: 0;
   display: flex;
   vertical-align: middle;
 }
 
-#requiredSetupButtons {
+#requiredSetupButtons, #requiredSetupButtonsChanges {
   height: 40px;
 }
 
@@ -105,17 +105,21 @@
   width: 10%;
 }
 
-#field {
+#field, #fieldChanges {
   width: 100%;
 }
 
-#fieldPin {
+#fieldPin, #fieldPinChanges {
   margin: 0;
   padding: 0;
   margin-top: -40px;
   margin-left: -10px;
   position: absolute;
   width: 30px;
+}
+
+#fieldPinChanges {
+  margin-top: -120px;
 }
 
 .sectionHeader {
@@ -135,36 +139,36 @@
   border-bottom: 1px solid black;
 }
 
-#coneTopRow {
+#coneTopRow, #coneTopRowChange {
   margin-left: -27%;
   margin-bottom: -20%;
 }
 
-#coneMidRow {
+#coneMidRow, #coneMidRowChange {
   margin-right: -10%;
   margin-bottom: -30%;
 }
 
-#coneBotRow {
+#coneBotRow, #coneBotRowChange {
   margin-right: -38%;
   margin-bottom: -46.5%;
 }
 
-#cubeTopRow {
+#cubeTopRow, #cubeTopRowChange {
   margin-left: -28%;
   margin-bottom: -8%;
 }
 
-#cubeMidRow {
+#cubeMidRow, #cubeMidRowChange {
   margin-right: -10%;
   margin-bottom: -18%;
 }
 
-#cubeBotRow {
+#cubeBotRow, #cubeBotRowChange {
   margin-right: -45%;
   margin-bottom: -35.5%;
 }
 
-#hasAutoBalanceButton, #coneHighRowButton, #cubeHighRowButton, #canDockButtonTele, #canCreateAutoButton, #canDockButtonAuto, .canCreateAuto, #teleDockDiv {
+#noAutoChangesButton, #canCreateAutoButtonChanges, #canDockButtonAutoChanges, #canDockButtonTeleChanges, #hasAutoBalanceButtonChanges, #hasAutoBalanceButton, #coneHighRowButton, #coneHighRowButtonChange, #cubeHighRowButton, #cubeHighRowButtonChange, #canDockButtonTele, #canCreateAutoButton, #canDockButtonAuto, .canCreateAuto, #teleDockDiv {
   margin-top: 10px;
 }

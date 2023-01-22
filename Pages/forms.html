@@ -61,6 +61,11 @@
 
       <input id="heightInput" class="measurementInput" placeholder="H" type="number" max="999"></input>
       <label class="measurementText">"</label>
+      
+      <div id="dimensionsNotifText" style="display: none;">
+        <br>
+        <p class="toggleNotifText">Dimensions Should Be Numbers!</p>
+      </div>
 
       <br>
 
@@ -138,6 +143,11 @@
 
       <p class="formSubheader">Cycle Time</p>
       <input id="cycleTimeInput" placeholder="Seconds" type="text"></input>
+      
+      <div id="cycleTimeNotifText" style="display: none;">
+        <br>
+        <p class="toggleNotifText">Cycle Time Should Be A Number!</p>
+      </div>
 
       <p class="formSubheader">Cone Reach</p>
       <br>
@@ -170,7 +180,8 @@
       
       <p class="formSubheader">Preferred Game Piece</p>
       <p id="preferGPConeButton" class="preferGPButton startGroupedButton groupedButton">Cone</p>
-      <p id="preferGPCubeButton" class="preferGPButton endGroupedButton groupedButton">Cube</p>
+      <p id="preferGPCubeButton" class="preferGPButton groupedButton">Cube</p>
+      <p id="preferGPNoPrefButton" class="preferGPButton endGroupedButton groupedButton">No Preference</p>
 
       <p class="formSubheader">Able Playstyles</p>
       <p id="ableOffButton" class="pushButton">Offensive</p>
@@ -194,7 +205,7 @@
         </div>
 
         <p class="formSubheader">Time To Balance</p>
-        <input id="balanceTimeInput" placeholder="Seconds" type="text"></input>
+        <input id="balanceTimeInput" placeholder="Seconds" type="number" min="0"></input>
       </div>
 
       <br>
@@ -223,13 +234,154 @@
       
       <select id="pitTeamNumDropdown" class="teamNumDropdown" onchange="changeTeamName('pit');"></select>
         
-        <textarea id="preExtraNotes" class="notesArea" placeholder="Notes"></textarea>
+      <p class="sectionHeader">Any Subsystem Problems Or Changes?</p>
+      <hr>
+
+      <p id="dbProblemsButton" class="pushButton" onclick="toggleElement('dbProblemsNotes');">Drivebase</p>
+      <p id="gomProblemsButton" class="pushButton" onclick="toggleElement('gomProblemsDiv');">GOM</p>
+      <p id="otherProblemsButton" class="pushButton" onclick="toggleElement('otherProblemsNotes');">Other</p>
+
+      <br>
+
+      <textarea id="dbProblemsNotes" class="notesArea" placeholder="Drivebase Problems Notes" style="display: none;"></textarea>
+
+      <div id="gomProblemsDiv" style="display: none;">
+        <p class="formSubheader">Cone Reach</p>
+        <br>
+        <img id="coneTopRowChange" class="cone" src="../Images/cone.png" style="opacity: 0%;">
+        <br>
+        <img id="coneMidRowChange" class="cone" src="../Images/cone.png" style="opacity: 0%;">
+        <br>
+        <img id="coneBotRowChange" class="cone" src="../Images/cone.png" style="opacity: 0%;">
+        <img id="coneGridChange" class="grid" src="../Images/coneGrid.PNG">
+        <p id="coneHighRowButtonChange" class="pushButton" onclick="toggleGamePiece('coneTopRowChange');">High Row</p>
+        <p id="coneMidRowButtonChange" class="pushButton" onclick="toggleGamePiece('coneMidRowChange');">Mid Row</p>
+        <p id="coneBotRowButtonChange" class="pushButton" onclick="toggleGamePiece('coneBotRowChange');">Bot Row</p>
+
+        <p class="formSubheader">Cube Reach</p>
+        <br>
+        <img id="cubeTopRowChange" class="cube" src="../Images/cube.png" style="opacity: 0%;">
+        <br>
+        <img id="cubeMidRowChange" class="cube" src="../Images/cube.png" style="opacity: 0%;">
+        <br>
+        <img id="cubeBotRowChange" class="cube" src="../Images/cube.png" style="opacity: 0%;">
+        <img class="grid" src="../Images/cubeGrid.PNG">
+        <p id="cubeHighRowButtonChange" class="pushButton" onclick="toggleGamePiece('cubeTopRowChange');">High Row</p>
+        <p id="cubeMidRowButtonChange" class="pushButton" onclick="toggleGamePiece('cubeMidRowChange');">Mid Row</p>
+        <p id="cubeBotRowButtonChange" class="pushButton" onclick="toggleGamePiece('cubeBotRowChange');">Bot Row</p>
+      </div>
+      
+      <textarea id="otherProblemsNotes" class="notesArea" placeholder="Other Problems Notes" style="display: none;"></textarea>
+
+      <p class="sectionHeader">Autonomous</p>
+      <hr>
+
+      <p id="autoChangesButton" class="pushButton" onclick="toggleElement('outerAutoChangesDiv');">Auto Changes</p>
+
+      <div id="outerAutoChangesDiv" style="display:none;">
+        <br>
+        <p id="noAutoChangesButton" class="pushButton" onclick="toggleElement('autoChangesDiv');">No Auto</p>
 
         <br>
 
-        <p id="pitSubmitButton" class="submitButton" onclick="secureSubmit('pit');">Submit</p>
-        <p id="pitUndoSubmitButton" class="button" onclick="undoSubmit('pit');" style="display: none;">Undo</p>
-      </div> 
+        <div id="autoChangesDiv">
+          <p id="canCreateAutoButtonChanges" class="pushButton" onclick="toggleElement('canCreateAutoChanges');">Can Create New Auto On The Fly</p>
+          <br>
+          <div id="canCreateAutoChanges" style="display: none;">
+            <label class="formSubheader">It Would Take </label>
+            <input id="matchInputChanges" class="measurementInput" placeholder="#" type="number" min="0" onchange="adjustMatchPlural();"></input>
+            <label id="matchesLabelChanges" class="formSubheader"> Matches</label>
+
+            <p class="formSubheader">How Reliable Would It Be?</p>
+            <label class="reliableSliderText">Unreliable <input type="range" min="1" max="100" value="50" id="reliabilitySlider"> Reliable</label>
+            <br>
+          </div>
+          
+          <p id="canDockButtonAutoChanges" class="pushButton" onclick="toggleElement('canEngageButtonAuto');">Can Dock</p>
+          <p id="canEngageButtonAutoChanges" class="pushButton" style="display:none;">Can Engage</p>
+
+          <p class="formSubheader">Required Setup (Facing Center)</p>
+          <div id="requiredSetupDivChanges">
+            <img id="requiredSetupOneChanges" class="requiredSetupPiece" value="either" src="../Images/either.png">
+            <img id="requiredSetupTwoChanges" class="requiredSetupPiece" value="either" src="../Images/either.png">
+            <img id="requiredSetupThreeChanges" class="requiredSetupPiece" value="either" src="../Images/either.png">
+            <img id="requiredSetupFourChanges" class="requiredSetupPiece" value="either" src="../Images/either.png">
+          </div>
+          <div id="requiredSetupButtonsChanges">
+            <div class="requiredSetupPieceDiv">
+              <p id="leftCycleOneChanges" class="button" onclick="leftCycleSetup('OneChanges');">&lt;</p>
+              <p id="rightCycleOneChanges" class="button" onclick="rightCycleSetup('OneChanges');">&gt;</p>
+            </div>
+            
+            <div class="requiredSetupPieceDiv">
+              <p id="leftCycleTwoChanges" class="button" onclick="leftCycleSetup('TwoChanges');">&lt;</p>
+              <p id="rightCycleTwoChanges" class="button" onclick="rightCycleSetup('TwoChanges');">&gt;</p>
+            </div>
+            
+            <div class="requiredSetupPieceDiv">
+              <p id="leftCycleThreeChanges" class="button" onclick="leftCycleSetup('ThreeChanges');">&lt;</p>
+              <p id="rightCycleThreeChanges" class="button" onclick="rightCycleSetup('ThreeChanges');">&gt;</p>
+            </div>
+            
+            <div class="requiredSetupPieceDiv">
+              <p id="leftCycleFourChanges" class="button" onclick="leftCycleSetup('FourChanges');">&lt;</p>
+              <p id="rightCycleFourChanges" class="button" onclick="rightCycleSetup('FourChanges');">&gt;</p>
+            </div>
+          </div>  
+
+          <p id="setPosButtonChanges" class="pushButton" onclick="toggleElement('fieldPosDivChanges');">Fixed Position</p>
+          <div id="fieldPosDivChanges" style="display: none;">
+            <img id="fieldChanges" src="../Images/field.png">
+            <img id="fieldPinChanges" src="../Images/pin.png">
+          </div>
+        </div>
+      </div>
+
+      <p class="sectionHeader">Teleop</p>
+      <hr>
+
+      <p class="formSubheader">Cycle Time</p>
+      <input id="cycleTimeInputChanges" placeholder="Seconds" type="text"></input>
+
+      <p class="formSubheader">Able Playstyles</p>
+      <p id="ableOffButtonChanges" class="pushButton">Offensive</p>
+      <p id="ableDefButtonChanges" class="pushButton" onclick="toggleElement('defenseStrategyNotesDivChanges');">Defensive</p>
+
+      <div id="defenseStrategyNotesDivChanges" style="display: none;">
+        <br>
+        <textarea id="defenseStrategyNotesChanges" class="notesArea" placeholder="Defense Strategy"></textarea>
+      </div>
+
+      
+      <p class="formSubheader">Preferred Playstyle</p>
+      <p id="preferOffButtonChanges" class="preferButton startGroupedButton groupedButton">Offensive</p>
+      <p id="preferDefButtonChanges" class="preferButton groupedButton">Defensive</p>
+      <p id="preferHybButtonChanges" class="preferButton endGroupedButton groupedButton">Hybrid</p>
+
+      <br>
+      <p id="canDockButtonTeleChanges" class="pushButton" onclick="toggleElement('teleDockDivChanges');">Can Dock</p>
+      
+      <div id="teleDockDivChanges" style="display:none;">
+        <p id="canEngageButtonTeleChanges" class="pushButton" onclick="toggleElement('hasAutoBalanceButtonDivChanges');">Can Engage</p>
+
+        <br>
+
+        <div id="hasAutoBalanceButtonDivChanges" style="display: none;">
+          <p id="hasAutoBalanceButtonChanges" class="pushButton">Has Auto Balance</p>
+        </div>
+
+        <p class="formSubheader">Time To Balance</p>
+        <input id="balanceTimeInputChanges" placeholder="Seconds" type="number" min="0"></input>
+      </div>
+      
+      <br>
+
+      <textarea id="pitExtraNotes" class="notesArea" placeholder="Notes"></textarea>
+
+      <br>
+
+      <p id="pitSubmitButton" class="submitButton" onclick="secureSubmit('pit');">Submit</p>
+      <p id="pitUndoSubmitButton" class="button" onclick="undoSubmit('pit');" style="display: none;">Undo</p>
     </div>
     
     <div id="pitRefreshDiv" class="innerDiv" style="display:none;">
