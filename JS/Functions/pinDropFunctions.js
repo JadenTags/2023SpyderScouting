@@ -7,15 +7,15 @@ function activatePin(boardId, pinId) {
     document.getElementById(boardId).addEventListener("click", function(event) {
         pin.style.left = event.pageX + "px";
         pin.style.top = event.pageY + "px";
-
-        pin.value = [event.pageX - document.getElementById(boardId).getBoundingClientRect().x, event.pageY - document.getElementById(boardId).getBoundingClientRect().y];
+        
+        pin.value = [event.pageX - document.getElementById(boardId).getBoundingClientRect().left, event.pageY - document.getElementById(boardId).getBoundingClientRect().left];
     });
 
     document.getElementById(pinId).addEventListener("click", function(event) {
-        if (event.pageX - document.getElementById(boardId).getBoundingClientRect().x >= 0 && event.pageY - document.getElementById(boardId).getBoundingClientRect().y >= 0) {
+        if (event.clientX - document.getElementById(boardId).getBoundingClientRect().left >= 0 && event.clientY - document.getElementById(boardId).getBoundingClientRect().top >= 0) {
             pin.style.left = event.pageX + "px";
             pin.style.top = event.pageY + "px";
-            pin.value = [event.pageX - document.getElementById(boardId).getBoundingClientRect().x, event.pageY - document.getElementById(boardId).getBoundingClientRect().y];
+            pin.value = [event.clientX - document.getElementById(boardId).getBoundingClientRect().left, event.clientY - document.getElementById(boardId).getBoundingClientRect().top];
         }
     });
 }

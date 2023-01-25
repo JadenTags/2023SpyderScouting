@@ -41,7 +41,7 @@
 
   <div id="preDiv" class="subNavDiv" style="display:none">
     <div id="preNoTeamsDiv" class="innerDiv" style="display:none;">
-      <p class="title">There Are No More Teams To Pre-Scout!</p>
+      <p id="preNoTeamsText" class="title">There Are No More Teams To Pre-Scout!</p>
     </div>
 
     <div id="preFormDiv" class="innerDiv">
@@ -93,6 +93,11 @@
           <label class="formSubheader">It Would Take </label>
           <input id="matchInput" class="measurementInput" placeholder="#" type="number" min="0" onchange="adjustMatchPlural();"></input>
           <label id="matchesLabel" class="formSubheader"> Matches</label>
+
+          <div id="preMatchesNotifText" style="display: none;">
+            <br>
+            <p class="toggleNotifText">Matches Should Be A Number!</p>
+          </div>
 
           <p class="formSubheader">How Reliable Would It Be?</p>
           <label class="reliableSliderText">Unreliable <input type="range" min="1" max="100" value="50" id="reliabilitySlider"> Reliable</label>
@@ -146,7 +151,7 @@
       
       <div id="cycleTimeNotifText" style="display: none;">
         <br>
-        <p class="toggleNotifText">Cycle Time Should Be A Number!</p>
+        <p class="toggleNotifText">Cycle Time Should Be</p>
       </div>
 
       <p class="formSubheader">Cone Reach</p>
@@ -174,7 +179,7 @@
       <p id="cubeBotRowButton" class="pushButton" onclick="toggleGamePiece('cubeBotRow');">Bot Row</p>
 
       <p class="formSubheader">Preferred Playstyle</p>
-      <p id="preferOffButton" class="preferButton startGroupedButton groupedButton">Offensive</p>
+      <p id="preferOffButton" class="preferButtonC startGroupedButton groupedButton">Offensive</p>
       <p id="preferDefButton" class="preferButton groupedButton">Defensive</p>
       <p id="preferHybButton" class="preferButton endGroupedButton groupedButton">Hybrid</p>
       
@@ -225,8 +230,12 @@
   </div>
 
   <div id="pitDiv" class="subNavDiv" style="display:none;">
+    <div>
+      <p id="needToPreNotifText" class="toggleNotifText" style="display: none;"></p>
+    </div>
+
     <div id="pitNoTeamsDiv" class="innerDiv" style="display:none;">
-      <p class="title">There Are No More Teams To Pit-Scout!</p>
+      <p id="pitNoTeamsText" class="title">There Are No More Teams To Pit-Scout!</p>
     </div>
 
     <div id="pitFormDiv" class="innerDiv">
@@ -291,13 +300,18 @@
             <label class="formSubheader">It Would Take </label>
             <input id="matchInputChanges" class="measurementInput" placeholder="#" type="number" min="0" onchange="adjustMatchPlural();"></input>
             <label id="matchesLabelChanges" class="formSubheader"> Matches</label>
+            
+            <div id="pitMatchesNotifText" style="display: none;">
+              <br>
+              <p class="toggleNotifText">Matches Should Be A Number!</p>
+            </div>
 
             <p class="formSubheader">How Reliable Would It Be?</p>
-            <label class="reliableSliderText">Unreliable <input type="range" min="1" max="100" value="50" id="reliabilitySlider"> Reliable</label>
+            <label class="reliableSliderText">Unreliable <input type="range" min="1" max="100" value="50" id="reliabilitySliderChanges"> Reliable</label>
             <br>
           </div>
           
-          <p id="canDockButtonAutoChanges" class="pushButton" onclick="toggleElement('canEngageButtonAuto');">Can Dock</p>
+          <p id="canDockButtonAutoChanges" class="pushButton" onclick="toggleElement('canEngageButtonAutoChanges');">Can Dock</p>
           <p id="canEngageButtonAutoChanges" class="pushButton" style="display:none;">Can Engage</p>
 
           <p class="formSubheader">Required Setup (Facing Center)</p>
@@ -342,6 +356,11 @@
 
       <p class="formSubheader">Cycle Time</p>
       <input id="cycleTimeInputChanges" placeholder="Seconds" type="text"></input>
+      
+      <div id="pitCycleTimeNotifText" style="display: none;">
+        <br>
+        <p class="toggleNotifText">Cycle Time Should Be A Number!</p>
+      </div>
 
       <p class="formSubheader">Able Playstyles</p>
       <p id="ableOffButtonChanges" class="pushButton">Offensive</p>
@@ -354,9 +373,9 @@
 
       
       <p class="formSubheader">Preferred Playstyle</p>
-      <p id="preferOffButtonChanges" class="preferButton startGroupedButton groupedButton">Offensive</p>
-      <p id="preferDefButtonChanges" class="preferButton groupedButton">Defensive</p>
-      <p id="preferHybButtonChanges" class="preferButton endGroupedButton groupedButton">Hybrid</p>
+      <p id="preferOffButtonChanges" class="preferButtonChanges startGroupedButton groupedButton">Offensive</p>
+      <p id="preferDefButtonChanges" class="preferButtonChanges groupedButton">Defensive</p>
+      <p id="preferHybButtonChanges" class="preferButtonChanges endGroupedButton groupedButton">Hybrid</p>
 
       <br>
       <p id="canDockButtonTeleChanges" class="pushButton" onclick="toggleElement('teleDockDivChanges');">Can Dock</p>
@@ -372,6 +391,11 @@
 
         <p class="formSubheader">Time To Balance</p>
         <input id="balanceTimeInputChanges" placeholder="Seconds" type="number" min="0"></input>
+        
+        <div id="balanceTimeNotifTextChanges" style="display: none;">
+          <br>
+          <p class="toggleNotifText">Balance Time Should Be A Number!</p>
+        </div>
       </div>
       
       <br>
