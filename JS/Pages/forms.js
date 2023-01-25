@@ -18,6 +18,10 @@ async function fillTeamDropdown(selector) {
     await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
     var teams = getOrder(orderNum);
 
+    if (selector == "pit" && teams != "none") {
+        //CODE HERE FOR CHECK IF PRE SOCUT FORM SUBMIT
+    }
+
     if (teams != "none" && !dropdown && document.getElementById(selector + "NoTeamsDiv").style.display != "none") {
         unlockDiv(lockedDivs, curDiv, selector + "Div")
         document.getElementById(selector + "NoTeamsDiv").style.display = "none";
@@ -28,6 +32,7 @@ async function fillTeamDropdown(selector) {
     if (teams != "none" && dropdown && document.getElementById(selector + "NoTeamsDiv").style.display == "none") {
         teams = teams[0]
         if (dropdown.childNodes.length == 0) {
+
             dropdown.innerHTML = "";
             await teams.forEach(team => {
                 let option = document.createElement("option");
@@ -63,7 +68,31 @@ async function fillTeamDropdown(selector) {
         lockDiv(lockedDivs, curDiv, selector + "Div");
         document.getElementById(selector + "FormDiv").remove();
         document.getElementById(selector + "NoTeamsDiv").style.display = "inline";
-        return;
+    } if (document.getElementById(selector + "NoTeamsDiv").style.display != "none") {
+        if (selector == "pit") {
+            orderNum = curOrderNum++;
+            await getSheetData(config.assignmentsGSID, "pre" + sheetName, orderNum);
+            teams = getOrder(orderNum);
+            var textElem = document.getElementById("pitNoTeamsText");
+
+            if (teams == "none") {
+                textElem.innerHTML = "There Are No More Teams To Pit-Scout!";
+            } else {
+                textElem.innerHTML = "There Are Still More Teams To Pre-Scout!";
+            }
+        } else if (selector == "pre") {
+            orderNum = curOrderNum++;
+            await getSheetData(config.assignmentsGSID, "pit" + sheetName, orderNum);
+            teams = getOrder(orderNum);
+
+            var textElem = document.getElementById("preNoTeamsText");
+
+            if (teams == "none") {
+                textElem.innerHTML = "There Are No More Teams To Pre-Scout!";
+            } else {
+                textElem.innerHTML = "There Are Still More Teams To Pit-Scout!";
+            }
+        }
     }
 }
 
@@ -117,6 +146,15 @@ function submitForm(selector) {
                 //AUTO CREATING TIME
                 form.push(document.getElementById("matchInput").value);
 
+                if (isNaN(parseInt(form[7]))) {
+                    showElement("preMatchesNotifText");
+                    document.getElementById("matchInput").style.border = "1px solid #eb776e";
+                    end = true;
+                } else {
+                    hideElement("preMatchesNotifText");
+                    document.getElementById("matchInput").style.border = "1px solid #888888";
+                }
+
                 //RELIABILITY LEVEL
                 form.push(document.getElementById("reliabilitySlider").value);
             } else {
@@ -161,7 +199,7 @@ function submitForm(selector) {
                 form.push("");
             }
         } else {
-            for (var i = 0; i < 8; i++) {
+            for (var i = 0; i < 4; i++) {
                 form.push("");
             }
         }
@@ -259,7 +297,7 @@ function submitForm(selector) {
             //TELE DOCKING TIME
             form.push(document.getElementById("balanceTimeInput").value);
         } else {
-            for (var i = 0; i < 3; i++) {
+            for (var i = 0; i < 2; i++) {
                 form.push("");
             }
         }
@@ -267,6 +305,7 @@ function submitForm(selector) {
         //EXTRA NOTES
         form.push(document.getElementById("preExtraNotes").value);
 
+        console.log(end)
         if (end) {
             return true;
         }
@@ -282,6 +321,196 @@ function submitForm(selector) {
         appendData(config.preGSID, sheetName, form);
         lockDiv(lockedDivs, curDiv, selector + "Div");
     } else if (selector == "pit") {
+        //DRIVEBASE PROBLEMS
+        form.push(document.getElementById("dbProblemsButton").value == true);
+
+        if (form[0]) {
+            //DRIVEBASE PROBLEMS NOTES
+            form.push(document.getElementById("dbProblemsNotes").value);
+        } else {
+            form.push("");
+        }
+
+        //GAME OBJECT MANIPULATOR PROBLEMS
+        form.push(document.getElementById("gomProblemsButton").value == true);
+
+        if (form[2]) {
+            //CONE REACH CHANGES
+            var coneReach = [];
+            ["High", "Mid", "Bot"].forEach(row => {
+                coneReach.push(document.getElementById("cone" + row + "RowButtonChange").value == true);
+            });
+            form.push(JSON.stringify(coneReach));
+            
+            //CUBE REACH CHANGES
+            var cubeReach = [];
+            ["High", "Mid", "Bot"].forEach(row => {
+                cubeReach.push(document.getElementById("cube" + row + "RowButtonChange").value == true);
+            });
+            form.push(JSON.stringify(cubeReach));
+        } else {
+            for (var i = 0; i < 2; i++) {
+                form.push("");
+            }
+        }
+
+        //OTHER PROBLEMS
+        form.push(document.getElementById("otherProblemsButton").value == true);
+
+        if (form[5]) {
+            //OTHER PROBLEMS NOTES
+            form.push(document.getElementById("otherProblemsNotes").value == true);
+        } else {
+            form.push("");
+        }
+
+        //AUTO CHANGES
+        form.push(document.getElementById("autoChangesButton").value == true);
+
+        if (form[7]) {
+            //NO AUTO
+            form.push(document.getElementById("noAutoChangesButton").value == true);
+
+            if (!form[8]) {
+                //CAN CREATE AUTO
+                form.push(document.getElementById("canCreateAutoButtonChanges").value == true);
+
+                if (form[9] ) {
+                    //AUTO CREATING TIME
+                    form.push(document.getElementById("matchInputChanges").value);
+
+                    if (form[10] != "" && isNaN(parseInt(form[10]))) {
+                        showElement("pitMatchesNotifText");
+                        document.getElementById("MatchInputChanges").style.border = "1px solid #eb776e";
+                        end = true;
+                    } else {
+                        hideElement("pitMatchesNotifText");
+                        document.getElementById("MatchInputChanges").style.border = "1px solid #888888";
+                    }
+
+                    //RELIABILITY LEVEL
+                    form.push(document.getElementById("reliabilitySlider").value);
+                } else {
+                    for (var i = 0; i < 2; i++) {
+                        form.push("");
+                    }
+                }
+
+                //AUTO DOCKING
+                form.push(document.getElementById("canDockButtonAutoChanges").value == true);
+
+                if (form[12]) {
+                    //AUTO ENGAGING
+                    form.push(document.getElementById("canEngageButtonAutoChanges").value == true);
+                } else {
+                    form.push("");
+                }
+                
+                //REQUIRED SETUP
+                var setup = [];
+                ["One", "Two", "Three", "Four"].forEach(num => {
+                    setup.push(elementsCycle[document.getElementById("requiredSetup" + num + "Changes").value]);
+                });
+
+                form.push(JSON.stringify(setup.map(x => {
+                    if (!x) {return "either";} else {return x;}
+                })));
+
+                //FIXED POS
+                form.push(document.getElementById("setPosButtonChanges").value == true);
+
+
+                if (form[15]) {
+                    //FIELD POS
+                    var posCoords = JSON.stringify(document.getElementById("fieldPinChanges").value);
+                    if (!posCoords) {
+                        posCoords = "";
+                    }
+        
+                    form.push(posCoords);
+                } else {
+                    form.push("");
+                }
+            } else {
+                for (var i = 0; i < 4; i++) {
+                    form.push("");
+                }
+            }
+        }
+
+        //CYCLE TIME
+        form.push(document.getElementById("cycleTimeInputChanges").value);
+
+        if (form[17] != "" && isNaN(parseInt(form[17]))) {
+            showElement("pitCycleTimeNotifText");
+            document.getElementById("cycleTimeInputChanges").style.border = "1px solid #eb776e";
+            end = true;
+        } else {
+            hideElement("pitCycleTimeNotifText");
+            document.getElementById("cycleTimeInputChanges").style.border = "1px solid #888888";
+        }
+        
+        //ABLE PLAYSTYLES
+        var ablePlaystyles = [];
+        ["Off", "Def"].forEach(playstyle => {
+            let button = document.getElementById("able" + playstyle + "ButtonChanges");
+
+            if (button.value) {
+                ablePlaystyles.push(button.innerHTML);
+            }
+        });
+        if (ablePlaystyles.length == 0) {
+            ablePlaystyles = "none";
+        }
+
+        form.push(JSON.stringify(ablePlaystyles));
+
+        //DEFENSE STRATEGY NOTES
+        if (form[18].includes("Defensive")) {
+            form.push(document.getElementById("defenseStrategyNotesChanges").value)
+        }
+
+        //PREFERRED PLAYSTYLE
+        var preferredPlaystyle;
+        Array.from(document.getElementsByClassName("preferButtonChanges")).forEach(button => {
+            if (button.value) {
+                preferredPlaystyle = button.innerHTML;
+            }
+        });
+        if (!preferredPlaystyle) {
+            preferredPlaystyle = "none";
+        }
+
+        //TELE DOCKING
+        form.push(document.getElementById("canDockButtonTeleChanges").value == true);
+
+        //ENGAGE
+        if (form[21]) {
+            form.push(document.getElementById("canEngageButtonTeleChanges").value == true);
+
+            if (form[22]) {
+                form.push(document.getElementById("hasAutoBalanceButtonTeleChanges").value == true);
+            } else {
+                form.push("");
+            }
+
+            form.push(document.getElementById("balanceTimeInputChanges").value);
+            
+            if (form[24] != "" && isNaN(parseInt(form[24]))) {
+                showElement("balanceTimeNotifTextChanges");
+                document.getElementById("balanceTimeInputChanges").style.border = "1px solid #eb776e";
+                end = true;
+            } else {
+                hideElement("pitCycleTimeNotifTextChanges");
+                document.getElementById("balanceTimeInputChanges").style.border = "1px solid #888888";
+            }
+        } else {
+            form.push("");
+        }
+
+        form.push(document.getElementById("pitExtraNotes").value);
+
+        appendData(config.pitGSID, sheetName, form);
         lockDiv(lockedDivs, curDiv, selector + "Div");
     }
 }
@@ -327,12 +556,21 @@ function undoSubmit(selector) {
 function refreshForm(selector) {
     document.getElementById(selector + "RefreshDiv").style.display = "none";
     document.getElementById(selector + "Div").appendChild(formDivs[selector].cloneNode(true));
-    activatePin("field", "fieldPin");
+    
+    if (selector == "pre") {``
+        activatePin("field", "fieldPin");
+    } else if (selector == "pit") {
+        activatePin("fieldChanges", "fieldPinChanges");
+    }
     fillTeamDropdown(selector);
     unlockDiv(lockedDivs, curDiv, selector + "Div");
 }
 
 async function changeTeamName(selector) {
+    if (!document.getElementById(selector + "TeamName")) {
+        return;
+    }
+
     var orderNum = curOrderNum++;
     await getTBAData("team/frc" + document.getElementById(selector + "TeamNumDropdown").value, orderNum);
     document.getElementById(selector + "TeamName").innerHTML = getOrder(orderNum).nickname;
