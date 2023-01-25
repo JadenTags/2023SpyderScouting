@@ -174,3 +174,8 @@
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+.scoutInfoText {
+  font-size: 18px;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
