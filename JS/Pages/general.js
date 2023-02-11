@@ -4,7 +4,7 @@ var lockedDivs = {
     "teamSearchDiv": "locked",
     "teamRankingsDiv": "unlocked",
 };
-var teamRankingsTableHeaders = ["Rank", "RPs", "#", "Name","DQs", "Record"];
+var teamRankingsTableHeaders = ["Rank", "RPs", "#", "Name", "Record"];
 
 //MAKE ONCLICK THAT TEAM SEARCHES
 async function fillTeamRankingsTable() {
@@ -43,7 +43,7 @@ async function fillTeamRankingsTable() {
         //RANK
         let td = document.createElement("td");
         td.appendChild(document.createTextNode(team.rank));
-        td.style.fontSize = "80px";
+        td.style.fontSize = "60px";
         td.style.fontWeight = "bolder";
         tr.appendChild(td)
         
@@ -64,14 +64,9 @@ async function fillTeamRankingsTable() {
         td.style.width = "200vw";
         tr.appendChild(td)
 
-        //DQs
-        td = document.createElement("td");
-        td.appendChild(document.createTextNode(team.dq));
-        tr.appendChild(td)
-
         //Record
         td = document.createElement("td");
-        td.appendChild(document.createTextNode(Object.values(team.record).reverse().join(" - ")));
+        td.appendChild(document.createTextNode(Object.values(team.record).reverse().join("-")));
         tr.appendChild(td)
 
 
@@ -90,3 +85,15 @@ async function fillTeamRankingsTable() {
 }
 
 fillTeamRankingsTable();
+
+function checkSidebar() {
+    if (!localStorage.getItem("visitedHome")) {
+        localStorage.setItem("visitedHome", true);
+        console.log("sd")
+        document.getElementById("sidebar").style.marginLeft = "-200px";
+        document.getElementById("menubars").style.opacity = "100";
+        document.getElementById("x").style.opacity = "0";
+    }
+}
+
+checkSidebar();

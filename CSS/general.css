@@ -24,9 +24,7 @@
 
 .teamRankingsHeader {
     padding: 0;
-    margin: 0;
-    padding-left: 20px;
-    padding-right: 20px;
+    margin: auto;
     font-size: 30px;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     border-bottom: 2px solid black;

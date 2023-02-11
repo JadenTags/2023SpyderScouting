@@ -11,14 +11,14 @@ async function activateButtons() {
         }
 
         if (!button.getAttribute("class").includes("selectedButton")) {
-            button.setAttribute("onclick", "window.location.replace('" + button.innerHTML.split(" ")[0] +".html');")
+            button.setAttribute("onclick", "window.location.replace('" + button.innerHTML.split(" ")[0].toLowerCase() +".html');")
         }
     });
 
     buttons = Array.from(document.getElementsByClassName("button"));
 
     buttons.forEach(button => {
-        let onclickFormat = "toggleButton('" + button.getAttribute("id") + "');";
+        let onclickFormat = "(async () => {toggleButton('" + button.getAttribute("id") + "');";
         button.getAttribute("onclick").split(" ").forEach(command => {
             onclickFormat += "await " + command;
         });

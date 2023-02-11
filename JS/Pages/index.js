@@ -33,7 +33,7 @@ async function login() {
         if (users[user] == pass) {
             localStorage.setItem("user", user[0].toUpperCase() + user.slice(1));
             
-            window.location.replace("../../Pages/home.html");
+            window.location.replace("../../Pages/general.html");
         } else {
             changeNotif("notifText", "That is not the correct password!");
             userInput.style.border = "1px solid #c5c7c5";
