@@ -1,0 +1,33 @@
+#compMap {
+    width: 100%;
+}
+
+#teamRankingsTable {
+    margin: auto;
+    width: 100%;
+    border-spacing: 0;
+}
+
+#teamRankingsTable :not([class]) {
+    font-size: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.grayTR td {
+    background-color: #ededed;
+}
+
+.teamTR td {
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;
+}
+
+.teamRankingsHeader {
+    padding: 0;
+    margin: 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 30px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-bottom: 2px solid black;
+}

@@ -17,11 +17,11 @@ async function getTBAData(link, orderNum) {
     }
 }
 
-async function getClosestCompData(teamNum, mainOrderNum) {
+async function getClosestCompData(teamNum) {
     var orderNum = curOrderNum++;
-    
-    await getTBAData(tbaApiRoot + "team/frc" + teamNum + "/events", orderNum);
+    await getTBAData("team/frc" + teamNum + "/events", orderNum);
     var closestComp = getOrder(orderNum).reverse().filter(comp => new Date(comp.end_date).getTime() > testDate.getTime()).sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0];
+
     if (!closestComp) {
         return [];
     }

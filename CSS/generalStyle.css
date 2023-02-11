@@ -178,3 +178,14 @@ body {
     margin-top: 10px;
     padding: 0;
 }
+
+.searchInput {
+    display: inline-block;
+    border-radius: 5px 5px 5px 5px;
+    width: 20%;
+    border: 1px solid #c5c7c5;
+}
+
+.generalDivText {
+    font-size: 20px;
+}

@@ -32,6 +32,7 @@ async function login() {
     if (Object.keys(users).includes(user)) {
         if (users[user] == pass) {
             localStorage.setItem("user", user[0].toUpperCase() + user.slice(1));
+            
             window.location.replace("../../Pages/home.html");
         } else {
             changeNotif("notifText", "That is not the correct password!");

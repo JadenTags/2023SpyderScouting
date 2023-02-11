@@ -1,10 +1,8 @@
 var config = {
-  frcKey: 'b01271e9-33e8-4ce8-bdfd-061c42f8b4b4',
-  frcKeyEncoded: 'anRhZ3VsaW5hbzpiMDEyNzFlOS0zM2U4LTRjZTgtYmRmZC0wNjFjNDJmOGI0YjQ=',
   tbaKey: 'SbjZMqawBlMTp7aRoJC5V73h7e4CBbQ2mbF8xJssv8nql1I0fCy8lX8O05qP0zqt',
   clientId: '1084130048210-7fog59udh3li01r1f3pibrceli874mc1.apps.googleusercontent.com',
   clientSecret: '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',
-  refreshToken: '1//04tts-Yjti8W6CgYIARAAGAQSNwF-L9IrpfiDcwMLC3oNqxj9adWaikN_GGOhanXAeqdkSLPcRXu0eGtPwibXouca4Wl9OFYlwZc',
+  refreshToken: '1//04Ydow4iGcOVXCgYIARAAGAQSNwF-L9Ir3IL1FWNbp8cVa-TaoS4SSTCxOwyVhEcmMmfPGb9n_IgtjAiGDYtqeIOjmVDgozzoDB4',
   userDatabaseGSID: '1mzkuHHLonKO10spvtKyDiqLP9OBwvpH9kr--1rlDA2I',
   matchGSID: '1EyS5XVJtnQsq4N8wv6kC91DbrzBDKiQIqCjVwXtQxDA',
   pitGSID: '10Wj38-hrNQFcSW0vvcub3uV83KpauFQDP714uLyiK4E',

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width">
   <title>Team Spyder Scouting</title>
   <link href="../CSS/generalStyle.css" rel="stylesheet" type="text/css"/>
+  <link href="../CSS/general.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <div id="nav">
@@ -17,25 +18,44 @@
   </div>
 </div>
 
+<div id="subNav">
+  <p id="compMapButton" class="subNavButton">Comp Map</p>
+  <p class="subNavDivider"></p>
+  <p id="teamRankingsButton" class="subNavButton" style="border:none;">Team Rankings</p>
+</div>
+
 <div id="sidebar">
-  <p class="sidebarButton" onclick="window.location.replace('home.html');">Home</p>
   <p class="sidebarButton selectedButton">General Info</p>
-  <p class="sidebarButton" onclick="window.location.replace('forms.html');">Forms</p>
-  <p class="sidebarButton" onclick="window.location.replace('displays.html');">Displays</p>
-  <p class="sidebarButton" onclick="window.location.replace('recruiting.html');">Recruiting</p>
+  <p class="sidebarButton">Forms</p>
+  <p class="sidebarButton">Displays</p>
+  <p class="sidebarButton">Recruiting</p>
 </div>
 
 <body>
+  <div id="mainDiv" class="subNavDiv">
+    <h1 class="title">General Information</h1>
+
+    <p class="generalDivText">Just information about the current competition n stuff.</p>
+  </div>
+
+  <div id="compMapDiv" class="subNavDiv" style="display:none">
+    <img id="compMap" src="../Images/compMap.jpeg">
+  </div>
+  
+  <div id="teamRankingsDiv" class="subNavDiv" style="display:none">
+    <table id="teamRankingsTable">
+    </table>
+  </div>
 </body>
 
 <script src="../JS/config.js"></script>
 <script src="../JS/simuVars.js"></script>
 <script src="../JS/Functions/generalFunctions.js"></script>
 <script src="../JS/Functions/navFunctions.js"></script>
-<script src="../JS/Functions/buttonFunctions.js"></script>
 <script src="../JS/Functions/sheetsFunctions.js"></script>
 <script src="../JS/Functions/tbaFunctions.js"></script>
 <script src="../JS/Functions/globalDataFunctions.js"></script>
-<script src="../JS/Pages/index.js"></script>
+<script src="../JS/Functions/buttonFunctions.js"></script>
+<script src="../JS/Pages/general.js"></script>
 
 </html>
