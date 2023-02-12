@@ -184,7 +184,7 @@
       <p id="cubeBotRowButton" class="pushButton" onclick="toggleGamePiece('cubeBotRow');">Bot Row</p>
 
       <p class="formSubheader">Preferred Playstyle</p>
-      <p id="preferOffButton" class="preferButtonC startGroupedButton groupedButton">Offensive</p>
+      <p id="preferOffButton" class="preferButton startGroupedButton groupedButton">Offensive</p>
       <p id="preferDefButton" class="preferButton groupedButton">Defensive</p>
       <p id="preferHybButton" class="preferButton endGroupedButton groupedButton">Hybrid</p>
       
@@ -421,8 +421,25 @@
 
   <div id="matchDiv" class="subNavDiv" style="display:none">
     <div id="matchFormDiv" class="innerDiv">
+      <P id="inPersonMatchFormButton" class="formTypeButton startGroupedButton groupedButton" onclick="hideElement('mainMatchFormDiv');hideElement('onlineMatchFormDiv');toggleElement('inPersonMatchFormDiv'); if (document.getElementById('inPersonMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">In-Person</P>
+      <P id="onlineMatchFormButton" class="formTypeButton endGroupedButton groupedButton" style="margin-top: 10px;" onclick="hideElement('mainMatchFormDiv');hideElement('inPersonMatchFormDiv');toggleElement('onlineMatchFormDiv'); if (document.getElementById('onlineMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">Online</P>
+
+      <div id="mainMatchFormDiv">
+        <h1 class="teamName" style="margin-top: 10px;">Please Select a Form Type!</h1>
+      </div>
+
+      <div id="onlineMatchFormDiv" style="display: none;">
+        <h1 class="teamName" style="margin-top: 10px;">Match</h1>
+      </div>
+
+      <div id="inPersonMatchFormDiv" style="display: none;">
+        <h1 class="teamName" style="margin-top: 10px;">Match</h1>
+
+        <input class="inputInput" placeholder="Match #"></input>
+
+        
+      </div>
     </div>
-    <h1>Match</h1>
   </div>
 </body>
 

@@ -6,7 +6,7 @@
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-.measurementInput, #dbTypeInput, #dbMotorInput, #cycleTimeInput, #cycleTimeInputChanges, #balanceTimeInput {
+.inputInput, .measurementInput, #dbTypeInput, #dbMotorInput, #cycleTimeInput, #cycleTimeInputChanges, #balanceTimeInput {
     display: inline-block;
     border-radius: 5px 5px 5px 5px;
     width: 20%;
