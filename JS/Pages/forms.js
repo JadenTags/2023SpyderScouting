@@ -8,7 +8,7 @@ var lockedDivs = {
     "mainDiv": "locked",
     "preDiv": "unlocked",
     "pitDiv": "unlocked",
-    "matchDiv": "locked",
+    "matchDiv": "unlocked",
 };
 var curDiv = "mainDiv";
 
@@ -698,6 +698,44 @@ function toggleGamePiece(gpId) {
         gamepiece.style.opacity = "100%";
     } else {
         gamepiece.style.opacity = "0";
+    }
+}
+
+async function changeMatchAllianceButtons(selector) {
+    var orderNum = curOrderNum++;
+    await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
+    var match = getOrder(orderNum)[parseInt(document.getElementById(selector + "MatchNumInput").value) - 1];
+    
+    if (!match) { // || match.actual_time
+        hideElement(selector + "MatchInnerDiv");
+        changeNotif(selector + "MatchNotif", "That Is Not A Valid Match!");
+        document.getElementById(selector + "MatchNumInput").style.border = "1px solid #eb776e";
+        return;
+    } else {
+        changeNotif(selector + "MatchNotif", "")
+        document.getElementById(selector + "MatchNumInput").style.border = "1px solid #c5c7c5";
+    }
+
+    Object.keys(match.alliances).forEach(key => {
+        var alliance = match.alliances[key];
+        var counter = 1;
+
+        alliance.team_keys.forEach(team => {
+            document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button").innerHTML = team.replace("frc", "");
+        });
+    });
+    
+    showElement(selector + "MatchInnerDiv");
+}
+
+function changeCounter(counterId, isAdding) {
+    var counter = document.getElementById(counterId);
+    var counterValue = parseInt(counter.innerHTML);
+
+    if (isAdding) {
+        counter.innerHTML = counterValue + 1;
+    } else if (counterValue > 0) {
+        counter.innerHTML = counterValue - 1;
     }
 }
 

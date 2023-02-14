@@ -12,10 +12,11 @@ function changeNotif(notifId, text) {
   var notif = document.getElementById(notifId);
 
   if (text) {
+    notif.style.display = "initial";
     notif.style.color = "#eb776e";
     notif.innerHTML = text;
   } else {
-    notif.style.color = "white";
+    notif.style.display = "none";
   }
 }
 

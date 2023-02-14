@@ -435,9 +435,151 @@
       <div id="inPersonMatchFormDiv" style="display: none;">
         <h1 class="teamName" style="margin-top: 10px;">Match</h1>
 
-        <input class="inputInput" placeholder="Match #"></input>
+        <input id="inPersonMatchNumInput" class="inputInput" placeholder="Match #" onchange="changeMatchAllianceButtons('inPerson');"></input>
 
+        <br>
+
+        <p id="inPersonMatchNotif" class="notifText"></p>
+
+        <div id="inPersonMatchInnerDiv" >
+          <P id="inPersonBlue1Button" class="inPersonAllianceButton blueAllianceButton startGroupedButton groupedButton">One</P>
+          <P id="inPersonBlue2Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Two</P>
+          <P id="inPersonBlue3Button" class="inPersonAllianceButton blueAllianceButton endGroupedButton groupedButton">Three</P>
+
+          <P id="inPersonRed1Button" class="inPersonAllianceButton redAllianceButton startGroupedButton groupedButton">One</P>
+          <P id="inPersonRed2Button" class="inPersonAllianceButton redAllianceButton groupedButton">Two</P>
+          <P id="inPersonRed3Button" class="inPersonAllianceButton redAllianceButton endGroupedButton groupedButton" style="margin-top: 10px;">Three</P>
+        </div>
+
+        <p class="sectionHeader">Autonomous</p>
+        <hr class="sectionLine">
+
+        <p id="inPersonLeftCommunityButton" class="pushButton">Left Community</p>
+
+        <h1 class="title">Cones Made</h1>
+        <table class="counterTable">
+          <tr>
+            <td>
+              <h2 class="subTitle">Bottom Row</h2>
+              <h1 id="inPersonAutoConesBotRowCounter" class="counter">0</h1>
+              <p id="inPersonAutoConesBotRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesBotRowCounter', false);">-</p>
+              <p id="inPersonAutoConesBotRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesBotRowCounter', true);">+</p>
+            </td>
+
+            <td>
+              <h2 class="subTitle">Mid Row</h2>
+              <h1 id="inPersonAutoConesMidRowCounter" class="counter">0</h1>
+              <p id="inPersonAutoConesMidRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesMidRowCounter', false);">-</p>
+              <p id="inPersonAutoConesMidRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesMidRowCounter', true);">+</p>
+            </td>
+
+            <td>
+              <h2 class="subTitle">Top Row</h2>
+              <h1 id="inPersonAutoConesTopRowCounter" class="counter">0</h1>
+              <p id="inPersonAutoConesTopRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesTopRowCounter', false);">-</p>
+              <p id="inPersonAutoConesTopRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesTopRowCounter', true);">+</p>
+            </td>
+          </tr>
+        </table>
+
+        <h1 class="title">Cubes Made</h1>
+        <table class="counterTable">
+          <tr>
+            <td>
+              <h2 class="subTitle">Bottom Row</h2>
+              <h1 id="inPersonAutoCubesBotRowCounter" class="counter">0</h1>
+              <p id="inPersonAutoCubesBotRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesBotRowCounter', false);">-</p>
+              <p id="inPersonAutoCubesBotRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesBotRowCounter', true);">+</p>
+            </td>
+
+            <td>
+              <h2 class="subTitle">Mid Row</h2>
+              <h1 id="inPersonAutoCubesMidRowCounter" class="counter">0</h1>
+              <p id="inPersonAutoCubesMidRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesMidRowCounter', false);">-</p>
+              <p id="inPersonAutoCubesMidRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesMidRowCounter', true);">+</p>
+            </td>
+
+            <td>
+              <h2 class="subTitle">Top Row</h2>
+              <h1 id="inPersonAutoCubesTopRowCounter" class="counter">0</h1>
+              <p id="inPersonAutoCubesTopRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesTopRowCounter', false);">-</p>
+              <p id="inPersonAutoCubesTopRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesTopRowCounter', true);">+</p>
+            </td>
+          </tr>
+        </table>
+
+        <p id="inPersonAutoDockedButton" class="pushButton" onclick="toggleElement('inPersonAutoEngagedButton');">Docked</p>
+
+        <p id="inPersonAutoEngagedButton" class="pushButton" style="display: none;">Engaged</p>
+
+        <p class="sectionHeader">Teleop</p>
+        <hr class="sectionLine">
         
+        <h1 class="title">Cones Made</h1>
+        <table class="counterTable">
+          <tr>
+            <td>
+              <h2 class="subTitle">Bottom Row</h2>
+              <h1 id="inPersonTeleConesBotRowCounter" class="counter">0</h1>
+              <p id="inPersonTeleConesBotRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesBotRowCounter', false);">-</p>
+              <p id="inPersonTeleConesBotRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesBotRowCounter', true);">+</p>
+            </td>
+
+            <td>
+              <h2 class="subTitle">Mid Row</h2>
+              <h1 id="inPersonTeleConesMidRowCounter" class="counter">0</h1>
+              <p id="inPersonTeleConesMidRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesMidRowCounter', false);">-</p>
+              <p id="inPersonTeleConesMidRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesMidRowCounter', true);">+</p>
+            </td>
+
+            <td>
+              <h2 class="subTitle">Top Row</h2>
+              <h1 id="inPersonTeleConesTopRowCounter" class="counter">0</h1>
+              <p id="inPersonTeleConesTopRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesTopRowCounter', false);">-</p>
+              <p id="inPersonTeleConesTopRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesTopRowCounter', true);">+</p>
+            </td>
+          </tr>
+        </table>
+
+        <h1 class="title">Cubes Made</h1>
+        <table class="counterTable">
+          <tr>
+            <td>
+              <h2 class="subTitle">Bottom Row</h2>
+              <h1 id="inPersonTeleCubesBotRowCounter" class="counter">0</h1>
+              <p id="inPersonTeleCubesBotRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesBotRowCounter', false);">-</p>
+              <p id="inPersonTeleCubesBotRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesBotRowCounter', true);">+</p>
+            </td>
+
+            <td>
+              <h2 class="subTitle">Mid Row</h2>
+              <h1 id="inPersonTeleCubesMidRowCounter" class="counter">0</h1>
+              <p id="inPersonTeleCubesMidRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesMidRowCounter', false);">-</p>
+              <p id="inPersonTeleCubesMidRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesMidRowCounter', true);">+</p>
+            </td>
+
+            <td>
+              <h2 class="subTitle">Top Row</h2>
+              <h1 id="inPersonTeleCubesTopRowCounter" class="counter">0</h1>
+              <p id="inPersonTeleCubesTopRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesTopRowCounter', false);">-</p>
+              <p id="inPersonTeleCubesTopRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesTopRowCounter', true);">+</p>
+            </td>
+          </tr>
+        </table>
+
+        <p id="inPersonTeleOffButton" class="inPersonTelePlaystyleButton startGroupedButton groupedButton">Offensive</p>
+        <p id="inPersonTeleHybDockedButton" class="inPersonTelePlaystyleButton groupedButton">Hybrid</p>
+        <p id="inPersonTeleDefButton" class="inPersonTelePlaystyleButton endGroupedButton groupedButton">Defensive</p>
+
+        <br>
+
+        <p id="inPersonTeleParkedButton" class="inPersonTeleEndgameButton startGroupedButton groupedButton" onclick="hideElement('inPersonTeleEngagedButton');" style="margin-top: 10px;">Parked</p>
+        <p id="inPersonTeleDockedButton" class="inPersonTeleEndgameButton endGroupedButton groupedButton" onclick="toggleElement('inPersonTeleEngagedButton');">Docked</p>
+
+        <p id="inPersonTeleEngagedButton" class="pushButton" style="display: none;">Engaged</p>
+
+        <p class="sectionHeader">Other Notes</p>
+        <hr class="sectionLine">
       </div>
     </div>
   </div>
