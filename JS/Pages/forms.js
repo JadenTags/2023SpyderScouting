@@ -1,8 +1,4 @@
-const formDivs = {
-    "pre": document.getElementById("preFormDiv").cloneNode(true),
-    "pit": document.getElementById("pitFormDiv").cloneNode(true),
-    "match": document.getElementById("matchFormDiv").cloneNode(true),
-};
+const formDivs = {};
 const elementsCycle = ["either", "cube", "cone"];
 var lockedDivs = {
     "mainDiv": "locked",
@@ -27,7 +23,6 @@ async function fillTeamDropdown(selector) {
         orderNum = curOrderNum++;
         await getSheetData(config.preGSID, sheetName, orderNum);
         var temp = getOrder(orderNum);
-        console.log(teams)
         preTeams = teams.filter(x => !temp.map(z => z[0]).includes(x));
         var needPreNotifText = document.getElementById("needToPreNotifText");
 
@@ -576,6 +571,31 @@ function submitForm(selector) {
 
         appendData(config.pitGSID, sheetName, form);
         lockDiv(lockedDivs, curDiv, selector + "Div");
+    } else if (selector == "matchInPerson") {
+        //MATCH NUMBER
+        var matchNumber = document.getElementById("inPersonMatchNumInput").value;
+        form.push(matchNumber);
+
+        //TEAM NUMBER
+        var teamNum;
+        Array.from(document.getElementsByClassName("inPersonAllianceButton")).forEach(button => {
+            if (button.value) {
+                teamNum = button.innerHTML;
+            }
+        });
+        if (isNaN(parseInt(teamNum))) {
+            changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
+            end = true;
+        } else {
+            changeNotif("inPersonTeamNumNotif", "");
+        }
+        form.push(teamNum);
+
+        if (end) {
+            return true;
+        }
+
+        lockDiv(lockedDivs, curDiv, "matchDiv");
     }
 }
 
@@ -596,11 +616,15 @@ async function secureSubmit(selector) {
                 
                 await clearData(config.assignmentsGSID, selector + sheetName);
                 appendData(config.assignmentsGSID, selector + sheetName, getOrder(orderNum)[0].filter(x => parseInt(x) != team && x != ""));
+            } if (selector.includes("match")) {
+                document.getElementById("matchFormDiv").remove();
+                document.getElementById("matchRefreshDiv").style.display = "inline-block";
+            } else {
+                document.getElementById(selector + "FormDiv").remove();
+                
+                document.getElementById(selector + "RefreshDiv").style.display = "inline-block";
             }
 
-            document.getElementById(selector + "FormDiv").remove();
-            
-            document.getElementById(selector + "RefreshDiv").style.display = "inline-block";
         } else {
             undoSubmit(selector);
             window.scrollTo(0, 0);
@@ -618,15 +642,21 @@ function undoSubmit(selector) {
 }
 
 function refreshForm(selector) {
+    if (selector.includes("match")) {
+        selector = "match";
+    }
+
     document.getElementById(selector + "RefreshDiv").style.display = "none";
     document.getElementById(selector + "Div").appendChild(formDivs[selector].cloneNode(true));
     
     if (selector == "pre") {``
         activatePin("field", "fieldPin");
+        fillTeamDropdown(selector);
     } else if (selector == "pit") {
         activatePin("fieldChanges", "fieldPinChanges");
+        fillTeamDropdown(selector);
     }
-    fillTeamDropdown(selector);
+
     unlockDiv(lockedDivs, curDiv, selector + "Div");
 }
 
@@ -706,7 +736,7 @@ async function changeMatchAllianceButtons(selector) {
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
     var match = getOrder(orderNum)[parseInt(document.getElementById(selector + "MatchNumInput").value) - 1];
     
-    if (!match) { // || match.actual_time
+    if (!match) {
         hideElement(selector + "MatchInnerDiv");
         changeNotif(selector + "MatchNotif", "That Is Not A Valid Match!");
         document.getElementById(selector + "MatchNumInput").style.border = "1px solid #eb776e";
@@ -739,6 +769,19 @@ function changeCounter(counterId, isAdding) {
     }
 }
 
+async function storeForms() {
+    while (!buttonsActivated) {
+        await wait(100);
+    }
+
+    ["pre", "pit", "match"].forEach(form => {
+        console.log(form)
+        console.log(document.getElementById(form + "FormDiv"))
+        formDivs[form] = document.getElementById(form + "FormDiv").cloneNode(true);
+    })
+}
+
+storeForms();
 activatePin("field", "fieldPin");
 activatePin("fieldChanges", "fieldPinChanges");
 cycleCheckDropdown("pre");

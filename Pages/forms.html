@@ -435,7 +435,7 @@
       <div id="inPersonMatchFormDiv" style="display: none;">
         <h1 class="teamName" style="margin-top: 10px;">Match</h1>
 
-        <input id="inPersonMatchNumInput" class="inputInput" placeholder="Match #" onchange="changeMatchAllianceButtons('inPerson');"></input>
+        <input type="number" id="inPersonMatchNumInput" class="inputInput" placeholder="Match #" onchange="changeMatchAllianceButtons('inPerson');"></input>
 
         <br>
 
@@ -444,12 +444,16 @@
         <div id="inPersonMatchInnerDiv" >
           <P id="inPersonBlue1Button" class="inPersonAllianceButton blueAllianceButton startGroupedButton groupedButton">One</P>
           <P id="inPersonBlue2Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Two</P>
-          <P id="inPersonBlue3Button" class="inPersonAllianceButton blueAllianceButton endGroupedButton groupedButton">Three</P>
+          <P id="inPersonBlue3Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Three</P>
 
-          <P id="inPersonRed1Button" class="inPersonAllianceButton redAllianceButton startGroupedButton groupedButton">One</P>
+          <P id="inPersonRed1Button" class="inPersonAllianceButton redAllianceButton groupedButton">One</P>
           <P id="inPersonRed2Button" class="inPersonAllianceButton redAllianceButton groupedButton">Two</P>
           <P id="inPersonRed3Button" class="inPersonAllianceButton redAllianceButton endGroupedButton groupedButton" style="margin-top: 10px;">Three</P>
         </div>
+
+        <br>
+
+        <p id="inPersonTeamNumNotif" class="notifText"></p>
 
         <p class="sectionHeader">Autonomous</p>
         <hr class="sectionLine">
@@ -580,7 +584,36 @@
 
         <p class="sectionHeader">Other Notes</p>
         <hr class="sectionLine">
+
+        <p id="inPersonBrokeDownButton" class="pushButton">Broke Down</p>
+
+        <p class="formSubheader">Penalties</p>
+        <input type="number" class="inputInput" placeholder="#"></input>
+
+        <br>
+
+        <p id="inPersonRedCardButton" class="pushButton" style="margin-top:10px;">Red Card</p>
+
+        <br>
+
+        <p id="inPersonAggressiveButton" class="pushButton" style="margin-top:10px;">Played Aggressive</p>
+        
+        <br>
+
+        <textarea id="matchInPersonExtraNotes" class="notesArea" placeholder="Notes"></textarea>
+
+        <br>
+        
+        <p id="matchInPersonSubmitButton" class="submitButton" onclick="secureSubmit('matchInPerson');">Submit</p>
+        <p id="matchInPersonUndoSubmitButton" class="button" onclick="undoSubmit('matchInPerson');" style="display: none;">Undo</p>
       </div>
+
+      
+    </div>
+
+    <div id="matchRefreshDiv" class="innerDiv" style="display:none;">
+      <p class="title">Thank You For Submitting A Form!</p>
+      <p id="matchRefreshButton" class="button" onclick="refreshForm('match');" style="margin-top: 10px;">Submit Another Form</p>
     </div>
   </div>
 </body>

@@ -1,4 +1,5 @@
 var pressedButtons = {};
+var buttonsActivated;
 
 async function activateButtons() {
     await waitGlobalData();
@@ -64,6 +65,8 @@ async function activateButtons() {
 
         button.setAttribute("onclick", "" + JSON.stringify(Array.from(document.getElementsByClassName(divId)).map(x => x.id)) + ".forEach(divButton => {if (divButton != '" + button.id + "' && document.getElementById(divButton).getAttribute('class').split(' ').includes('selectedButton')) {togglePushButton(divButton)}}); togglePushButton('" + button.id + "');" + button.getAttribute("onclick"));
     });
+
+    buttonsActivated = true;
 }
 
 function toggleButton(buttonId) {
