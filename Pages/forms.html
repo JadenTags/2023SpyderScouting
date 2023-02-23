@@ -421,18 +421,18 @@
 
   <div id="matchDiv" class="subNavDiv" style="display:none">
     <div id="matchFormDiv" class="innerDiv">
-      <P id="inPersonMatchFormButton" class="formTypeButton startGroupedButton groupedButton" onclick="hideElement('mainMatchFormDiv');hideElement('onlineMatchFormDiv');toggleElement('inPersonMatchFormDiv'); if (document.getElementById('inPersonMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">In-Person</P>
-      <P id="onlineMatchFormButton" class="formTypeButton endGroupedButton groupedButton" style="margin-top: 10px;" onclick="hideElement('mainMatchFormDiv');hideElement('inPersonMatchFormDiv');toggleElement('onlineMatchFormDiv'); if (document.getElementById('onlineMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">Online</P>
+      <!-- <P id="inPersonMatchFormButton" class="formTypeButton startGroupedButton groupedButton" onclick="hideElement('mainMatchFormDiv');hideElement('onlineMatchFormDiv');toggleElement('inPersonMatchFormDiv'); if (document.getElementById('inPersonMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">In-Person</P>
+      <P id="onlineMatchFormButton" class="formTypeButton endGroupedButton groupedButton" style="margin-top: 10px;" onclick="hideElement('mainMatchFormDiv');hideElement('inPersonMatchFormDiv');toggleElement('onlineMatchFormDiv'); if (document.getElementById('onlineMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">Online</P> -->
 
-      <div id="mainMatchFormDiv">
+      <!-- <div id="mainMatchFormDiv">
         <h1 class="teamName" style="margin-top: 10px;">Please Select a Form Type!</h1>
-      </div>
+      </div> -->
 
       <div id="onlineMatchFormDiv" style="display: none;">
         <h1 class="teamName" style="margin-top: 10px;">Match</h1>
       </div>
 
-      <div id="inPersonMatchFormDiv" style="display: none;">
+      <div id="inPersonMatchFormDiv"> <!-- style="display: none;"-->
         <h1 class="teamName" style="margin-top: 10px;">Match</h1>
 
         <input type="number" id="inPersonMatchNumInput" class="inputInput" placeholder="Match #" onchange="changeMatchAllianceButtons('inPerson');"></input>
@@ -441,7 +441,7 @@
 
         <p id="inPersonMatchNotif" class="notifText"></p>
 
-        <div id="inPersonMatchInnerDiv" >
+        <!-- <div id="inPersonMatchInnerDiv" >
           <P id="inPersonBlue1Button" class="inPersonAllianceButton blueAllianceButton startGroupedButton groupedButton">One</P>
           <P id="inPersonBlue2Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Two</P>
           <P id="inPersonBlue3Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Three</P>
@@ -449,7 +449,11 @@
           <P id="inPersonRed1Button" class="inPersonAllianceButton redAllianceButton groupedButton">One</P>
           <P id="inPersonRed2Button" class="inPersonAllianceButton redAllianceButton groupedButton">Two</P>
           <P id="inPersonRed3Button" class="inPersonAllianceButton redAllianceButton endGroupedButton groupedButton" style="margin-top: 10px;">Three</P>
-        </div>
+        </div> -->
+
+        <h1 class="teamName" style="margin-top: 10px;">Team Num</h1>
+
+        <input type="number" id="inPersonTeamNumInput" class="inputInput" placeholder="Team #"></input>
 
         <br>
 
@@ -571,6 +575,26 @@
           </tr>
         </table>
 
+        <h1 class="title" style="margin-top: 10px;">Times Almost Tipped Over</h1>
+        <table class="counterTable">
+          <tr>
+            <td>
+              <h2 class="subTitle">Non-Charge Station</h2>
+              <h1 id="inPersonNonChargeTipCounter" class="counter">0</h1>
+              <p id="inPersonNonChargeTipSubButton" class="button counterButton" onclick="changeCounter('inPersonNonChargeTipCounter', false);">-</p>
+              <p id="inPersonNonChargeTipAddButton" class="button counterButton" onclick="changeCounter('inPersonNonChargeTipCounter', true);">+</p>
+            </td>
+
+            <td>
+              <h2 class="subTitle">Charge Station</h2>
+              <h1 id="inPersonChargeTipCounter" class="counter">0</h1>
+              <p id="inPersonChargeTipSubButton" class="button counterButton" onclick="changeCounter('inPersonChargeTipCounter', false);">-</p>
+              <p id="inPersonChargeTipAddButton" class="button counterButton" onclick="changeCounter('inPersonChargeTipCounter', true);">+</p>
+            </td>
+          </tr>
+        </table>
+
+        <p class="formSubheader">Playstyle</p>
         <p id="inPersonTeleOffButton" class="inPersonTelePlaystyleButton startGroupedButton groupedButton">Offensive</p>
         <p id="inPersonTeleHybDockedButton" class="inPersonTelePlaystyleButton groupedButton">Hybrid</p>
         <p id="inPersonTeleDefButton" class="inPersonTelePlaystyleButton endGroupedButton groupedButton">Defensive</p>
@@ -585,10 +609,15 @@
         <p class="sectionHeader">Other Notes</p>
         <hr class="sectionLine">
 
-        <p id="inPersonBrokeDownButton" class="pushButton">Broke Down</p>
+        <p id="inPersonBrokeDownButton" class="matchInPersonTagButton groupedButton startGroupedButton">Broke Down</p>
+        <p id="inPersonNoShowButton" class="matchInPersonTagButton groupedButton endGroupedButton">No Show</p>
 
         <p class="formSubheader">Penalties</p>
-        <input type="number" class="inputInput" placeholder="#"></input>
+        <input id="penaltiesInput" type="number" class="inputInput" placeholder="#"></input>
+
+        <br>
+
+        <p id="penaltiesNotifText" class="notifText"></p>
 
         <br>
 
