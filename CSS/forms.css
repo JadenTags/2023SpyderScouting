@@ -198,13 +198,17 @@
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
+  display: inline;
+  vertical-align: middle;
 }
 
 .counterButton {
-  width: 80px;
+  vertical-align: middle;
+  width: 30px;
   height: 35px;
   line-height: 35px;
-  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .counterTable {
@@ -217,4 +221,15 @@
 
 .counterTable td {
   flex: 1;
+}
+
+.rowName {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  line-height: 80px;
+  font-size: 30px;
+  font-weight: bold;
+  vertical-align: middle;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }

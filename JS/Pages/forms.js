@@ -576,129 +576,21 @@ function submitForm(selector) {
         form.push(document.getElementById("inPersonMatchNumInput").value);
 
         //TEAM NUMBER
-        // var teamNum;
-        // Array.from(document.getElementsByClassName("inPersonAllianceButton")).forEach(button => {
-        //     if (button.value) {
-        //         teamNum = button.innerHTML;
-        //     }
-        // });
-        // if (isNaN(parseInt(teamNum))) {
-        //     changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
-        //     end = true;
-        // } else {
-        //     changeNotif("inPersonTeamNumNotif", "");
-        // }
-        // form.push(teamNum);
-        form.push(document.getElementById("inPersonTeamNumInput").value);
-
-        //LEFT COMMUNITY
-        form.push(document.getElementById("inPersonLeftCommunityButton").value == true);
-
-        //AUTO CONES MADE
-        var autoCones = {};
-        ["Top", "Mid", "Bot"].forEach(row => {
-            autoCones[row] = document.getElementById("inPersonAutoCones" + row + "RowCounter").innerHTML;
-        });
-        form.push(JSON.stringify(autoCones));
-
-        //AUTO CUBES MADE
-        var autoCubes = {};
-        ["Top", "Mid", "Bot"].forEach(row => {
-            autoCubes[row] = document.getElementById("inPersonAutoCubes" + row + "RowCounter").innerHTML;
-        });
-        form.push(JSON.stringify(autoCubes));
-        
-        //DOCKED
-        form.push(document.getElementById("inPersonAutoDockedButton").value == true);
-        
-        if (form[form.length - 1]) {
-            //ENGAGED
-            form.push(document.getElementById("inPersonAutoEngagedButton").value == true);
-        } else {
-            form.push("");
-        }
-
-        //TELE CONES MADE
-        var teleCones = {};
-        ["Top", "Mid", "Bot"].forEach(row => {
-            teleCones[row] = document.getElementById("inPersonTeleCones" + row + "RowCounter").innerHTML;
-        });
-        form.push(JSON.stringify(teleCones));
-
-        //TELE CUBES MADE
-        var teleCubes = {};
-        ["Top", "Mid", "Bot"].forEach(row => {
-            teleCubes[row] = document.getElementById("inPersonTeleCubes" + row + "RowCounter").innerHTML;
-        });
-        form.push(JSON.stringify(teleCubes));
-
-        //TIMES TIPPED OVER
-        var almostTipped = {};
-        ["NonCharge", "Charge"].forEach(type => {
-            almostTipped[type] = document.getElementById("inPerson" + type + "TipCounter").innerHTML;
-        });
-        form.push(JSON.stringify(almostTipped));
-
-        //PLAYSTYLE
-        var playstyle;
-        Array.from(document.getElementsByClassName("inPersonTelePlaystyleButton")).forEach(button => {
+        var teamNum;
+        Array.from(document.getElementsByClassName("inPersonAllianceButton")).forEach(button => {
             if (button.value) {
-                playstyle = button.innerHTML;
+                teamNum = button.innerHTML;
             }
         });
-        if (!playstyle) {
-            playstyle = "";
-        }
-        form.push(playstyle);
-
-        //ENDGAME
-        var endgame;
-        Array.from(document.getElementsByClassName("inPersonTeleEndgameButton")).forEach(button => {
-            if (button.value) {
-                endgame = button.innerHTML;
-            }
-        });
-        if (!endgame) {
-            endgame = "";
-        }
-        form.push(endgame);
-
-        //ENGAGED
-        if (form[form.length - 1] == "Docked") {
-            form.push(document.getElementById("inPersonTeleEngagedButton").value == true);
-        } else {
-            form.push("");
-        }
-
-        //BROKEDOWN/NO SHOW
-        var noData;
-        Array.from(document.getElementsByClassName("matchInPersonTagButton")).forEach(button => {
-            if (button.value) {
-                noData = button.innerHTML;
-            }
-        });
-        if (!noData) {
-            noData = "";
-        }
-        form.push(noData);
-
-        //PENS
-        var pens = document.getElementById("penaltiesInput").value;
-        if (isNaN(parseInt(pens)) && (pens != "" && pens != null)) {
-            changeNotif("penaltiesNotifText", "This Is Not A Valid Number!");
-            document.getElementById("penaltiesInput").style.border = "1px solid #eb776e";
+        if (isNaN(parseInt(teamNum))) {
+            changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
             end = true;
         } else {
-            changeNotif("penaltiesNotifText", "");
-            document.getElementById("penaltiesInput").style.border = "1px solid #c5c7c5";
+            changeNotif("inPersonTeamNumNotif", "");
         }
-        form.push(pens);
+        form.push(teamNum);
 
-        //RED CARDED
-        form.push(document.getElementById("inPersonRedCardButton").value == true);
-
-        //PLAYED AGGRESSIVE
-        form.push(document.getElementById("inPersonAggressiveButton").value == true);
+        //ADD ALL
 
         //OTHER NOTES
         form.push(document.getElementById("matchInPersonExtraNotes").value);

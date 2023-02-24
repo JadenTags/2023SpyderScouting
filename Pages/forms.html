@@ -421,18 +421,18 @@
 
   <div id="matchDiv" class="subNavDiv" style="display:none">
     <div id="matchFormDiv" class="innerDiv">
-      <!-- <P id="inPersonMatchFormButton" class="formTypeButton startGroupedButton groupedButton" onclick="hideElement('mainMatchFormDiv');hideElement('onlineMatchFormDiv');toggleElement('inPersonMatchFormDiv'); if (document.getElementById('inPersonMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">In-Person</P>
-      <P id="onlineMatchFormButton" class="formTypeButton endGroupedButton groupedButton" style="margin-top: 10px;" onclick="hideElement('mainMatchFormDiv');hideElement('inPersonMatchFormDiv');toggleElement('onlineMatchFormDiv'); if (document.getElementById('onlineMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">Online</P> -->
+      <P id="inPersonMatchFormButton" class="formTypeButton startGroupedButton groupedButton" onclick="hideElement('mainMatchFormDiv');hideElement('onlineMatchFormDiv');toggleElement('inPersonMatchFormDiv'); if (document.getElementById('inPersonMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">In-Person</P>
+      <P id="onlineMatchFormButton" class="formTypeButton endGroupedButton groupedButton" style="margin-top: 10px;" onclick="hideElement('mainMatchFormDiv');hideElement('inPersonMatchFormDiv');toggleElement('onlineMatchFormDiv'); if (document.getElementById('onlineMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">Online</P>
 
-      <!-- <div id="mainMatchFormDiv">
+      <div id="mainMatchFormDiv">
         <h1 class="teamName" style="margin-top: 10px;">Please Select a Form Type!</h1>
-      </div> -->
+      </div>
 
       <div id="onlineMatchFormDiv" style="display: none;">
         <h1 class="teamName" style="margin-top: 10px;">Match</h1>
       </div>
 
-      <div id="inPersonMatchFormDiv"> <!-- style="display: none;"-->
+      <div id="inPersonMatchFormDiv" style="display: none;">
         <h1 class="teamName" style="margin-top: 10px;">Match</h1>
 
         <input type="number" id="inPersonMatchNumInput" class="inputInput" placeholder="Match #" onchange="changeMatchAllianceButtons('inPerson');"></input>
@@ -441,7 +441,7 @@
 
         <p id="inPersonMatchNotif" class="notifText"></p>
 
-        <!-- <div id="inPersonMatchInnerDiv" >
+        <div id="inPersonMatchInnerDiv" >
           <P id="inPersonBlue1Button" class="inPersonAllianceButton blueAllianceButton startGroupedButton groupedButton">One</P>
           <P id="inPersonBlue2Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Two</P>
           <P id="inPersonBlue3Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Three</P>
@@ -449,11 +449,7 @@
           <P id="inPersonRed1Button" class="inPersonAllianceButton redAllianceButton groupedButton">One</P>
           <P id="inPersonRed2Button" class="inPersonAllianceButton redAllianceButton groupedButton">Two</P>
           <P id="inPersonRed3Button" class="inPersonAllianceButton redAllianceButton endGroupedButton groupedButton" style="margin-top: 10px;">Three</P>
-        </div> -->
-
-        <h1 class="teamName" style="margin-top: 10px;">Team Num</h1>
-
-        <input type="number" id="inPersonTeamNumInput" class="inputInput" placeholder="Team #"></input>
+        </div>
 
         <br>
 
@@ -464,115 +460,289 @@
 
         <p id="inPersonLeftCommunityButton" class="pushButton">Left Community</p>
 
-        <h1 class="title">Cones Made</h1>
+        <h1 class="title">Cones</h1>
         <table class="counterTable">
           <tr>
             <td>
-              <h2 class="subTitle">Bottom Row</h2>
-              <h1 id="inPersonAutoConesBotRowCounter" class="counter">0</h1>
-              <p id="inPersonAutoConesBotRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesBotRowCounter', false);">-</p>
-              <p id="inPersonAutoConesBotRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesBotRowCounter', true);">+</p>
+              <h2 class="subTitle"></h2>
             </td>
-
             <td>
-              <h2 class="subTitle">Mid Row</h2>
-              <h1 id="inPersonAutoConesMidRowCounter" class="counter">0</h1>
-              <p id="inPersonAutoConesMidRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesMidRowCounter', false);">-</p>
-              <p id="inPersonAutoConesMidRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesMidRowCounter', true);">+</p>
+              <h2 class="subTitle">Made</h2>
             </td>
-
             <td>
-              <h2 class="subTitle">Top Row</h2>
-              <h1 id="inPersonAutoConesTopRowCounter" class="counter">0</h1>
-              <p id="inPersonAutoConesTopRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesTopRowCounter', false);">-</p>
-              <p id="inPersonAutoConesTopRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesTopRowCounter', true);">+</p>
+              <h2 class="subTitle">Failed</h2>
             </td>
           </tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Top Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonAutoConesTopRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesTopRowMadeCounter', false);">-</p>
+              <h1 id="inPersonAutoConesTopRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonAutoConesTopRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesTopRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonAutoConesTopRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesTopRowMissCounter', false);">-</p>
+              <h1 id="inPersonAutoConesTopRowMissCounter" class="counter">0</h1>
+              <p id="inPersonAutoConesTopRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesTopRowMissCounter', true);">+</p>
+            </td>
+          <tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Mid Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonAutoConesMidRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesMidRowMadeCounter', false);">-</p>
+              <h1 id="inPersonAutoConesMidRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonAutoConesMidRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesMidRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonAutoConesMidRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesMidRowMissCounter', false);">-</p>
+              <h1 id="inPersonAutoConesMidRowMissCounter" class="counter">0</h1>
+              <p id="inPersonAutoConesMidRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesMidRowMissCounter', true);">+</p>
+            </td>
+          <tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Bot Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonAutoConesBotRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesBotRowMadeCounter', false);">-</p>
+              <h1 id="inPersonAutoConesBotRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonAutoConesBotRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesBotRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonAutoConesBotRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesBotRowMissCounter', false);">-</p>
+              <h1 id="inPersonAutoConesBotRowMissCounter" class="counter">0</h1>
+              <p id="inPersonAutoConesBotRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoConesBotRowMissCounter', true);">+</p>
+            </td>
+          <tr>
         </table>
 
-        <h1 class="title">Cubes Made</h1>
+        <h1 class="title">Cubes</h1>
         <table class="counterTable">
           <tr>
             <td>
-              <h2 class="subTitle">Bottom Row</h2>
-              <h1 id="inPersonAutoCubesBotRowCounter" class="counter">0</h1>
-              <p id="inPersonAutoCubesBotRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesBotRowCounter', false);">-</p>
-              <p id="inPersonAutoCubesBotRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesBotRowCounter', true);">+</p>
+              <h2 class="subTitle"></h2>
             </td>
-
             <td>
-              <h2 class="subTitle">Mid Row</h2>
-              <h1 id="inPersonAutoCubesMidRowCounter" class="counter">0</h1>
-              <p id="inPersonAutoCubesMidRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesMidRowCounter', false);">-</p>
-              <p id="inPersonAutoCubesMidRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesMidRowCounter', true);">+</p>
+              <h2 class="subTitle">Made</h2>
             </td>
-
             <td>
-              <h2 class="subTitle">Top Row</h2>
-              <h1 id="inPersonAutoCubesTopRowCounter" class="counter">0</h1>
-              <p id="inPersonAutoCubesTopRowSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesTopRowCounter', false);">-</p>
-              <p id="inPersonAutoCubesTopRowAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesTopRowCounter', true);">+</p>
+              <h2 class="subTitle">Failed</h2>
             </td>
           </tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Top Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonAutoCubesTopRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesTopRowMadeCounter', false);">-</p>
+              <h1 id="inPersonAutoCubesTopRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonAutoCubesTopRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesTopRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonAutoCubesTopRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesTopRowMissCounter', false);">-</p>
+              <h1 id="inPersonAutoCubesTopRowMissCounter" class="counter">0</h1>
+              <p id="inPersonAutoCubesTopRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesTopRowMissCounter', true);">+</p>
+            </td>
+          <tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Mid Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonAutoCubesMidRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesMidRowMadeCounter', false);">-</p>
+              <h1 id="inPersonAutoCubesMidRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonAutoCubesMidRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesMidRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonAutoCubesMidRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesMidRowMissCounter', false);">-</p>
+              <h1 id="inPersonAutoCubesMidRowMissCounter" class="counter">0</h1>
+              <p id="inPersonAutoCubesMidRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesMidRowMissCounter', true);">+</p>
+            </td>
+          <tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Bot Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonAutoCubesBotRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesBotRowMadeCounter', false);">-</p>
+              <h1 id="inPersonAutoCubesBotRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonAutoCubesBotRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesBotRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonAutoCubesBotRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesBotRowMissCounter', false);">-</p>
+              <h1 id="inPersonAutoCubesBotRowMissCounter" class="counter">0</h1>
+              <p id="inPersonAutoCubesBotRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonAutoCubesBotRowMissCounter', true);">+</p>
+            </td>
+          <tr>
         </table>
 
-        <p id="inPersonAutoDockedButton" class="pushButton" onclick="toggleElement('inPersonAutoEngagedButton');">Docked</p>
+        <p class="formSubheader" style="margin-top: 10px;">Ending</p>
+        <p id="inPersonAutoDockFailButton" class="inPersonAutoEndgameButton startGroupedButton groupedButton" onclick="hideElement('inPersonAutoEngagedButton');">Failed Dock</p>
+        <p id="inPersonAutoDockedButton" class="inPersonAutoEndgameButton endGroupedButton groupedButton" onclick="toggleElement('inPersonAutoEngagedButton');">Docked</p>
 
         <p id="inPersonAutoEngagedButton" class="pushButton" style="display: none;">Engaged</p>
 
         <p class="sectionHeader">Teleop</p>
         <hr class="sectionLine">
         
-        <h1 class="title">Cones Made</h1>
+        <h1 class="title">Cones</h1>
         <table class="counterTable">
           <tr>
             <td>
-              <h2 class="subTitle">Bottom Row</h2>
-              <h1 id="inPersonTeleConesBotRowCounter" class="counter">0</h1>
-              <p id="inPersonTeleConesBotRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesBotRowCounter', false);">-</p>
-              <p id="inPersonTeleConesBotRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesBotRowCounter', true);">+</p>
+              <h2 class="subTitle"></h2>
             </td>
-
             <td>
-              <h2 class="subTitle">Mid Row</h2>
-              <h1 id="inPersonTeleConesMidRowCounter" class="counter">0</h1>
-              <p id="inPersonTeleConesMidRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesMidRowCounter', false);">-</p>
-              <p id="inPersonTeleConesMidRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesMidRowCounter', true);">+</p>
+              <h2 class="subTitle">Made</h2>
             </td>
-
             <td>
-              <h2 class="subTitle">Top Row</h2>
-              <h1 id="inPersonTeleConesTopRowCounter" class="counter">0</h1>
-              <p id="inPersonTeleConesTopRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesTopRowCounter', false);">-</p>
-              <p id="inPersonTeleConesTopRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesTopRowCounter', true);">+</p>
+              <h2 class="subTitle">Failed</h2>
             </td>
           </tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Top Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonTeleConesTopRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesTopRowMadeCounter', false);">-</p>
+              <h1 id="inPersonTeleConesTopRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonTeleConesTopRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesTopRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonTeleConesTopRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesTopRowMissCounter', false);">-</p>
+              <h1 id="inPersonTeleConesTopRowMissCounter" class="counter">0</h1>
+              <p id="inPersonTeleConesTopRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesTopRowMissCounter', true);">+</p>
+            </td>
+          <tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Mid Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonTeleConesMidRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesMidRowMadeCounter', false);">-</p>
+              <h1 id="inPersonTeleConesMidRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonTeleConesMidRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesMidRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonTeleConesMidRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesMidRowMissCounter', false);">-</p>
+              <h1 id="inPersonTeleConesMidRowMissCounter" class="counter">0</h1>
+              <p id="inPersonTeleConesMidRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesMidRowMissCounter', true);">+</p>
+            </td>
+          <tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Bot Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonTeleConesBotRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesBotRowMadeCounter', false);">-</p>
+              <h1 id="inPersonTeleConesBotRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonTeleConesBotRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesBotRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonTeleConesBotRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesBotRowMissCounter', false);">-</p>
+              <h1 id="inPersonTeleConesBotRowMissCounter" class="counter">0</h1>
+              <p id="inPersonTeleConesBotRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleConesBotRowMissCounter', true);">+</p>
+            </td>
+          <tr>
         </table>
-
-        <h1 class="title">Cubes Made</h1>
+        
+        <h1 class="title">Cubes</h1>
         <table class="counterTable">
           <tr>
             <td>
-              <h2 class="subTitle">Bottom Row</h2>
-              <h1 id="inPersonTeleCubesBotRowCounter" class="counter">0</h1>
-              <p id="inPersonTeleCubesBotRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesBotRowCounter', false);">-</p>
-              <p id="inPersonTeleCubesBotRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesBotRowCounter', true);">+</p>
+              <h2 class="subTitle"></h2>
             </td>
-
             <td>
-              <h2 class="subTitle">Mid Row</h2>
-              <h1 id="inPersonTeleCubesMidRowCounter" class="counter">0</h1>
-              <p id="inPersonTeleCubesMidRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesMidRowCounter', false);">-</p>
-              <p id="inPersonTeleCubesMidRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesMidRowCounter', true);">+</p>
+              <h2 class="subTitle">Made</h2>
             </td>
-
             <td>
-              <h2 class="subTitle">Top Row</h2>
-              <h1 id="inPersonTeleCubesTopRowCounter" class="counter">0</h1>
-              <p id="inPersonTeleCubesTopRowSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesTopRowCounter', false);">-</p>
-              <p id="inPersonTeleCubesTopRowAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesTopRowCounter', true);">+</p>
+              <h2 class="subTitle">Failed</h2>
             </td>
           </tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Top Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonTeleCubesTopRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesTopRowMadeCounter', false);">-</p>
+              <h1 id="inPersonTeleCubesTopRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonTeleCubesTopRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesTopRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonTeleCubesTopRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesTopRowMissCounter', false);">-</p>
+              <h1 id="inPersonTeleCubesTopRowMissCounter" class="counter">0</h1>
+              <p id="inPersonTeleCubesTopRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesTopRowMissCounter', true);">+</p>
+            </td>
+          <tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Mid Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonTeleCubesMidRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesMidRowMadeCounter', false);">-</p>
+              <h1 id="inPersonTeleCubesMidRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonTeleCubesMidRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesMidRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonTeleCubesMidRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesMidRowMissCounter', false);">-</p>
+              <h1 id="inPersonTeleCubesMidRowMissCounter" class="counter">0</h1>
+              <p id="inPersonTeleCubesMidRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesMidRowMissCounter', true);">+</p>
+            </td>
+          <tr>
+            
+          <tr>
+            <td class="rowName">
+              <h2 class="rowName">Bot Row</h2>
+            </td>
+
+            <td>
+              <p id="inPersonTeleCubesBotRowMadeSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesBotRowMadeCounter', false);">-</p>
+              <h1 id="inPersonTeleCubesBotRowMadeCounter" class="counter">0</h1>
+              <p id="inPersonTeleCubesBotRowMadeAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesBotRowMadeCounter', true);">+</p>
+            </td>
+
+            <td>
+              <p id="inPersonTeleCubesBotRowMissSubButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesBotRowMissCounter', false);">-</p>
+              <h1 id="inPersonTeleCubesBotRowMissCounter" class="counter">0</h1>
+              <p id="inPersonTeleCubesBotRowMissAddButton" class="button counterButton" onclick="changeCounter('inPersonTeleCubesBotRowMissCounter', true);">+</p>
+            </td>
+          <tr>
         </table>
 
         <h1 class="title" style="margin-top: 10px;">Times Almost Tipped Over</h1>
@@ -580,15 +750,15 @@
           <tr>
             <td>
               <h2 class="subTitle">Non-Charge Station</h2>
-              <h1 id="inPersonNonChargeTipCounter" class="counter">0</h1>
               <p id="inPersonNonChargeTipSubButton" class="button counterButton" onclick="changeCounter('inPersonNonChargeTipCounter', false);">-</p>
+              <h1 id="inPersonNonChargeTipCounter" class="counter">0</h1>
               <p id="inPersonNonChargeTipAddButton" class="button counterButton" onclick="changeCounter('inPersonNonChargeTipCounter', true);">+</p>
             </td>
 
             <td>
               <h2 class="subTitle">Charge Station</h2>
-              <h1 id="inPersonChargeTipCounter" class="counter">0</h1>
               <p id="inPersonChargeTipSubButton" class="button counterButton" onclick="changeCounter('inPersonChargeTipCounter', false);">-</p>
+              <h1 id="inPersonChargeTipCounter" class="counter">0</h1>
               <p id="inPersonChargeTipAddButton" class="button counterButton" onclick="changeCounter('inPersonChargeTipCounter', true);">+</p>
             </td>
           </tr>
@@ -601,15 +771,19 @@
 
         <br>
 
-        <p id="inPersonTeleParkedButton" class="inPersonTeleEndgameButton startGroupedButton groupedButton" onclick="hideElement('inPersonTeleEngagedButton');" style="margin-top: 10px;">Parked</p>
+        <p class="formSubheader" style="margin-top: 10px;">Endgame</p>
+        <p id="inPersonTeleParkedButton" class="inPersonTeleEndgameButton startGroupedButton groupedButton" onclick="hideElement('inPersonTeleEngagedButton');">Parked</p>
+        <p id="inPersonTeleFailedDockButton" class="inPersonTeleEndgameButton groupedButton" onclick="hideElement('inPersonTeleEngagedButton');">Failed Dock</p>
         <p id="inPersonTeleDockedButton" class="inPersonTeleEndgameButton endGroupedButton groupedButton" onclick="toggleElement('inPersonTeleEngagedButton');">Docked</p>
 
         <p id="inPersonTeleEngagedButton" class="pushButton" style="display: none;">Engaged</p>
 
         <p class="sectionHeader">Other Notes</p>
         <hr class="sectionLine">
-
-        <p id="inPersonBrokeDownButton" class="matchInPersonTagButton groupedButton startGroupedButton">Broke Down</p>
+        
+        <p class="formSubheader" style="margin-top:10px;">Failures</p>
+        <p id="inPersonMechFailButton" class="matchInPersonTagButton groupedButton startGroupedButton">Mech Fail</p>
+        <p id="inPersonCommFailButton" class="matchInPersonTagButton groupedButton">Comm Fail</p>
         <p id="inPersonNoShowButton" class="matchInPersonTagButton groupedButton endGroupedButton">No Show</p>
 
         <p class="formSubheader">Penalties</p>
@@ -621,7 +795,9 @@
 
         <br>
 
-        <p id="inPersonRedCardButton" class="pushButton" style="margin-top:10px;">Red Card</p>
+        <p class="formSubheader" style="margin-top:10px;">Carded</p>
+        <p id="inPersonYellowCardButton" class="inPersonMatchCardButton startGroupedButton groupedButton">Yellow</p>
+        <p id="inPersonRedCardButton" class="inPersonMatchCardButton endGroupedButton groupedButton">Red</p>
 
         <br>
 
