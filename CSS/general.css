@@ -9,7 +9,7 @@
 }
 
 #teamRankingsTable :not([class]) {
-    font-size: 20px;
+    font-size: 12px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -25,7 +25,7 @@
 .teamRankingsHeader {
     padding: 0;
     margin: auto;
-    font-size: 30px;
+    font-size: 20px;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     border-bottom: 2px solid black;
 }

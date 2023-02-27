@@ -187,16 +187,14 @@
 
 .redAllianceButton {
   background-color: #ff8585;
-  font-size: 18px;
 }
 
 .selectedButton {
   background-color: #787878;
-  font-size: 18px;
 }
 
 .counter {
-  font-size: 40px;
+  font-size: 14vw;
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
@@ -206,11 +204,10 @@
 
 .counterButton {
   vertical-align: middle;
-  width: 30px;
-  height: 35px;
-  line-height: 35px;
-  margin-left: 10px;
-  margin-right: 10px;
+  width: 6vw;
+  height: 6vw;
+  line-height: 6vw;
+  border-radius: 50%;
 }
 
 .counterTable {
@@ -226,11 +223,12 @@
 }
 
 .rowName {
+  flex: 0;
   margin: 0;
   padding: 0;
   text-align: center;
-  line-height: 50px;
-  font-size: 30px;
+  line-height: 6vw;
+  font-size: 6vw;
   font-weight: bold;
   vertical-align: middle;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
