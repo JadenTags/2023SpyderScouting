@@ -1,4 +1,5 @@
 var testDate = new Date("2022-03-19"); //IF NO TEST LEAVE DATE BLANK ELSE TYPE TEST DATE IN XX-XX-XX FORM
 var sheetName = "TEST"; //IF NO COMP LEAVE AS "TEST"
+var matchNum = 12; //LEAVE UNINITIALIZED IF COMP
 
 localStorage.clear() //IF TESTING LEAVE UNCOMMENTED

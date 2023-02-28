@@ -759,7 +759,8 @@ function toggleGamePiece(gpId) {
 async function changeMatchAllianceButtons(selector) {
     var orderNum = curOrderNum++;
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
-    var match = getOrder(orderNum)[parseInt(document.getElementById(selector + "MatchNumInput").value) - 1];
+    var match = getOrder(orderNum).filter(x => x.comp_level == "qm" && x.match_number == parseInt(document.getElementById(selector + "MatchNumInput").value))[0]; //&& x.comp_level == null 
+    console.log(match)
     
     if (!match) {
         hideElement(selector + "MatchInnerDiv");
@@ -813,7 +814,20 @@ async function storeForms() {
     };
 }
 
+async function fillOnlineMatchDropdown() {
+    await waitGlobalData();
+
+    var orderNum = curOrderNum++;
+    await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
+    var matches = getOrder(orderNum).filter(x => x.comp_level == "qm");
+
+    orderNum = curOrderNum++;
+    await getSheetData(config.matchGSID, sheetName, orderNum);
+    console.log(getOrder(orderNum));
+}
+
 storeForms();
+fillOnlineMatchDropdown();
 activatePin("field", "fieldPin");
 activatePin("fieldChanges", "fieldPinChanges");
 cycleCheckDropdown("pre");
