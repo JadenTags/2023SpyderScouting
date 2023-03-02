@@ -453,7 +453,7 @@
       <div id="onlineMatchFormDiv" style="display: none;">
         <h1 class="teamName" style="margin-top: 10px;">Match</h1>
 
-        <select id="onlineMatchTeamNumDropdown" class="teamNumDropdown"></select>
+        <select id="onlineMatchNumInput" class="teamNumDropdown" onchange="changeMatchAllianceButtons('online');"></select>
 
         <br>
 
@@ -889,7 +889,7 @@
   
           <br>
   
-          <p id="matchonlineBlue1SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineBlue1');">Submit</p>
+          <p id="matchonlineBlue1SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineBlue1');">Submit All</p>
           <p id="matchonlineBlue1UndoSubmitButton" class="button" onclick="undoSubmit('matchonlineBlue1');"
             style="display: none;">Undo</p>
         </div>
@@ -1306,7 +1306,7 @@
  
           <br>
  
-          <p id="matchonlineBlue2SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineBlue2');">Submit</p>
+          <p id="matchonlineBlue2SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineBlue2');">Submit All</p>
           <p id="matchonlineBlue2UndoSubmitButton" class="button" onclick="undoSubmit('matchonlineBlue2');"
             style="display: none;">Undo</p>
         </div>
@@ -1723,7 +1723,7 @@
  
           <br>
  
-          <p id="matchonlineBlue3SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineBlue3');">Submit</p>
+          <p id="matchonlineBlue3SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineBlue3');">Submit All</p>
           <p id="matchonlineBlue3UndoSubmitButton" class="button" onclick="undoSubmit('matchonlineBlue3');"
             style="display: none;">Undo</p>
         </div>
@@ -2140,7 +2140,7 @@
  
           <br>
  
-          <p id="matchonlineRed1SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineRed1');">Submit</p>
+          <p id="matchonlineRed1SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineRed1');">Submit All</p>
           <p id="matchonlineRed1UndoSubmitButton" class="button" onclick="undoSubmit('matchonlineRed1');"
             style="display: none;">Undo</p>
         </div>
@@ -2557,7 +2557,7 @@
  
           <br>
  
-          <p id="matchonlineRed2SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineRed2');">Submit</p>
+          <p id="matchonlineRed2SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineRed2');">Submit All</p>
           <p id="matchonlineRed2UndoSubmitButton" class="button" onclick="undoSubmit('matchonlineRed2');"
             style="display: none;">Undo</p>
         </div>
@@ -2974,7 +2974,7 @@
  
           <br>
  
-          <p id="matchonlineRed3SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineRed3');">Submit</p>
+          <p id="matchonlineRed3SubmitButton" class="submitButton" onclick="secureSubmit('matchonlineRed3');">Submit All</p>
           <p id="matchonlineRed3UndoSubmitButton" class="button" onclick="undoSubmit('matchonlineRed3');"
             style="display: none;">Undo</p>
         </div>
@@ -3426,7 +3426,7 @@
 
     <div id="matchRefreshDiv" class="innerDiv" style="display:none;">
       <p class="title">Thank You For Submitting A Form!</p>
-      <p id="matchRefreshButton" class="button" onclick="refreshForm('match');" style="margin-top: 10px;">Submit Another
+      <p id="matchRefreshButton" class="button" onclick="refreshForm('match');fillOnlineMatchDropdown();" style="margin-top: 10px;">Submit Another
         Form</p>
     </div>
   </div>

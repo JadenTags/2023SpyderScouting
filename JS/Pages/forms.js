@@ -6,7 +6,9 @@ var lockedDivs = {
     "pitDiv": "unlocked",
     "matchDiv": "unlocked",
 };
+var submittedForms = {};
 var curDiv = "mainDiv";
+var onlineSelectedMatch;
 
 async function fillTeamDropdown(selector) {
     var dropdown = document.getElementById(selector + "TeamNumDropdown");
@@ -598,7 +600,7 @@ function submitForm(selector) {
         if (end) {
             return true;
         }
-
+        return;
         if (noData) {
             var counter = 0;
 
@@ -621,6 +623,32 @@ function submitForm(selector) {
 
         appendData(config.matchGSID, sheetName, form);
         lockDiv(lockedDivs, curDiv, "matchDiv");
+    } else if (selector.includes("matchonline")) {
+        //MATCH NUMBER
+        form.push(document.getElementById("onlineMatchNumInput").value);
+
+        //TEAM NUMBER
+        var teamNum;
+        Array.from(document.getElementsByClassName("onlineAllianceButton")).forEach(button => {
+            if (button.value) {
+                teamNum = button.innerHTML;
+            }
+        });
+        if (isNaN(parseInt(teamNum))) {
+            console.log("gells")
+            changeNotif("onlineTeamNumNotif", "You Did Not Select a Valid Team!");
+            end = true;
+        } else {
+            changeNotif("onlineTeamNumNotif", "");
+        }
+        form.push(teamNum);
+        
+        //OTHER NOTES
+        form.push(document.getElementById("matchInPersonExtraNotes").value);
+
+        if (end) {
+            return true;
+        }
     }
 }
 
@@ -760,7 +788,6 @@ async function changeMatchAllianceButtons(selector) {
     var orderNum = curOrderNum++;
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
     var match = getOrder(orderNum).filter(x => x.comp_level == "qm" && x.match_number == parseInt(document.getElementById(selector + "MatchNumInput").value))[0]; //&& x.comp_level == null 
-    console.log(match)
     
     if (!match) {
         hideElement(selector + "MatchInnerDiv");
@@ -777,7 +804,27 @@ async function changeMatchAllianceButtons(selector) {
         var counter = 1;
 
         alliance.team_keys.forEach(team => {
-            document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button").innerHTML = team.replace("frc", "");
+            if (selector == "online") {
+                if (submittedForms[document.getElementById("onlineMatchNumInput").value].includes(team.replace("frc", ""))) {
+                    let button = document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter + "Button");
+                    button.innerHTML = "OK";
+                    button.setAttribute("onclick", "return;" + button.getAttribute("onclick"));
+
+                    if (button.getAttribute("class").includes("selectedButton")) {
+                        togglePushButton(selector + key[0].toUpperCase() + key.slice(1) + counter + "Button");
+                        hideElement(selector + key[0].toUpperCase() + key.slice(1) + counter + "FormDiv");
+                        showElement("onlineSelectFormDiv");
+                    }
+
+                    counter++;
+                } else {
+                    let button = document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button");
+                    button.innerHTML = team.replace("frc", "");
+                    button.setAttribute("onclick", button.getAttribute("onclick").replace("return;", ""));
+                }
+            } else {
+                document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button").innerHTML = team.replace("frc", "");
+            }
         });
     });
     
@@ -816,6 +863,7 @@ async function storeForms() {
 
 async function fillOnlineMatchDropdown() {
     await waitGlobalData();
+    var dropdown = document.getElementById("onlineMatchNumInput");
 
     var orderNum = curOrderNum++;
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
@@ -823,12 +871,67 @@ async function fillOnlineMatchDropdown() {
 
     orderNum = curOrderNum++;
     await getSheetData(config.matchGSID, sheetName, orderNum);
-    console.log(getOrder(orderNum));
+    var forms = getOrder(orderNum).splice(1);
+    matches.forEach(match => {
+        submittedForms[match.match_number] = [];
+    });
+
+    forms.forEach(form => {
+        submittedForms[form[0]].push(form[1]);
+    });
+
+    if (dropdown.childNodes.length == 0) {
+        Object.keys(submittedForms).forEach(key => {
+            if (submittedForms[key].length < 6) {
+                let option = document.createElement("option");
+                option.value = key;
+                option.innerHTML = key;
+                dropdown.appendChild(option);
+            }
+        });
+    } else {
+        dropdown.childNodes.forEach(node => {
+            if (submittedForms[node.innerHTML].length < 6 || !Object.keys(submittedForms).includes(node.innerHTML)) {
+                node.remove();
+            }
+        });
+
+        Object.keys(submittedForms).forEach(key => {
+            if (submittedForms[key].length < 6 && !Array.from(dropdown.childNodes).map(x => x.innerHTML).includes(key)) {
+                let option = document.createElement("option");
+                option.value = key;
+                option.innerHTML = key;
+                
+                var foundNode;
+                dropdown.childNodes.forEach(node => {
+                    if (parseInt(node.innerHTML) > parseInt(key) && !foundNode) {
+                        foundNode = node;
+                    }
+                });
+
+                if (!foundNode) {
+                    dropdown.appendChild(option);
+                } else {
+                    dropdown.insertBefore(option, foundNode);
+                }
+            }
+        });
+    }
+    
+    changeMatchAllianceButtons('online');
+}
+
+async function cycleCheckOnlineMatchDropdown() {
+    while (true) {
+        await fillOnlineMatchDropdown();
+        
+        await wait(10000);
+    }
 }
 
 storeForms();
-fillOnlineMatchDropdown();
 activatePin("field", "fieldPin");
 activatePin("fieldChanges", "fieldPinChanges");
 cycleCheckDropdown("pre");
 cycleCheckDropdown("pit");
+cycleCheckOnlineMatchDropdown();
