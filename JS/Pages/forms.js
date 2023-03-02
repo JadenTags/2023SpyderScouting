@@ -629,7 +629,6 @@ function submitForm(selector) {
                 autoEnd = button.innerHTML;
             }
         });
-        console.log(autoEnd == null)
         form.push(autoEnd);
 
         //AUTO ENGAGED
@@ -708,7 +707,7 @@ function submitForm(selector) {
         //PENS
         form.push(document.getElementById("penaltiesInput").value);
 
-        if (isNaN(parseInt(form[form.length - 1]))) {
+        if (isNaN(parseInt(form[form.length - 1])) && form[form.length - 1] != "") {
             changeNotif("penaltiesNotifText", "That Is Not A Valid Number!");
             end = true;
         } else {
@@ -730,6 +729,7 @@ function submitForm(selector) {
         //OTHER NOTES
         form.push(document.getElementById("matchInPersonExtraNotes").value);
 
+        console.log(end)
         if (end) {
             return true;
         }
@@ -745,6 +745,7 @@ function submitForm(selector) {
                 }
             });
         }
+        console.log("e")
 
         if (failure) {
             var counter = 0;
