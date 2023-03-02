@@ -30,7 +30,7 @@
   <p class="requiresCompElement sidebarButton">General Info</p>
   <p class="sidebarButton selectedButton">Forms</p>
   <p class="sidebarButton">Displays</p>
-  <p class="sidebarButton">Recruiting</p>
+  <!-- <p class="sidebarButton">Recruiting</p> -->
 </div>
 
 <body style="overflow: auto;">
@@ -439,12 +439,13 @@
 
   <div id="matchDiv" class="subNavDiv" style="display:none">
     <div id="matchFormDiv" class="innerDiv">
-      <P id="inPersonMatchFormButton" class="formTypeButton startGroupedButton groupedButton"
+      <P id="inPersonMatchFormButton" class="formTypeButton pushButton"
         onclick="hideElement('mainMatchFormDiv');hideElement('onlineMatchFormDiv');toggleElement('inPersonMatchFormDiv'); if (document.getElementById('inPersonMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">
         In-Person</P>
-      <P id="onlineMatchFormButton" class="formTypeButton endGroupedButton groupedButton" style="margin-top: 10px;"
-        onclick="hideElement('mainMatchFormDiv');hideElement('inPersonMatchFormDiv');toggleElement('onlineMatchFormDiv'); if (document.getElementById('onlineMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">
-        Online</P>
+         <!--startGroupedButton groupedButton-->
+      <!-- <P id="onlineMatchFormButton" class="formTypeButton endGroupedButton groupedButton" style="margin-top: 10px;"
+      onclick="cycleCheckOnlineMatchDropdown();hideElement('mainMatchFormDiv');hideElement('inPersonMatchFormDiv');toggleElement('onlineMatchFormDiv'); if (document.getElementById('onlineMatchFormDiv').style.display == 'none') {showElement('mainMatchFormDiv')}">
+        Online</P> -->
 
       <div id="mainMatchFormDiv">
         <h1 class="teamName" style="margin-top: 10px;">Please Select a Form Type!</h1>

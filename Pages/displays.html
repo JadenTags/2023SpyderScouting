@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width">
   <title>Team Spyder Scouting</title>
   <link href="../CSS/generalStyle.css" rel="stylesheet" type="text/css"/>
+  <link href="../CSS/displays.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <div id="nav">
@@ -17,14 +18,28 @@
   </div>
 </div>
 
+<div id="subNav">
+  <p id="teamSearchButton" class="subNavButton">Team Search</p>
+</div>
+
 <div id="sidebar">
   <p class="requiresCompElement sidebarButton">General Info</p>
   <p class="sidebarButton">Forms</p>
   <p class="sidebarButton selectedButton">Displays</p>
-  <p class="sidebarButton">Recruiting</p>
+  <!-- <p class="sidebarButton">Recruiting</p> -->
 </div>
 
 <body>
+  <div id="mainDiv" class="subNavDiv">
+    <h1 class="title">Scouting Displays</h1>
+
+    <p class="generalText">THE DATA VISUALIZERS</p>
+  </div>
+
+  
+  <div id="teamSearchDiv" class="subNavDiv" style="display: none;">
+
+  </div>
 </body>
 
 <script src="../JS/config.js"></script>
@@ -35,6 +50,6 @@
 <script src="../JS/Functions/tbaFunctions.js"></script>
 <script src="../JS/Functions/globalDataFunctions.js"></script>
 <script src="../JS/Functions/buttonFunctions.js"></script>
-<script src="../JS/Pages/index.js"></script>
+<script src="../JS/Pages/displays.js"></script>
 
 </html>

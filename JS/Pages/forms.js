@@ -9,6 +9,7 @@ var lockedDivs = {
 var submittedForms = {};
 var curDiv = "mainDiv";
 var onlineSelectedMatch;
+var cyclingOnline;
 
 async function fillTeamDropdown(selector) {
     var dropdown = document.getElementById(selector + "TeamNumDropdown");
@@ -592,7 +593,139 @@ function submitForm(selector) {
         }
         form.push(teamNum);
 
-        //ADD ALL
+        //LEFT COMMUNITY
+        form.push(document.getElementById("inPersonLeftCommunityButton").value == true);
+
+        //AUTO CONES
+        var autoCones = [];
+        ["Top", "Mid", "Bot"].forEach(row => {
+            let record = [];
+
+            ["Made", "Miss"].forEach(shot => {
+                record.push(document.getElementById("inPersonAutoCones" + row + "Row" + shot + "Counter").innerHTML);
+            });
+
+            autoCones.push(record);
+        });
+        form.push(JSON.stringify(autoCones));
+
+        //AUTO CUBES
+        var autoCubes = [];
+        ["Top", "Mid", "Bot"].forEach(row => {
+            let record = [];
+
+            ["Made", "Miss"].forEach(shot => {
+                record.push(document.getElementById("inPersonAutoCubes" + row + "Row" + shot + "Counter").innerHTML);
+            });
+
+            autoCubes.push(record);
+        });
+        form.push(JSON.stringify(autoCubes));
+        
+        //AUTO ENDING
+        var autoEnd;
+        Array.from(document.getElementsByClassName("inPersonAutoEndgameButton")).forEach(button => {
+            if (button.value) {
+                autoEnd = button.innerHTML;
+            }
+        });
+        console.log(autoEnd == null)
+        form.push(autoEnd);
+
+        //AUTO ENGAGED
+        if (form[form.length - 1] == "Docked") {
+            form.push(document.getElementById("inPersonAutoEngagedButton").value == true);
+        } else {
+            form.push("");
+        }
+
+        //TELE CONES
+        var teleCones = [];
+        ["Top", "Mid", "Bot"].forEach(row => {
+            let record = [];
+
+            ["Made", "Miss"].forEach(shot => {
+                record.push(document.getElementById("inPersonTeleCones" + row + "Row" + shot + "Counter").innerHTML);
+            });
+
+            teleCones.push(record);
+        });
+        form.push(JSON.stringify(teleCones));
+
+        //TELE CUBES
+        var teleCubes = [];
+        ["Top", "Mid", "Bot"].forEach(row => {
+            let record = [];
+
+            ["Made", "Miss"].forEach(shot => {
+                record.push(document.getElementById("inPersonTeleCubes" + row + "Row" + shot + "Counter").innerHTML);
+            });
+
+            teleCubes.push(record);
+        });
+        form.push(JSON.stringify(teleCubes));
+
+        //TIPPED OVER NON CS
+        form.push(document.getElementById("inPersonNonChargeTipCounter").innerHTML);
+
+        //TIPPED OVER CS
+        form.push(document.getElementById("inPersonChargeTipCounter").innerHTML);
+
+        //PLAYSTYLE
+        var playstyle;
+        Array.from(document.getElementsByClassName("inPersonTelePlaystyleButton")).forEach(button => {
+            if (button.value) {
+                playstyle = button.innerHTML;
+            }
+        });
+        form.push(playstyle);
+        
+        //ENDGAME
+        var endgame;
+        Array.from(document.getElementsByClassName("inPersonTeleEndgameButton")).forEach(button => {
+            if (button.value) {
+                endgame = button.innerHTML;
+            }
+        });
+        form.push(endgame);
+
+        //TELE ENGAGED
+        if (form[form.length - 1] == "Docked") {
+            form.push(document.getElementById("inPersonTeleEngagedButton").value == true);
+        } else {
+            form.push("");
+        }
+
+        //FAILURE
+        var failure;
+        Array.from(document.getElementsByClassName("matchInPersonTagButton")).forEach(button => {
+            if (button.value) {
+                failure = button.innerHTML;
+            }
+        });
+        form.push(failure);
+
+        //PENS
+        form.push(document.getElementById("penaltiesInput").value);
+
+        if (isNaN(parseInt(form[form.length - 1]))) {
+            changeNotif("penaltiesNotifText", "That Is Not A Valid Number!");
+            end = true;
+        } else {
+            changeNotif("penaltiesNotifText", "");
+        }
+
+        //CARDED
+        var carded;
+        Array.from(document.getElementsByClassName("inPersonMatchCardButton")).forEach(button => {
+            if (button.value) {
+                carded = button.innerHTML;
+            }
+        });
+        form.push(carded);
+
+        //PLAYED AGGRESSIVE
+        form.push(document.getElementById("inPersonAggressiveButton").value == true);
 
         //OTHER NOTES
         form.push(document.getElementById("matchInPersonExtraNotes").value);
@@ -600,12 +733,24 @@ function submitForm(selector) {
         if (end) {
             return true;
         }
-        return;
-        if (noData) {
+        
+        if (playstyle == "Defensive") {
             var counter = 0;
 
             form = form.map(x => {
-                if ([0, 1, 12, 13].includes(counter++)) {
+                if ([0, 1, 12, 19].includes(counter++)) {
+                    return x;
+                } else {
+                    return "";
+                }
+            });
+        }
+
+        if (failure) {
+            var counter = 0;
+
+            form = form.map(x => {
+                if ([0, 1, 15, 19].includes(counter++)) {
                     return x;
                 } else {
                     return "";
@@ -614,7 +759,7 @@ function submitForm(selector) {
         }
 
         form = form.map(x => {
-            if (x == "" && typeof x != typeof true) {
+            if (["", undefined].includes(x) && typeof x != typeof true) {
                 return "none";
             } else {
                 return x;
@@ -635,7 +780,6 @@ function submitForm(selector) {
             }
         });
         if (isNaN(parseInt(teamNum))) {
-            console.log("gells")
             changeNotif("onlineTeamNumNotif", "You Did Not Select a Valid Team!");
             end = true;
         } else {
@@ -855,19 +999,23 @@ async function storeForms() {
             await wait(100);
         }
 
-        console.log(form)
-        console.log(document.getElementById(form + "FormDiv"))
         formDivs[form] = document.getElementById(form + "FormDiv").cloneNode(true);
     };
 }
 
 async function fillOnlineMatchDropdown() {
     await waitGlobalData();
+
     var dropdown = document.getElementById("onlineMatchNumInput");
 
     var orderNum = curOrderNum++;
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
     var matches = getOrder(orderNum).filter(x => x.comp_level == "qm");
+    
+    orderNum = curOrderNum++;
+    await getSheetData(config.onlineMatchScoutGSID, sheetName, orderNum);
+    var selectedMatches = getOrder(orderNum)[0];
+    matches = matches.filter(x => !selectedMatches.includes(x.match_number.toString()));
 
     orderNum = curOrderNum++;
     await getSheetData(config.matchGSID, sheetName, orderNum);
@@ -877,7 +1025,9 @@ async function fillOnlineMatchDropdown() {
     });
 
     forms.forEach(form => {
-        submittedForms[form[0]].push(form[1]);
+        if (Object.keys(submittedForms).includes(form[0])) {
+            submittedForms[form[0]].push(form[1]);
+        }
     });
 
     if (dropdown.childNodes.length == 0) {
@@ -890,43 +1040,106 @@ async function fillOnlineMatchDropdown() {
             }
         });
     } else {
+        var removeCurMatch;
+        var curMatch = document.getElementById("onlineMatchNumInput").value;
+        var toRemove = [];
+
+        if (!Object.keys(submittedForms).includes(curMatch) || selectedMatches.includes(curMatch)) {
+            removeCurMatch = true;
+        }
+
         dropdown.childNodes.forEach(node => {
-            if (submittedForms[node.innerHTML].length < 6 || !Object.keys(submittedForms).includes(node.innerHTML)) {
-                node.remove();
+            if (submittedForms[node.innerHTML].length >= 6 || !Object.keys(submittedForms).includes(node.innerHTML) || (parseInt(node.innerHTML) == curMatch && removeCurMatch && curMatch != onlineSelectedMatch)) {
+                toRemove.push(node);
             }
         });
 
-        Object.keys(submittedForms).forEach(key => {
-            if (submittedForms[key].length < 6 && !Array.from(dropdown.childNodes).map(x => x.innerHTML).includes(key)) {
-                let option = document.createElement("option");
-                option.value = key;
-                option.innerHTML = key;
-                
-                var foundNode;
-                dropdown.childNodes.forEach(node => {
-                    if (parseInt(node.innerHTML) > parseInt(key) && !foundNode) {
-                        foundNode = node;
-                    }
-                });
+        toRemove.forEach(node => {
+            node.remove();
+        })
 
-                if (!foundNode) {
-                    dropdown.appendChild(option);
-                } else {
-                    dropdown.insertBefore(option, foundNode);
-                }
+        Object.keys(submittedForms).forEach(key => {
+            if (submittedForms[key].length < 6 && !Array.from(dropdown.childNodes).map(x => x.innerHTML).includes(key) && !selectedMatches.includes(key)) {
+                insertOnlineMatch(key, dropdown);
             }
         });
     }
     
+    storeSelectedMatch();
     changeMatchAllianceButtons('online');
 }
 
 async function cycleCheckOnlineMatchDropdown() {
+    timeOnline();
+    cyclingOnline = true;
+
     while (true) {
+        if (!document.getElementById("onlineMatchFormButton").getAttribute("class").includes("selectedButton") || document.getElementById("matchDiv").style.display == "none") {
+            cyclingOnline = false;
+            document.getElementById("onlineMatchNumInput").innerHTML = "";
+            storeSelectedMatch();
+            break;
+        }
+
         await fillOnlineMatchDropdown();
         
         await wait(10000);
     }
+}
+
+async function timeOnline() {
+    await wait(1200000);
+
+    if (cyclingOnline) {
+        eval(document.getElementById("onlineMatchFormButton").getAttribute("onclick"));
+    }
+}
+
+function insertOnlineMatch(key, dropdown) {
+    let option = document.createElement("option");
+    option.value = key;
+    option.innerHTML = key;
+    
+    var foundNode;
+    dropdown.childNodes.forEach(node => {
+        if (parseInt(node.innerHTML) > parseInt(key) && !foundNode) {
+            foundNode = node;
+        }
+    });
+
+    if (!foundNode) {
+        dropdown.appendChild(option);
+    } else {
+        dropdown.insertBefore(option, foundNode);
+    }
+}
+
+async function storeSelectedMatch() {
+    var newlySelectedMatch = document.getElementById("onlineMatchNumInput").value;
+
+    var orderNum = curOrderNum++;
+    await getSheetData(config.onlineMatchScoutGSID, sheetName, orderNum);
+    var selectedMatches = getOrder(orderNum);
+
+    if (selectedMatches == "none") {
+        selectedMatches = [];
+    } else {
+        selectedMatches = selectedMatches[0];
+    }
+
+    selectedMatches = selectedMatches.filter(x => x != onlineSelectedMatch);
+    selectedMatches.push(newlySelectedMatch);
+    await clearData(config.onlineMatchScoutGSID, sheetName);
+    appendData(config.onlineMatchScoutGSID, sheetName, selectedMatches);
+
+    onlineSelectedMatch = newlySelectedMatch;
+}
+
+//ONLY USE TO FILL ASSIGNMENTS BEFORE A COMP
+async function fillPreAssignments() {
+    var orderNum = curOrderNum++;
+    await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/teams", orderNum);
+    appendData(config.assignmentsGSID, "pre" + sheetName, getOrder(orderNum).map(x => x.key.replace("frc", "")));
 }
 
 storeForms();
@@ -934,4 +1147,3 @@ activatePin("field", "fieldPin");
 activatePin("fieldChanges", "fieldPinChanges");
 cycleCheckDropdown("pre");
 cycleCheckDropdown("pit");
-cycleCheckOnlineMatchDropdown();
