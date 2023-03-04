@@ -1,4 +1,54 @@
 .generalText {
-    font-size: 18px;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
+  font-size: 18px;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.inputInput{
+  display: inline-block;
+  border-radius: 5px 5px 5px 5px;
+  width: 20%;
+  border: 1px solid #c5c7c5;
+  text-align: center;
+}
+
+.spacedElem {
+  margin-top: 10px;
+}
+
+.selectedButton {
+  background-color: #787878;
+}
+
+#teamSearchTeamName {
+  display: inline;
+}
+
+#teamSearchLocationInformation {
+  display: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 15px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#teamSearchAdditionalInformation {
+  display: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 20px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#teamSearchTeamNum {
+  color:#787878;
+  display: inline;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}

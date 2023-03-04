@@ -80,7 +80,7 @@ function toggleButton(buttonId) {
         button.setAttribute("class", button.getAttribute("class").replace("selectedButton ", ""));
     } else {
         button.setAttribute("class", "selectedButton " + button.getAttribute("class"));
-
+        
         pressedButtons[buttonId] = button.getAttribute("onclick");
 
         button.setAttribute("onclick", "");
