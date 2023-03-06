@@ -172,15 +172,15 @@ function submitForm(selector) {
         //NO AUTO
         form.push(document.getElementById("noAutoButton").value == true);
 
-        if (!form[5]) {
+        if (!form[form.length - 1]) {
             //CAN CREATE AUTO
             form.push(document.getElementById("canCreateAutoButton").value == true);
 
-            if (form[6] ) {
+            if (form[form.length - 1] ) {
                 //AUTO CREATING TIME
                 form.push(document.getElementById("matchInput").value);
 
-                if (isNaN(parseInt(form[7]))) {
+                if (isNaN(parseInt(form[form.length - 1]))) {
                     showElement("preMatchesNotifText");
                     document.getElementById("matchInput").style.border = "1px solid #eb776e";
                     end = true;
@@ -200,7 +200,7 @@ function submitForm(selector) {
             //AUTO DOCKING
             form.push(document.getElementById("canDockButtonAuto").value == true);
 
-            if (form[9]) {
+            if (form[form.length - 1]) {
                 //AUTO ENGAGING
                 form.push(document.getElementById("canEngageButtonAuto").value == true);
             } else {
@@ -221,7 +221,7 @@ function submitForm(selector) {
             form.push(document.getElementById("setPosButton").value == true);
 
 
-            if (form[12]) {
+            if (form[form.length - 1]) {
                 //FIELD POS
                 var posCoords = JSON.stringify(document.getElementById("fieldPin").value);
                 if (!posCoords) {
@@ -242,11 +242,11 @@ function submitForm(selector) {
         var cycleTime = document.getElementById("cycleTimeInput").value;
 
         if (cycleTime != "" && isNaN(parseInt(cycleTime))) {
-            showElement("cycleTimeNotifText");
+            showElement("pitCycleTimeNotifText");
             document.getElementById("cycleTimeInput").style.border = "1px solid #eb776e";
             end = true;
         } else {
-            hideElement("cycleTimeNotifText");
+            hideElement("pitCycleTimeNotifText");
             document.getElementById("cycleTimeInput").style.border = "1px solid #888888";
         }
 
@@ -309,7 +309,7 @@ function submitForm(selector) {
 
         form.push(ablePlaystyles);
 
-        if (form[19].includes["Defensive"]) {
+        if (form[form.length - 1].includes["Defensive"]) {
             //DEFENSE STRATEGY NOTES 
             form.push(document.getElementById("defenseStrategyNotes").value);
         } else {
@@ -319,16 +319,9 @@ function submitForm(selector) {
         //TELE DOCKING
         form.push(document.getElementById("canDockButtonTele").value == true);
 
-        if (form[21]) {
+        if (form[form.length - 1]) {
             //TELE ENGAGING
             form.push(document.getElementById("canEngageButtonTele").value == true);
-
-            if (form[22]) {
-                //TELE AUTO ENGAGE
-                form.push(document.getElementById("hasAutoBalanceButton").value == true);
-            } else {
-                form.push("");
-            }
     
             //TELE DOCKING TIME
             form.push(document.getElementById("balanceTimeInput").value);
@@ -361,7 +354,7 @@ function submitForm(selector) {
         //DRIVEBASE PROBLEMS
         form.push(document.getElementById("dbProblemsButton").value == true);
 
-        if (form[1]) {
+        if (form[form.length - 1]) {
             //DRIVEBASE PROBLEMS NOTES
             form.push(document.getElementById("dbProblemsNotes").value);
         } else {
@@ -371,7 +364,7 @@ function submitForm(selector) {
         //GAME OBJECT MANIPULATOR PROBLEMS
         form.push(document.getElementById("gomProblemsButton").value == true);
 
-        if (form[3]) {
+        if (form[form.length - 1]) {
             //CONE REACH CHANGES
             var coneReach = [];
             ["High", "Mid", "Bot"].forEach(row => {
@@ -394,7 +387,7 @@ function submitForm(selector) {
         //OTHER PROBLEMS
         form.push(document.getElementById("otherProblemsButton").value == true);
 
-        if (form[6]) {
+        if (form[form.length - 1]) {
             //OTHER PROBLEMS NOTES
             form.push(document.getElementById("otherProblemsNotes").value == true);
         } else {
@@ -404,15 +397,15 @@ function submitForm(selector) {
         //AUTO CHANGES
         form.push(document.getElementById("autoChangesButton").value == true);
 
-        if (form[8]) {
+        if (form[form.length - 1]) {
             //NO AUTO
             form.push(document.getElementById("noAutoChangesButton").value == true);
 
-            if (!form[9]) {
+            if (!form[form.length - 1]) {
                 //CAN CREATE AUTO
                 form.push(document.getElementById("canCreateAutoButtonChanges").value == true);
 
-                if (form[10] ) {
+                if (form[form.length - 1] ) {
                     //AUTO CREATING TIME
                     form.push(document.getElementById("matchInputChanges").value);
 
@@ -422,7 +415,7 @@ function submitForm(selector) {
                         end = true;
                     } else {
                         hideElement("pitMatchesNotifText");
-                        document.getElementById("MatchInputChanges").style.border = "1px solid #888888";
+                        document.getElementById("matchInputChanges").style.border = "1px solid #888888";
                     }
 
                     //RELIABILITY LEVEL
@@ -436,7 +429,7 @@ function submitForm(selector) {
                 //AUTO DOCKING
                 form.push(document.getElementById("canDockButtonAutoChanges").value == true);
 
-                if (form[13]) {
+                if (form[form.length - 1]) {
                     //AUTO ENGAGING
                     form.push(document.getElementById("canEngageButtonAutoChanges").value == true);
                 } else {
@@ -457,7 +450,7 @@ function submitForm(selector) {
                 form.push(document.getElementById("setPosButtonChanges").value == true);
 
 
-                if (form[16]) {
+                if (form[form.length - 1]) {
                     //FIELD POS
                     var posCoords = JSON.stringify(document.getElementById("fieldPinChanges").value);
                     if (!posCoords) {
@@ -482,7 +475,7 @@ function submitForm(selector) {
         //CYCLE TIME
         form.push(document.getElementById("cycleTimeInputChanges").value);
 
-        if (form[18] != "" && isNaN(parseInt(form[18]))) {
+        if (form[form.length - 1] != "" && isNaN(parseInt(form[form.length - 1]))) {
             showElement("pitCycleTimeNotifText");
             document.getElementById("cycleTimeInputChanges").style.border = "1px solid #eb776e";
             end = true;
@@ -509,7 +502,7 @@ function submitForm(selector) {
         form.push(ablePlaystyles);
 
         //DEFENSE STRATEGY NOTES
-        if (form[19] != "" && form[19].includes("Defensive")) {
+        if (form[form.length - 1] != "" && form[form.length - 1].includes("Defensive")) {
             form.push(document.getElementById("defenseStrategyNotesChanges").value)
         } else {
             form.push("");
@@ -532,18 +525,12 @@ function submitForm(selector) {
         form.push(document.getElementById("canDockButtonTeleChanges").value == true);
 
         //ENGAGE
-        if (form[22]) {
+        if (form[form.length - 1]) {
             form.push(document.getElementById("canEngageButtonTeleChanges").value == true);
-
-            if (form[23]) {
-                form.push(document.getElementById("hasAutoBalanceButtonTeleChanges").value == true);
-            } else {
-                form.push("");
-            }
 
             form.push(document.getElementById("balanceTimeInputChanges").value);
             
-            if (form[25] != "" && isNaN(parseInt(form[25]))) {
+            if (form[form.length - 1] != "" && isNaN(parseInt(form[form.length - 1]))) {
                 showElement("balanceTimeNotifTextChanges");
                 document.getElementById("balanceTimeInputChanges").style.border = "1px solid #eb776e";
                 end = true;
@@ -706,7 +693,7 @@ function submitForm(selector) {
 
         //PENS
         form.push(document.getElementById("penaltiesInput").value);
-
+        
         if (isNaN(parseInt(form[form.length - 1])) && form[form.length - 1] != "") {
             changeNotif("penaltiesNotifText", "That Is Not A Valid Number!");
             end = true;
@@ -729,7 +716,6 @@ function submitForm(selector) {
         //OTHER NOTES
         form.push(document.getElementById("matchInPersonExtraNotes").value);
 
-        console.log(end)
         if (end) {
             return true;
         }
@@ -738,20 +724,18 @@ function submitForm(selector) {
             var counter = 0;
 
             form = form.map(x => {
-                if ([0, 1, 12, 19].includes(counter++)) {
+                if ([0, 1, 11, 18].includes(counter++)) {
                     return x;
                 } else {
                     return "";
                 }
             });
         }
-        console.log("e")
 
         if (failure) {
             var counter = 0;
-
             form = form.map(x => {
-                if ([0, 1, 15, 19].includes(counter++)) {
+                if ([0, 1, 14, 18].includes(counter++)) {
                     return x;
                 } else {
                     return "";
@@ -760,7 +744,7 @@ function submitForm(selector) {
         }
 
         form = form.map(x => {
-            if (["", undefined].includes(x) && typeof x != typeof true) {
+            if (["", undefined].includes(x)) {
                 return "none";
             } else {
                 return x;

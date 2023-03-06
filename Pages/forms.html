@@ -160,7 +160,7 @@
       <p class="formSubheader">Cycle Time</p>
       <input id="cycleTimeInput" placeholder="Seconds" type="text"></input>
 
-      <div id="cycleTimeNotifText" style="display: none;">
+      <div id="pitCycleTimeNotifText" style="display: none;">
         <br>
         <p class="toggleNotifText">Cycle Time Should Be</p>
       </div>
@@ -212,14 +212,10 @@
       <p id="canDockButtonTele" class="pushButton" onclick="toggleElement('teleDockDiv');">Can Dock</p>
 
       <div id="teleDockDiv" style="display:none;">
-        <p id="canEngageButtonTele" class="pushButton" onclick="toggleElement('hasAutoBalanceButtonDiv');">Can Engage
+        <p id="canEngageButtonTele" class="pushButton">Can Engage
         </p>
 
         <br>
-
-        <div id="hasAutoBalanceButtonDiv" style="display: none;">
-          <p id="hasAutoBalanceButton" class="pushButton">Has Auto Balance</p>
-        </div>
 
         <p class="formSubheader">Time To Balance</p>
         <input id="balanceTimeInput" placeholder="Seconds" type="number" min="0"></input>
@@ -293,6 +289,8 @@
         <p id="cubeMidRowButtonChange" class="pushButton" onclick="toggleGamePiece('cubeMidRowChange');">Mid</p>
         <p id="cubeBotRowButtonChange" class="pushButton" onclick="toggleGamePiece('cubeBotRowChange');">Bot</p>
       </div>
+
+      <br>
 
       <textarea id="otherProblemsNotes" class="notesArea" placeholder="Other Problems Notes"
         style="display: none;"></textarea>
@@ -377,7 +375,7 @@
       <p class="formSubheader">Cycle Time</p>
       <input id="cycleTimeInputChanges" placeholder="Seconds" type="text"></input>
 
-      <div id="pitCycleTimeNotifText" style="display: none;">
+      <div id="pitCycleTimeNotifTextChanges" style="display: none;">
         <br>
         <p class="toggleNotifText">Cycle Time Should Be A Number!</p>
       </div>
@@ -402,14 +400,7 @@
       <p id="canDockButtonTeleChanges" class="pushButton" onclick="toggleElement('teleDockDivChanges');">Can Dock</p>
 
       <div id="teleDockDivChanges" style="display:none;">
-        <p id="canEngageButtonTeleChanges" class="pushButton"
-          onclick="toggleElement('hasAutoBalanceButtonDivChanges');">Can Engage</p>
-
-        <br>
-
-        <div id="hasAutoBalanceButtonDivChanges" style="display: none;">
-          <p id="hasAutoBalanceButtonChanges" class="pushButton">Has Auto Balance</p>
-        </div>
+        <p id="canEngageButtonTeleChanges" class="pushButton">Can Engage</p>
 
         <p class="formSubheader">Time To Balance</p>
         <input id="balanceTimeInputChanges" placeholder="Seconds" type="number" min="0"></input>
@@ -868,7 +859,7 @@
           <p id="onlineBlue1NoShowButton" class="matchonlineBlue1TagButton groupedButton endGroupedButton">No Show</p>
   
           <p class="formSubheader">Penalties</p>
-          <input id="penaltiesInput" type="number" class="inputInput" placeholder="#"></input>
+          <input id="onlineBlue1PenaltiesInput" type="number" class="inputInput" placeholder="#"></input>
   
           <br>
   
@@ -1285,7 +1276,7 @@
           <p id="onlineBlue2NoShowButton" class="matchonlineBlue2TagButton groupedButton endGroupedButton">No Show</p>
  
           <p class="formSubheader">Penalties</p>
-          <input id="penaltiesInput" type="number" class="inputInput" placeholder="#"></input>
+          <input id="onlineBlue2PenaltiesInput" type="number" class="inputInput" placeholder="#"></input>
  
           <br>
  
@@ -1702,7 +1693,7 @@
           <p id="onlineBlue3NoShowButton" class="matchonlineBlue3TagButton groupedButton endGroupedButton">No Show</p>
  
           <p class="formSubheader">Penalties</p>
-          <input id="penaltiesInput" type="number" class="inputInput" placeholder="#"></input>
+          <input id="onlineBlue3PenaltiesInput" type="number" class="inputInput" placeholder="#"></input>
  
           <br>
  
@@ -2119,7 +2110,7 @@
           <p id="onlineRed1NoShowButton" class="matchonlineRed1TagButton groupedButton endGroupedButton">No Show</p>
  
           <p class="formSubheader">Penalties</p>
-          <input id="penaltiesInput" type="number" class="inputInput" placeholder="#"></input>
+          <input id="onlineRed1PenaltiesInput" type="number" class="inputInput" placeholder="#"></input>
  
           <br>
  
@@ -2536,7 +2527,7 @@
           <p id="onlineRed2NoShowButton" class="matchonlineRed2TagButton groupedButton endGroupedButton">No Show</p>
  
           <p class="formSubheader">Penalties</p>
-          <input id="penaltiesInput" type="number" class="inputInput" placeholder="#"></input>
+          <input id="onlineRed2PenaltiesInput" type="number" class="inputInput" placeholder="#"></input>
  
           <br>
  
@@ -2953,7 +2944,7 @@
           <p id="onlineRed3NoShowButton" class="matchonlineRed3TagButton groupedButton endGroupedButton">No Show</p>
  
           <p class="formSubheader">Penalties</p>
-          <input id="penaltiesInput" type="number" class="inputInput" placeholder="#"></input>
+          <input id="onlineRed3PenaltiesInput" type="number" class="inputInput" placeholder="#"></input>
  
           <br>
  
