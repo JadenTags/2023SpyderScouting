@@ -1,3 +1,12 @@
+table {
+  border-spacing: 0;
+}
+
+tr, td, table {
+  margin: 0;
+  padding: 0;
+}
+
 .generalText {
   font-size: 18px;
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,12 +28,11 @@
   background-color: #787878;
 }
 
-.miniInfoData, .spacer {
-  display: block;
+.miniInfoHeader, .miniInfoData, .spacer {
   margin: 0;
   padding: 0;
   text-align: center;
-  font-size: 20px;
+  font-size: 16px;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 

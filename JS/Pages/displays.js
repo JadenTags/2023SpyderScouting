@@ -15,7 +15,7 @@ const dataTableWithMatchFormat = {
         "Playstyles": {
             "Offensive": "",
             "Defensive": "",
-            "INFO": [[2], "HAVE"]
+            "INFO": [[1, 1], "HAVE"]
         },
         "Failure%": {
             "MF": "",
@@ -89,7 +89,7 @@ const dataTableWithMatchFormat = {
                 "INFO": [[2], "%"]
             },
             "Attempt%": {
-                "Attempted": "",
+                "ATPT": "",
                 "NA": "",
                 "INFO": [[2], "%"]
             },
@@ -166,9 +166,9 @@ const dataTableWithMatchFormat = {
             "INFO": [[1, 1], "NESTED"]
         },
         "Playstyle%": {
-            "Offensive": "",
-            "Hybrid": "",
-            "Defensive": "",
+            "Off": "",
+            "Hyb": "",
+            "Def": "",
             "INFO": [[3], "%"]
         },
         "Endgame": {
@@ -212,13 +212,17 @@ const dataTableWithoutMatchFormat = {
 };
 const blueDataTableColors = {
     "singleCellHeader": "#a2abf6",
-    "singleCellData": "#d8dcff",
-    "spacer": "#a2abf6",
+    "singleCellData": "#d2d6fa",
+    "singleCellDataAlt": "#e3e6ff",
+    "spacer": "#8590ed",
 };
 var lockedDivs = {
     "mainDiv": "locked",
-    "teamSearchDiv": "locked",
+    "teamSearchDiv": "unlocked",
 };
+const marginTopSpacing = "2px";
+const cellHeight = 30;
+const tableWidth = 30;
 
 async function teamSearch() {
     var team = document.getElementById("teamSearchInput").value;
@@ -283,15 +287,16 @@ async function teamSearch() {
     await getSheetData(config.matchGSID, sheetName, orderNum);
     var matchForms = getOrder(orderNum);
 
-    var data = buildTeamTable(compileAllTeamData(team, matchForms, preForms, pitForms), blueDataTableColors);
+    var teamData = compileAllTeamData(team, matchForms, preForms, pitForms);
+    var titleTable = buildTitleTable(getHeightObj(teamData));
+    var data = buildTeamTable(teamData, blueDataTableColors);
+    document.body.appendChild(data);
 }
 
 function buildTeamTable(teamData, color) {
     var table = document.createElement("table");
 
     Object.keys(teamData).forEach(section => {
-        console.log("\n\n" + section)
-
         let sectionInfo = teamData[section];
         let sectionRow = document.createElement("tr");
 
@@ -317,6 +322,10 @@ function buildTeamTable(teamData, color) {
                     miniData.appendChild(document.createTextNode(headerInfo));
                 }
 
+                miniData.style.height = cellHeight + "px";
+                miniData.style.width = tableWidth + "vw";
+                miniTable.style.marginTop = marginTopSpacing;
+
                 miniRow.appendChild(miniData);
                 miniTable.appendChild(miniRow);
                 headerData.appendChild(miniTable);
@@ -325,8 +334,146 @@ function buildTeamTable(teamData, color) {
                 let miniTable = document.createElement("table");
 
                 if (type == "NORMAL") {
-                    createNormalMiniTable(headerInfo)
+                    let ogLength = headerInfo["INFO"][0].length;
+
+                    while (headerInfo["INFO"][0].length > 0) {
+                        let miniMiniTable = createNormalMiniTable(headerInfo, color);
+
+                        if (headerInfo["INFO"][0].length == ogLength - 1) {
+                            miniMiniTable.style.marginTop = marginTopSpacing;
+                        }
+
+                        miniTable.appendChild(miniMiniTable);
+                    }
+                } else if (type == "HAVE") {
+                    var counter = 0;
+                    var headers = Object.keys(headerInfo).filter(x => x != "INFO");
+                    headers.forEach(header => {
+                        var miniInfoRow = document.createElement("tr");
+                        let miniInfoData = document.createElement("td");
+                
+                        miniInfoData.setAttribute("class", "miniInfoData");
+                        miniInfoData.style.height = cellHeight + "px";
+                        miniInfoData.style.width = tableWidth + "vw";
+                
+                        if (counter++ % 2 == 0) {
+                            miniInfoData.style.backgroundColor = color["singleCellData"];
+                        } else {
+                            miniInfoData.style.backgroundColor = color["singleCellDataAlt"];
+                        }
+                
+                        miniInfoData.appendChild(document.createTextNode(header));
+                        miniInfoRow.appendChild(miniInfoData);
+                        miniTable.appendChild(miniInfoRow);
+                    });
+
+                    miniTable.style.marginTop = marginTopSpacing;
+                } else if (type == "%") {
+                    var counter = 0;
+
+                    var headers = Object.keys(headerInfo).filter(x => x != "INFO");
+                    headers.forEach(header => {
+                        if (headerInfo[header] != "0%") {
+                            let percentageRow = document.createElement("tr");
+
+                            let miniInfoHeader = document.createElement("td");
+                            miniInfoHeader.appendChild(document.createTextNode(header));
+                            
+                            miniInfoHeader.setAttribute("class", "miniInfoHeader");
+                            miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
+                            miniInfoHeader.style.fontSize = "15px";
+                            miniInfoHeader.style.height = (cellHeight * headers.length) * convertPercent(headerInfo[header]) + "px";
+                            miniInfoHeader.style.width = tableWidth * 3 / 5 + "vw";
+
+                            percentageRow.appendChild(miniInfoHeader);
+
+                            let miniInfoPercentage = document.createElement("td");
+                            miniInfoPercentage.appendChild(document.createTextNode(headerInfo[header]));
+                            
+                            miniInfoPercentage.setAttribute("class", "miniInfoHeader");
+                            miniInfoPercentage.style.fontSize = "15px";
+                            miniInfoPercentage.style.height = (cellHeight * headers.length) * convertPercent(headerInfo[header]) + "px";
+                            miniInfoPercentage.style.width = tableWidth * 2 / 5 + "vw";
+
+                            if (counter++ % 2 == 0) {
+                                miniInfoPercentage.style.backgroundColor = color["singleCellData"];
+                            } else {
+                                miniInfoPercentage.style.backgroundColor = color["singleCellDataAlt"];
+                            }
+
+                            percentageRow.appendChild(miniInfoPercentage)
+
+                            miniTable.appendChild(percentageRow);
+                        }
+                    });
+
+                    miniTable.style.marginTop = marginTopSpacing;
+                } else if (type == "NESTED") {
+                    Object.keys(headerInfo).filter(x => x != "INFO").forEach(header => {
+                        let miniRow = document.createElement("tr");
+                        let miniData = document.createElement("td");
+                        
+                        miniData.setAttribute("class", "spacer");
+                        miniData.style.backgroundColor = color["spacer"];
+                        miniData.appendChild(document.createTextNode(header));
+        
+                        miniData.style.height = cellHeight + "px";
+                        miniData.style.width = tableWidth + "vw";
+                        miniTable.style.marginTop = marginTopSpacing;
+        
+                        miniRow.appendChild(miniData);
+                        miniTable.appendChild(miniRow);
+
+                        let miniPercentageRow = document.createElement("tr");
+                        let miniPercentageData = document.createElement("td");
+                        let miniMiniTable = document.createElement("table");
+
+                        var counter = 0;
+                        var headers = Object.keys(headerInfo[header]).filter(x => x != "INFO");
+                        headers.forEach(innerHeader => {
+                            if (headerInfo[header] != "0%") {
+                                let percentageRow = document.createElement("tr");
+
+                                let miniMiniInfoHeader = document.createElement("td");
+                                miniMiniInfoHeader.appendChild(document.createTextNode(innerHeader));
+                                
+                                miniMiniInfoHeader.setAttribute("class", "miniInfoHeader");
+                                miniMiniInfoHeader.style.backgroundColor = color["singleCellHeader"];
+                                miniMiniInfoHeader.style.fontSize = "15px";
+                                miniMiniInfoHeader.style.height = (cellHeight * headers.length) * convertPercent(headerInfo[header][innerHeader]) + "px";
+                                miniMiniInfoHeader.style.width = tableWidth * 3 / 5 + "vw";
+
+                                percentageRow.appendChild(miniMiniInfoHeader);
+
+                                let miniMiniInfoPercentage = document.createElement("td");
+                                miniMiniInfoPercentage.appendChild(document.createTextNode(headerInfo[header][innerHeader]));
+                                
+                                miniMiniInfoPercentage.setAttribute("class", "miniInfoHeader");
+                                miniMiniInfoPercentage.style.fontSize = "15px";
+                                miniMiniInfoPercentage.style.height = (cellHeight * headers.length) * convertPercent(headerInfo[header][innerHeader]) + "px";
+                                miniMiniInfoPercentage.style.width = tableWidth * 2 / 5 + "vw";
+
+                                if (counter++ % 2 == 0) {
+                                    miniMiniInfoPercentage.style.backgroundColor = color["singleCellData"];
+                                } else {
+                                    miniMiniInfoPercentage.style.backgroundColor = color["singleCellDataAlt"];
+                                }
+
+                                percentageRow.appendChild(miniMiniInfoPercentage)
+
+                                miniMiniTable.appendChild(percentageRow);
+                            }
+                        });
+
+                        miniPercentageData.appendChild(miniMiniTable);
+                        miniPercentageRow.appendChild(miniPercentageData);
+                        miniTable.appendChild(miniPercentageRow);
+                    });
+                } else {
+                    // console.log(type)
                 }
+
+                headerData.appendChild(miniTable);
             }
 
             headerRow.appendChild(headerData);
@@ -336,25 +483,108 @@ function buildTeamTable(teamData, color) {
         table.appendChild(sectionRow);
     });
 
-    console.log(teamData)
-    document.body.appendChild(table);
+    table.style.width = tableWidth + "vw";
+    table.style.backgroundColor = "black";
+    table.style.borderRight = marginTopSpacing + " solid black";
+    table.style.borderBottom = marginTopSpacing + " solid black";
+
+    return table;
 }
 
-function createNormalMiniTable(data) {
-    console.log(data)
-    var tableFormat = data["INFO"][0];
+function buildTitleTable(heightObj) {
+    console.log(heightObj)
+}
+
+function getHeightObj(data) {
+    var heightsObj = structuredClone(dataTableWithMatchFormat);
+
+    Object.keys(data).forEach(section => {
+        let sectionInfo = data[section];
+
+        Object.keys(sectionInfo).forEach(header => {
+            let headerInfo = sectionInfo[header];
+
+            if (typeof headerInfo != "object") {
+                heightsObj[section][header] = cellHeight + "px";
+
+                if (headerInfo == "SPACER") {
+                    heightsObj[section][header] += "SPACER";
+                }
+            } else {
+                let type = headerInfo["INFO"][1];
+                if (type == "NORMAL") {
+                    heightsObj[section][header] = headerInfo["INFO"][0].length * 2 * cellHeight + "px";
+                } else if (type == "HAVE") {
+                    heightsObj[section][header] = Object.values(headerInfo).filter(x => x != "INFO").length * cellHeight + "px";
+                } else if (type == "%") {
+                    heightsObj[section][header] = Object.values(headerInfo).filter(x => x != "0%" && x != "INFO").length * cellHeight + "px";
+                } else if (type == "NESTED") {
+                    let height = 0;
+
+                    Object.keys(headerInfo).filter(x => x != "INFO").forEach(key => {
+                        height += Object.keys(headerInfo[key]).length * cellHeight;
+                    });
+
+
+                    heightsObj[section][header] = height + "px";
+                } else {
+                    // console.log(headerInfo, type);
+                }
+            }
+        });
+    });
+
+    return heightsObj;
+}
+
+function convertPercent(percent) {
+    return parseInt(percent.replace("%", "")) / 100;
+}
+
+function createNormalMiniTable(data, color) {
     var miniTable = document.createElement("table");
 
-    console.log(tableFormat)
-
+    var headers = Object.keys(data).slice(0, data["INFO"][0].shift());
     var miniHeaderRow = document.createElement("tr");
-    //TODO: HEADER
+    headers.forEach(header => {
+        let miniHeaderData = document.createElement("td");
+
+        miniHeaderData.setAttribute("class", "miniInfoHeader");
+        miniHeaderData.style.backgroundColor = color["singleCellHeader"];
+        miniHeaderData.style.height = cellHeight + "px";
+        miniHeaderData.style.width = tableWidth / headers.length + "vw";
+
+        miniHeaderData.appendChild(document.createTextNode(header));
+        miniHeaderRow.appendChild(miniHeaderData);
+    });
+    miniTable.appendChild(miniHeaderRow)
 
     var miniInfoRow = document.createElement("tr");
+    var counter = 0;
+    headers.forEach(header => {
+        let miniInfoData = document.createElement("td");
+
+        miniInfoData.setAttribute("class", "miniInfoData");
+        miniInfoData.style.height = cellHeight + "px";
+
+        if (counter++ % 2 == 0) {
+            miniInfoData.style.backgroundColor = color["singleCellData"];
+        } else {
+            miniInfoData.style.backgroundColor = color["singleCellDataAlt"];
+        }
+
+        miniInfoData.appendChild(document.createTextNode(data[header]));
+        miniInfoRow.appendChild(miniInfoData);
+
+        delete data[header];
+    });
+    miniTable.appendChild(miniInfoRow)
+    
+    return miniTable;
 }
 
 function compileAllTeamData(team, match, pre, pit) {
-    var data = structuredClone(dataTableWithMatchFormat);
+    var data = JSON.parse(JSON.stringify(dataTableWithMatchFormat));
     pre = pre.slice(1);
     pit = pit.slice(1);
     match = match.slice(1);
@@ -404,7 +634,7 @@ function compileAllTeamData(team, match, pre, pit) {
 
     //FAILURES
     var failuresArray = match.map(x => x[14]);
-    var failures = getFreqObj(failuresArray);
+    var failures = getFreqObj(failuresArray, ["Mech Fail", "Comm Fail", "No Show", "none"]);
     data["General"]["Failure%"]["MF"] = getPercent(failures["Mech Fail"], failuresArray.length);
     data["General"]["Failure%"]["CF"] = getPercent(failures["Comm Fail"], failuresArray.length);
     data["General"]["Failure%"]["NS"] = getPercent(failures["No Show"], failuresArray.length);
@@ -417,7 +647,7 @@ function compileAllTeamData(team, match, pre, pit) {
 
     //MOBILITY%
     var mobilityArray = match.map(x => x[2]).filter(x => x != "none");
-    var mobility = getFreqObj(mobilityArray);
+    var mobility = getFreqObj(mobilityArray, ["TRUE", "FALSE"]);
     data["Autonomous"]["Mobility%"]["GOT"] = getPercent(mobility["TRUE"], mobilityArray.length);
     data["Autonomous"]["Mobility%"]["NG"] = getPercent(mobility["FALSE"], mobilityArray.length);
 
@@ -433,12 +663,12 @@ function compileAllTeamData(team, match, pre, pit) {
 
     //DOCKED
     var dockSuccessArray = match.map(x => x[5]);
-    var dockSuccess = getFreqObj(dockSuccessArray);
-    data["Autonomous"]["Docked"]["Attempt%"]["Attempted"] = getPercent(dockSuccess["Docked"] + dockSuccess["Failed Dock"], dockSuccessArray.length);
+    var dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "none"]);
+    data["Autonomous"]["Docked"]["Attempt%"]["ATPT"] = getPercent(dockSuccess["Docked"] + dockSuccess["Failed Dock"], dockSuccessArray.length);
     data["Autonomous"]["Docked"]["Attempt%"]["NA"] = getPercent(dockSuccess["none"], dockSuccessArray.length);
     
     var dockSuccessArray = match.map(x => x[5]).filter(x => x != "none");
-    var dockSuccess = getFreqObj(dockSuccessArray);
+    var dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "Failed Dock"]);
     data["Autonomous"]["Docked"]["Success%"]["Success"] = getPercent(dockSuccess["Docked"], dockSuccessArray.length);
     data["Autonomous"]["Docked"]["Success%"]["Fail"] = getPercent(dockSuccess["Failed Dock"], dockSuccessArray.length);
     if (Object.keys(dockSuccess).length == 0) {
@@ -448,7 +678,7 @@ function compileAllTeamData(team, match, pre, pit) {
 
     //ENGAGED
     var engagedArray = match.map(x => x[6]).filter(x => x != "none");
-    var engaged = getFreqObj(engagedArray);
+    var engaged = getFreqObj(engagedArray, ["TRUE", "FALSE"]);
     data["Autonomous"]["Engaged%"]["Engaged"] = getPercent(engaged["TRUE"], engagedArray.length);
     data["Autonomous"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
     if (Object.keys(engagedArray).length == 0) {
@@ -492,26 +722,26 @@ function compileAllTeamData(team, match, pre, pit) {
 
     //PLAYSTYLES
     var playstyleArray = match.map(x => x[11]).filter(x => x != "none");
-    var playstyle = getFreqObj(playstyleArray);
-    data["Teleop"]["Playstyle%"]["Offensive"] = getPercent(playstyle["Offensive"], playstyleArray.length);
-    data["Teleop"]["Playstyle%"]["Hybrid"] = getPercent(playstyle["Hybrid"], playstyleArray.length);
-    data["Teleop"]["Playstyle%"]["Defensive"] = getPercent(playstyle["Defensive"], playstyleArray.length);
+    var playstyle = getFreqObj(playstyleArray, ["Offensive", "Hybrid", "Defensive"]);
+    data["Teleop"]["Playstyle%"]["Off"] = getPercent(playstyle["Offensive"], playstyleArray.length);
+    data["Teleop"]["Playstyle%"]["Hyb"] = getPercent(playstyle["Hybrid"], playstyleArray.length);
+    data["Teleop"]["Playstyle%"]["Def"] = getPercent(playstyle["Defensive"], playstyleArray.length);
 
     //ENDGAME
     var teleDocksArray = match.map(x => x[12]).filter(x => x != "none" && ["Failed Dock", "Docked"].includes(x));
-    var teleDocks = getFreqObj(teleDocksArray);
+    var teleDocks = getFreqObj(teleDocksArray, ["Docked", "Failed Dock"]);
     data["Teleop"]["Endgame"]["Success%"]["Success"] = getPercent(teleDocks["Docked"], teleDocksArray.length);
     data["Teleop"]["Endgame"]["Success%"]["Fail"] = getPercent(teleDocks["Failed Dock"], teleDocksArray.length);
 
     var teleEndgameArray = match.map(x => x[12]).filter(x => x != "Failed Dock");
-    var teleEndgame = getFreqObj(teleEndgameArray);
+    var teleEndgame = getFreqObj(teleEndgameArray, ["Docked", "Parked", "none"]);
     data["Teleop"]["Endgame"]["Attempt%"]["Docked"] = getPercent(teleEndgame["Docked"], teleEndgameArray.length);
     data["Teleop"]["Endgame"]["Attempt%"]["Parked"] = getPercent(teleEndgame["Parked"], teleEndgameArray.length);
     data["Teleop"]["Endgame"]["Attempt%"]["NA"] = getPercent(teleEndgame["none"], teleEndgameArray.length);
 
     //ENGAGED
     engagedArray = match.map(x => x[13]).filter(x => x != "none");
-    engaged = getFreqObj(engagedArray);
+    engaged = getFreqObj(engagedArray, ["TRUE", "FALSE"]);
     data["Teleop"]["Engaged%"]["Engaged"] = getPercent(engaged["TRUE"], engagedArray.length);
     data["Teleop"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
 
@@ -522,17 +752,16 @@ function compileAllTeamData(team, match, pre, pit) {
     delete data["Teleop"]["Penalties"]["Rng"];
 
     //CARDS
-    var cards = getFreqObj(match.map(x => x[16]).filter(x => x != "none"));
+    var cards = getFreqObj(match.map(x => x[16]).filter(x => x != "none"), ["Red", "Yellow"]);
     data["Teleop"]["Cards"]["Reds"] = cards["Red"] + Math.floor(cards["Yellow"] / 2);
     data["Teleop"]["Cards"]["Yellow"] = cards["Yellow"] % 2 == 1;
 
     //AGGRESSIVE
     var aggressiveArray = match.map(x => x[17]).filter(x => x != "none");
-    var aggressive = getFreqObj(aggressiveArray);
+    var aggressive = getFreqObj(aggressiveArray, ["TRUE", "FALSE"]);
     data["Teleop"]["Aggressive%"]["Yes"] = getPercent(aggressive["TRUE"], aggressiveArray.length);
     data["Teleop"]["Aggressive%"]["No"] = getPercent(aggressive["FALSE"], aggressiveArray.length);
 
-    console.log(data)
     return data;
 }
 
@@ -597,6 +826,12 @@ function fillNewestData(obj, key, pre, pit) {
     } else if (pre != "none") {
         obj[key] = pre;
     } else {
+        obj["INFO"][0][Object.keys(obj).indexOf(key)]--;
+
+        if (obj["INFO"][0][Object.keys(obj).indexOf(key)] == 0) {
+            obj["INFO"][0] = obj["INFO"][0].slice(0, Object.keys(obj).indexOf(key)).concat(obj["INFO"][0].splice(Object.keys(obj).indexOf(key) + 1, Object.keys(obj).length - 1));
+        }
+
         delete obj[key];
     }
 }
@@ -631,7 +866,7 @@ function fillNewestHaveData(obj, key, pre, pit) {
     }
 }
 
-function getFreqObj(obj) {
+function getFreqObj(obj, neededKeys) {
     var freqObj = {};
 
     obj.filter(x => x != "INFO").forEach(key => {
@@ -640,6 +875,12 @@ function getFreqObj(obj) {
         } else {
             freqObj[key]++;
         }
+    });
+
+    var haveKeys = Object.keys(freqObj);
+
+    neededKeys.filter(x => !haveKeys.includes(x)).forEach(key => {
+        freqObj[key] = 0;
     });
 
     return freqObj;
@@ -677,7 +918,7 @@ function checkEmpty(obj, key) {
 
 //REMOVE LATER
 function test() {
-    document.getElementById("teamSearchInput").setAttribute("value", "10");
+    document.getElementById("teamSearchInput").setAttribute("value", "1");
     eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 }
 
