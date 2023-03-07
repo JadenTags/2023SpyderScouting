@@ -288,7 +288,7 @@ async function teamSearch() {
     var matchForms = getOrder(orderNum);
 
     var teamData = compileAllTeamData(team, matchForms, preForms, pitForms);
-    var titleTable = buildTitleTable(getHeightObj(teamData));
+    var titleTable = buildHeaderTable(getHeightObj(teamData));
     var data = buildTeamTable(teamData, blueDataTableColors);
     document.body.appendChild(data);
 }
@@ -491,7 +491,7 @@ function buildTeamTable(teamData, color) {
     return table;
 }
 
-function buildTitleTable(heightObj) {
+function buildHeaderTable(heightObj) {
     console.log(heightObj)
 }
 
