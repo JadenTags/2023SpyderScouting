@@ -301,9 +301,9 @@ function buildTeamTable(teamData, color) {
             let headerData = document.createElement("td");
             
             if (typeof headerInfo != "object") {
-                var miniTable = document.createElement("table");
-                var miniRow = document.createElement("tr");
-                var miniData = document.createElement("td");
+                let miniTable = document.createElement("table");
+                let miniRow = document.createElement("tr");
+                let miniData = document.createElement("td");
                 
                 if (headerInfo == "SPACER") {
                     miniData.setAttribute("class", "spacer");
@@ -321,7 +321,12 @@ function buildTeamTable(teamData, color) {
                 miniTable.appendChild(miniRow);
                 headerData.appendChild(miniTable);
             } else {
+                let type = headerInfo["INFO"][1];
+                let miniTable = document.createElement("table");
 
+                if (type == "NORMAL") {
+                    createNormalMiniTable(headerInfo)
+                }
             }
 
             headerRow.appendChild(headerData);
@@ -333,6 +338,19 @@ function buildTeamTable(teamData, color) {
 
     console.log(teamData)
     document.body.appendChild(table);
+}
+
+function createNormalMiniTable(data) {
+    console.log(data)
+    var tableFormat = data["INFO"][0];
+    var miniTable = document.createElement("table");
+
+    console.log(tableFormat)
+
+    var miniHeaderRow = document.createElement("tr");
+    //TODO: HEADER
+
+    var miniInfoRow = document.createElement("tr");
 }
 
 function compileAllTeamData(team, match, pre, pit) {
@@ -385,11 +403,12 @@ function compileAllTeamData(team, match, pre, pit) {
     }
 
     //FAILURES
-    var failures = getFreqObj(match.map(x => x[14]));
-    data["General"]["Failure%"]["MF"] = failures["Mech Fail"];
-    data["General"]["Failure%"]["CF"] = failures["Comm Fail"];
-    data["General"]["Failure%"]["NS"] = failures["No Show"];
-    data["General"]["Failure%"]["N"] = failures["none"];
+    var failuresArray = match.map(x => x[14]);
+    var failures = getFreqObj(failuresArray);
+    data["General"]["Failure%"]["MF"] = getPercent(failures["Mech Fail"], failuresArray.length);
+    data["General"]["Failure%"]["CF"] = getPercent(failures["Comm Fail"], failuresArray.length);
+    data["General"]["Failure%"]["NS"] = getPercent(failures["No Show"], failuresArray.length);
+    data["General"]["Failure%"]["N"] = getPercent(failures["none"], failuresArray.length);
 
     //MATCHES
     data["General"]["Matches"] = match.length;
@@ -422,12 +441,20 @@ function compileAllTeamData(team, match, pre, pit) {
     var dockSuccess = getFreqObj(dockSuccessArray);
     data["Autonomous"]["Docked"]["Success%"]["Success"] = getPercent(dockSuccess["Docked"], dockSuccessArray.length);
     data["Autonomous"]["Docked"]["Success%"]["Fail"] = getPercent(dockSuccess["Failed Dock"], dockSuccessArray.length);
+    if (Object.keys(dockSuccess).length == 0) {
+        delete data["Autonomous"]["Docked"]["Success%"];
+        data["Autonomous"]["Docked"]["INFO"] = [[1], "NESTED"];
+    }
 
     //ENGAGED
     var engagedArray = match.map(x => x[6]).filter(x => x != "none");
     var engaged = getFreqObj(engagedArray);
     data["Autonomous"]["Engaged%"]["Engaged"] = getPercent(engaged["TRUE"], engagedArray.length);
     data["Autonomous"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
+    if (Object.keys(engagedArray).length == 0) {
+        delete data["Autonomous"]["Engaged%"];
+        // data["Autonomous"]["Engaged%"]["INFO"] = [[1], "NESTED"];
+    }
 
     ////////////////////////////////////////////////////////TELEOP
 
@@ -458,6 +485,10 @@ function compileAllTeamData(team, match, pre, pit) {
 
     data["Teleop"]["Almost Tipped"]["Tip%"]["Tip"] = getPercent(almostTippedOccur, almostTippedAll.length);
     data["Teleop"]["Almost Tipped"]["Tip%"]["NT"] = getPercent(almostTippedAll.length - almostTippedOccur, almostTippedAll.length);
+    if (almostTippedOccur == 0) {
+        delete data["Teleop"]["Almost Tipped"]["Type%"];
+        data["Teleop"]["Almost Tipped"]["INFO"] = [[1], "NESTED"];
+    }
 
     //PLAYSTYLES
     var playstyleArray = match.map(x => x[11]).filter(x => x != "none");
@@ -501,6 +532,7 @@ function compileAllTeamData(team, match, pre, pit) {
     data["Teleop"]["Aggressive%"]["Yes"] = getPercent(aggressive["TRUE"], aggressiveArray.length);
     data["Teleop"]["Aggressive%"]["No"] = getPercent(aggressive["FALSE"], aggressiveArray.length);
 
+    console.log(data)
     return data;
 }
 
@@ -508,6 +540,16 @@ function compileAllTeamData(team, match, pre, pit) {
 function storeScoringStats(data, obj) {
     var made = obj.map(x => parseInt(x[0]));
     var miss = obj.map(x => parseInt(x[1]));
+    
+    if (made.length == 0 && miss.length == 0) {
+        Object.keys(data).forEach(key => {
+            delete data[key];
+        });
+
+        data["INFO"] = [[0], "NORMAL"];
+
+        return;
+    }
 
     data["Min"] = Math.min(...made);
     data["Max"] = Math.max(...made);
@@ -523,7 +565,6 @@ function storeScoringStats(data, obj) {
 
         return;
     }
-
     data["Avg"] = Math.round(made.reduce((x, y) => x + y) / made.length);
 
     var totalDiff = 0;
@@ -636,7 +677,7 @@ function checkEmpty(obj, key) {
 
 //REMOVE LATER
 function test() {
-    document.getElementById("teamSearchInput").setAttribute("value", "1");
+    document.getElementById("teamSearchInput").setAttribute("value", "10");
     eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 }
 
