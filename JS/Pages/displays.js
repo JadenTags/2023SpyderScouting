@@ -207,13 +207,11 @@ const dataTableWithMatchFormat = {
         }
     }
 };
-const dataTableWithoutMatchFormat = {
-    //TODO: FILL OUT DO WITH ONLY PRE/PIT DATA
-};
 const blueDataTableColors = {
     "singleCellHeader": "#a2abf6",
     "singleCellData": "#d2d6fa",
     "singleCellDataAlt": "#e3e6ff",
+    "sectionHeader": "#c4c4c4",
     "spacer": "#8590ed",
 };
 var lockedDivs = {
@@ -223,14 +221,13 @@ var lockedDivs = {
 const marginTopSpacing = "2px";
 const cellHeight = 30;
 const tableWidth = 30;
+const displayTableWidth = 20;
 
 async function teamSearch() {
     var team = document.getElementById("teamSearchInput").value;
 
     if (false) {
-        //TODO: Verify Team (check if valid team, have data, and is numbers)
-
-        //TODO: IF NOT HAVE DATA, ONLY USE PRE/PIT DATA
+        //TODO: Verify Team (check if valid team and is numbers)
     }
 
     var orderNum = curOrderNum++;
@@ -251,6 +248,10 @@ async function teamSearch() {
     //ADDITIONAL INFO
     var additionalInfo = document.getElementById("teamSearchAdditionalInformation");
     var additionalString;
+
+    if (false) {
+        //TODO: CHECK IF HAVE DATA | IF NOT THEN ONLY USE PRE / PIT DATA
+    }
 
     orderNum = curOrderNum++;
     await getTBAData("team/frc" + team + "/robots", orderNum);
@@ -288,9 +289,21 @@ async function teamSearch() {
     var matchForms = getOrder(orderNum);
 
     var teamData = compileAllTeamData(team, matchForms, preForms, pitForms);
-    var titleTable = buildHeaderTable(getHeightObj(teamData));
+    var titleTable = buildHeaderTable(getHeightObj(teamData), blueDataTableColors);
     var data = buildTeamTable(teamData, blueDataTableColors);
-    document.body.appendChild(data);
+    
+    var tble = document.createElement("table");
+    var row = document.createElement("tr");
+    var title = document.createElement("td");
+    var dataData = document.createElement("td");
+
+    title.appendChild(titleTable);
+    dataData.appendChild(data);
+    row.appendChild(title);
+    row.appendChild(dataData);
+    tble.appendChild(row);
+    document.body.appendChild(tble);
+    //TODO: add table onto Displays html and replace column/node instead of placing on body
 }
 
 function buildTeamTable(teamData, color) {
@@ -382,7 +395,14 @@ function buildTeamTable(teamData, color) {
                             miniInfoHeader.setAttribute("class", "miniInfoHeader");
                             miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
                             miniInfoHeader.style.fontSize = "15px";
-                            miniInfoHeader.style.height = (cellHeight * headers.length) * convertPercent(headerInfo[header]) + "px";
+
+                            var calcHeight = Math.round((cellHeight * headers.length) * convertPercent(headerInfo[header]));
+
+                            if (calcHeight < 18) {
+                                calcHeight = 18;
+                            }
+
+                            miniInfoHeader.style.height = calcHeight + "px";
                             miniInfoHeader.style.width = tableWidth * 3 / 5 + "vw";
 
                             percentageRow.appendChild(miniInfoHeader);
@@ -392,7 +412,7 @@ function buildTeamTable(teamData, color) {
                             
                             miniInfoPercentage.setAttribute("class", "miniInfoHeader");
                             miniInfoPercentage.style.fontSize = "15px";
-                            miniInfoPercentage.style.height = (cellHeight * headers.length) * convertPercent(headerInfo[header]) + "px";
+                            // miniInfoPercentage.style.height = (cellHeight * headers.length) * convertPercent(headerInfo[header]) + "px";
                             miniInfoPercentage.style.width = tableWidth * 2 / 5 + "vw";
 
                             if (counter++ % 2 == 0) {
@@ -406,8 +426,10 @@ function buildTeamTable(teamData, color) {
                             miniTable.appendChild(percentageRow);
                         }
                     });
-
-                    miniTable.style.marginTop = marginTopSpacing;
+                    
+                    if (Object.values(headerInfo).filter(x => x.includes("%") && x != "0%" && typeof x == "string").length != 0) {
+                        miniTable.style.marginTop = marginTopSpacing;
+                    }
                 } else if (type == "NESTED") {
                     Object.keys(headerInfo).filter(x => x != "INFO").forEach(header => {
                         let miniRow = document.createElement("tr");
@@ -431,7 +453,7 @@ function buildTeamTable(teamData, color) {
                         var counter = 0;
                         var headers = Object.keys(headerInfo[header]).filter(x => x != "INFO");
                         headers.forEach(innerHeader => {
-                            if (headerInfo[header] != "0%") {
+                            if (headerInfo[header][innerHeader] != "0%") {
                                 let percentageRow = document.createElement("tr");
 
                                 let miniMiniInfoHeader = document.createElement("td");
@@ -440,7 +462,15 @@ function buildTeamTable(teamData, color) {
                                 miniMiniInfoHeader.setAttribute("class", "miniInfoHeader");
                                 miniMiniInfoHeader.style.backgroundColor = color["singleCellHeader"];
                                 miniMiniInfoHeader.style.fontSize = "15px";
-                                miniMiniInfoHeader.style.height = (cellHeight * headers.length) * convertPercent(headerInfo[header][innerHeader]) + "px";
+
+                                var calcHeight = Math.round((cellHeight * headers.length) * convertPercent(headerInfo[header][innerHeader]));
+
+                                if (calcHeight < 18) {
+                                    calcHeight = 18;
+                                }
+
+                                miniMiniInfoHeader.style.height = calcHeight + "px";
+
                                 miniMiniInfoHeader.style.width = tableWidth * 3 / 5 + "vw";
 
                                 percentageRow.appendChild(miniMiniInfoHeader);
@@ -450,7 +480,6 @@ function buildTeamTable(teamData, color) {
                                 
                                 miniMiniInfoPercentage.setAttribute("class", "miniInfoHeader");
                                 miniMiniInfoPercentage.style.fontSize = "15px";
-                                miniMiniInfoPercentage.style.height = (cellHeight * headers.length) * convertPercent(headerInfo[header][innerHeader]) + "px";
                                 miniMiniInfoPercentage.style.width = tableWidth * 2 / 5 + "vw";
 
                                 if (counter++ % 2 == 0) {
@@ -485,14 +514,58 @@ function buildTeamTable(teamData, color) {
 
     table.style.width = tableWidth + "vw";
     table.style.backgroundColor = "black";
-    table.style.borderRight = marginTopSpacing + " solid black";
-    table.style.borderBottom = marginTopSpacing + " solid black";
+    table.style.border = marginTopSpacing + " solid black";
+    table.style.borderTop = "0 solid black";
 
     return table;
 }
 
-function buildHeaderTable(heightObj) {
-    console.log(heightObj)
+function buildHeaderTable(heightObj, color) {
+    var headerTable = document.createElement("table");
+
+    Object.keys(heightObj).forEach(section => {
+        let sectionInfo = heightObj[section];
+
+        Object.keys(sectionInfo).forEach(header => {
+            let height = sectionInfo[header];
+
+            if (typeof height != "object") {
+                let headerRow = document.createElement("tr");
+                let headerData = document.createElement("td");
+                let innerTable = document.createElement("table");
+                let innerRow = document.createElement("tr");
+                let innerData = document.createElement("td");
+
+                innerData.setAttribute("class", "sectionHeader");
+                innerData.style.backgroundColor = color["sectionHeader"];
+                innerData.style.width = displayTableWidth + "vw";
+                innerData.style.height = height;
+
+                if (height.includes("SPACER")) {
+                    innerData.style.height = height.replace("SPACER", "");
+                    innerData.style.color = color["sectionHeader"];
+                    innerData.appendChild(document.createTextNode("ello"));
+                } else if (header.includes("CUBE") || header.includes("CONE")) { //CHANGE YEARLY
+                    innerData.appendChild(document.createTextNode(header.replace("CONE", "").replace("CUBE", "")));
+                } else {
+                    innerData.appendChild(document.createTextNode(header));
+                }
+
+                innerTable.style.marginTop = marginTopSpacing;
+
+                innerRow.appendChild(innerData);
+                innerTable.appendChild(innerRow);
+                headerData.appendChild(innerTable);
+                headerRow.appendChild(headerData);
+                headerTable.appendChild(headerRow);
+            }
+        });
+    });
+
+    headerTable.style.backgroundColor = "black";
+    headerTable.style.borderBottom = marginTopSpacing + " solid black";
+
+    return headerTable;
 }
 
 function getHeightObj(data) {
@@ -515,14 +588,30 @@ function getHeightObj(data) {
                 if (type == "NORMAL") {
                     heightsObj[section][header] = headerInfo["INFO"][0].length * 2 * cellHeight + "px";
                 } else if (type == "HAVE") {
-                    heightsObj[section][header] = Object.values(headerInfo).filter(x => x != "INFO").length * cellHeight + "px";
+                    heightsObj[section][header] = Object.keys(headerInfo).filter(x => x != "INFO").length * cellHeight + "px";
                 } else if (type == "%") {
-                    heightsObj[section][header] = Object.values(headerInfo).filter(x => x != "0%" && x != "INFO").length * cellHeight + "px";
+                    var numSmall = Object.keys(headerInfo).filter(x => x != "INFO" && headerInfo[x] != "0%").map(x => convertPercent(headerInfo[x]) * cellHeight * (Object.keys(headerInfo).length - 1)).filter(x => x < 18).map(x => 18 - Math.round(x));
+
+                    if (numSmall.length > 0) {
+                        numSmall = sum(numSmall);
+                    } else {
+                        numSmall = 0;
+                    }
+
+                    heightsObj[section][header] = (Object.keys(headerInfo).filter(x => x != "INFO").length) * cellHeight + numSmall + "px";
                 } else if (type == "NESTED") {
                     let height = 0;
 
                     Object.keys(headerInfo).filter(x => x != "INFO").forEach(key => {
-                        height += Object.keys(headerInfo[key]).length * cellHeight;
+                        var numSmall = Object.keys(headerInfo[key]).filter(x => x != "INFO" && headerInfo[key][x] != "0%").map(x => convertPercent(headerInfo[key][x]) * cellHeight * (Object.keys(headerInfo[key]).length - 1)).filter(x => x < 18).map(x => 18 - Math.round(x));
+                        
+                        if (numSmall.length > 0) {
+                            numSmall = sum(numSmall);
+                        } else {
+                            numSmall = 0;
+                        }
+
+                        height += Object.keys(headerInfo[key]).length * cellHeight + numSmall;
                     });
 
 
@@ -530,6 +619,20 @@ function getHeightObj(data) {
                 } else {
                     // console.log(headerInfo, type);
                 }
+            }
+        });
+    });
+
+    Object.keys(heightsObj).forEach(key => {
+        Object.keys(heightsObj[key]).forEach(subkey => {
+            height = heightsObj[key][subkey];
+
+            try {
+                if (!height.includes("px")) {
+                    delete heightsObj[key][subkey];
+                }
+            } catch {
+                delete heightsObj[key][subkey];
             }
         });
     });
@@ -667,11 +770,11 @@ function compileAllTeamData(team, match, pre, pit) {
     data["Autonomous"]["Docked"]["Attempt%"]["ATPT"] = getPercent(dockSuccess["Docked"] + dockSuccess["Failed Dock"], dockSuccessArray.length);
     data["Autonomous"]["Docked"]["Attempt%"]["NA"] = getPercent(dockSuccess["none"], dockSuccessArray.length);
     
-    var dockSuccessArray = match.map(x => x[5]).filter(x => x != "none");
-    var dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "Failed Dock"]);
+    dockSuccessArray = match.map(x => x[5]).filter(x => x != "none");
+    dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "Failed Dock"]);
     data["Autonomous"]["Docked"]["Success%"]["Success"] = getPercent(dockSuccess["Docked"], dockSuccessArray.length);
     data["Autonomous"]["Docked"]["Success%"]["Fail"] = getPercent(dockSuccess["Failed Dock"], dockSuccessArray.length);
-    if (Object.keys(dockSuccess).length == 0) {
+    if (sum(Object.values(dockSuccess)) == 0) {
         delete data["Autonomous"]["Docked"]["Success%"];
         data["Autonomous"]["Docked"]["INFO"] = [[1], "NESTED"];
     }
@@ -681,9 +784,8 @@ function compileAllTeamData(team, match, pre, pit) {
     var engaged = getFreqObj(engagedArray, ["TRUE", "FALSE"]);
     data["Autonomous"]["Engaged%"]["Engaged"] = getPercent(engaged["TRUE"], engagedArray.length);
     data["Autonomous"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
-    if (Object.keys(engagedArray).length == 0) {
+    if (sum(Object.values(engaged)) == 0) {
         delete data["Autonomous"]["Engaged%"];
-        // data["Autonomous"]["Engaged%"]["INFO"] = [[1], "NESTED"];
     }
 
     ////////////////////////////////////////////////////////TELEOP
@@ -726,12 +828,19 @@ function compileAllTeamData(team, match, pre, pit) {
     data["Teleop"]["Playstyle%"]["Off"] = getPercent(playstyle["Offensive"], playstyleArray.length);
     data["Teleop"]["Playstyle%"]["Hyb"] = getPercent(playstyle["Hybrid"], playstyleArray.length);
     data["Teleop"]["Playstyle%"]["Def"] = getPercent(playstyle["Defensive"], playstyleArray.length);
+    if (Object.values(data["Teleop"]["Playstyle%"]).filter(x => x.includes("%") && x != "0%" && typeof x == "string").length == 0) {
+        delete data["Teleop"]["Playstyle%"];
+    }
 
     //ENDGAME
     var teleDocksArray = match.map(x => x[12]).filter(x => x != "none" && ["Failed Dock", "Docked"].includes(x));
     var teleDocks = getFreqObj(teleDocksArray, ["Docked", "Failed Dock"]);
     data["Teleop"]["Endgame"]["Success%"]["Success"] = getPercent(teleDocks["Docked"], teleDocksArray.length);
     data["Teleop"]["Endgame"]["Success%"]["Fail"] = getPercent(teleDocks["Failed Dock"], teleDocksArray.length);
+    if (sum(Object.values(teleDocks)) == 0) {
+        delete data["Teleop"]["Endgame"]["Success%"];
+        data["Teleop"]["Endgame"]["INFO"] = [[1], "NESTED"];
+    }
 
     var teleEndgameArray = match.map(x => x[12]).filter(x => x != "Failed Dock");
     var teleEndgame = getFreqObj(teleEndgameArray, ["Docked", "Parked", "none"]);
@@ -744,12 +853,18 @@ function compileAllTeamData(team, match, pre, pit) {
     engaged = getFreqObj(engagedArray, ["TRUE", "FALSE"]);
     data["Teleop"]["Engaged%"]["Engaged"] = getPercent(engaged["TRUE"], engagedArray.length);
     data["Teleop"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
+    if (Object.values(data["Teleop"]["Engaged%"]).filter(x => x.includes("%") && x != "0%" && typeof x == "string").length == 0) {
+        delete data["Teleop"]["Engaged%"];
+    }
 
     //PENALTIES
     storeScoringStats(data["Teleop"]["Penalties"], match.map(x => x[15]).filter(x => x != "none"));
     delete data["Teleop"]["Penalties"]["ACC"];
     delete data["Teleop"]["Penalties"]["Min"];
     delete data["Teleop"]["Penalties"]["Rng"];
+    if (Object.keys(data["Teleop"]["Penalties"]).length <= 1) {
+        delete data["Teleop"]["Penalties"];
+    }
 
     //CARDS
     var cards = getFreqObj(match.map(x => x[16]).filter(x => x != "none"), ["Red", "Yellow"]);
@@ -878,7 +993,6 @@ function getFreqObj(obj, neededKeys) {
     });
 
     var haveKeys = Object.keys(freqObj);
-
     neededKeys.filter(x => !haveKeys.includes(x)).forEach(key => {
         freqObj[key] = 0;
     });
@@ -918,7 +1032,7 @@ function checkEmpty(obj, key) {
 
 //REMOVE LATER
 function test() {
-    document.getElementById("teamSearchInput").setAttribute("value", "1");
+    document.getElementById("teamSearchInput").setAttribute("value", "10");
     eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 }
 
