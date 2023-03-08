@@ -1,6 +1,6 @@
 const dataTableWithMatchFormat = {
     "General": {
-        "Dimensions": "",
+        "DIMS": "",
         "DB Info": {
             "Type": "",
             "Motor": "",
@@ -88,7 +88,7 @@ const dataTableWithMatchFormat = {
                 "Fail": "",
                 "INFO": [[2], "%"]
             },
-            "Attempt%": {
+            "ATPT%": {
                 "ATPT": "",
                 "NA": "",
                 "INFO": [[2], "%"]
@@ -177,7 +177,7 @@ const dataTableWithMatchFormat = {
                 "Fail": "",
                 "INFO": [[2], "%"]
             },
-            "Attempt%": {
+            "ATPT%": {
                 "Docked": "",
                 "Parked": "",
                 "NA": "",
@@ -196,15 +196,62 @@ const dataTableWithMatchFormat = {
             "INFO": [[2], "NORMAL"]
         },
         "Cards": {
-            "Reds": "",
-            "Yellow": "", //ONLY IF TEAM IN POSSESSION OF YELLOW
+            "R": "",
+            "Y": "", //ONLY IF TEAM IN POSSESSION OF YELLOW
             "INFO": [[2], "NORMAL"]
         },
-        "Aggressive%": {
+        "Aggro%": {
             "Yes": "",
             "No": "",
             "INFO": [[2], "%"]
         }
+    }
+};
+const dataTableWithoutMatchFormat = {
+    "General": {
+        "DIMS": "",
+        "DB Info": {
+            "Type": "",
+            "Motor": "",
+            "INFO": [[1, 1], "NORMAL"]
+        },
+        "GOM": "",
+        "OTF Auto": {
+            "Can": "",
+            "Duration": "",
+            "Reliability": "",
+            "INFO": [[1, 1, 1], "NORMAL"]
+        }
+    },
+    "Autonomous": {
+        "Set Pos": "",
+        "Setup": "",
+        "Dock": "",
+        "Engage": "",
+    },
+    "Teleop": {
+        "Cycle": "",
+        "Cone": {
+            "Top": "",
+            "Mid": "",
+            "Bottom": "",
+            "INFO": [[1, 1, 1], "HAVE"]
+        },
+        "Cube": {
+            "Top": "",
+            "Mid": "",
+            "Bottom": "",
+            "INFO": [[1, 1, 1], "HAVE"]
+        },
+        "Pref PS": "",
+        "Able PS": {
+            "Offense": "",
+            "Defense": "",
+            "INFO": [[1, 1], "HAVE"]
+        },
+        "Dock": "",
+        "Dock Time": "",
+        "Engage": "",
     }
 };
 const blueDataTableColors = {
@@ -220,19 +267,45 @@ var lockedDivs = {
 };
 const marginTopSpacing = "2px";
 const cellHeight = 30;
-const tableWidth = 30;
-const displayTableWidth = 20;
+const tableWidth = 24;
+const displayTableWidth = 16;
 
 async function teamSearch() {
     var team = document.getElementById("teamSearchInput").value;
+    var dataTableDiv = document.getElementById("teamSearchDataTableDiv");
+    var locationInfo = document.getElementById("teamSearchLocationInformation");
+    var additionalInfo = document.getElementById("teamSearchAdditionalInformation");
+    dataTableDiv.innerHTML = "";
 
-    if (false) {
-        //TODO: Verify Team (check if valid team and is numbers)
+    document.getElementById("teamSearchTeamName").innerHTML = "Searching...";
+    document.getElementById("teamSearchTeamNum").innerHTML = "";
+    locationInfo.innerHTML = "";
+    additionalInfo.innerHTML = "";
+    hideElement("teamSearchNotifDiv");
+    document.getElementById("teamSearchInput").style.border = "1px solid #c5c7c5";
+    changeNotif("teamSearchNotifText", "T");
+
+    if (isNaN(parseInt(team))) {
+        showElement("teamSearchNotifDiv");
+        document.getElementById("teamSearchInput").style.border = "1px solid #eb776e";
+        changeNotif("teamSearchNotifText", "That is Not a Number!");
+
+        document.getElementById("teamSearchTeamName").innerHTML = "Enter A Team";
+        return;
     }
 
     var orderNum = curOrderNum++;
     await getTBAData("team/frc" + team, orderNum);
     var data = getOrder(orderNum);
+
+    if (data["Error"]) {
+        showElement("teamSearchNotifDiv");
+        document.getElementById("teamSearchInput").style.border = "1px solid #eb776e";
+        changeNotif("teamSearchNotifText", "That is Not a Valid Team!");
+
+        document.getElementById("teamSearchTeamName").innerHTML = "Enter A Team";
+        return;
+    }
 
     //TEAM NAME
     document.getElementById("teamSearchTeamName").innerHTML = data.nickname;
@@ -240,18 +313,11 @@ async function teamSearch() {
     document.getElementById("teamSearchTeamNum").innerHTML = "[" + team + "]";
 
     //LOCATION INFO
-    var locationInfo = document.getElementById("teamSearchLocationInformation");
-
     locationInfo.innerHTML = [data.school_name, data.address, data.city, data.country].filter(x => x).join(", ");
     locationInfo.style.display = "block";
 
     //ADDITIONAL INFO
-    var additionalInfo = document.getElementById("teamSearchAdditionalInformation");
     var additionalString;
-
-    if (false) {
-        //TODO: CHECK IF HAVE DATA | IF NOT THEN ONLY USE PRE / PIT DATA
-    }
 
     orderNum = curOrderNum++;
     await getTBAData("team/frc" + team + "/robots", orderNum);
@@ -287,6 +353,20 @@ async function teamSearch() {
     orderNum = curOrderNum++;
     await getSheetData(config.matchGSID, sheetName, orderNum);
     var matchForms = getOrder(orderNum);
+    
+    var noMatch = matchForms.filter(x => x[1] == team).length == 0;
+    var noPrePit = pitForms.filter(x => x[0] == team).length == 0 && preForms.filter(x => x[0] == team).length == 0;
+    
+    if (noMatch && noPrePit) {
+        showElement("teamSearchNotifDiv");
+        document.getElementById("teamSearchInput").style.border = "1px solid #eb776e";
+        changeNotif("teamSearchNotifText", "This Team Has No Data!");
+
+        return;
+    } else if (noMatch) {
+        var teamData = compilePrePitTeamData(team, preForms, pitForms);
+        return;
+    }
 
     var teamData = compileAllTeamData(team, matchForms, preForms, pitForms);
     var titleTable = buildHeaderTable(getHeightObj(teamData), blueDataTableColors);
@@ -297,13 +377,14 @@ async function teamSearch() {
     var title = document.createElement("td");
     var dataData = document.createElement("td");
 
+    tble.style.margin = "auto";
+
     title.appendChild(titleTable);
     dataData.appendChild(data);
     row.appendChild(title);
     row.appendChild(dataData);
     tble.appendChild(row);
-    document.body.appendChild(tble);
-    //TODO: add table onto Displays html and replace column/node instead of placing on body
+    dataTableDiv.appendChild(tble);
 }
 
 function buildTeamTable(teamData, color) {
@@ -394,7 +475,6 @@ function buildTeamTable(teamData, color) {
                             
                             miniInfoHeader.setAttribute("class", "miniInfoHeader");
                             miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
-                            miniInfoHeader.style.fontSize = "15px";
 
                             var calcHeight = Math.round((cellHeight * headers.length) * convertPercent(headerInfo[header]));
 
@@ -410,8 +490,7 @@ function buildTeamTable(teamData, color) {
                             let miniInfoPercentage = document.createElement("td");
                             miniInfoPercentage.appendChild(document.createTextNode(headerInfo[header]));
                             
-                            miniInfoPercentage.setAttribute("class", "miniInfoHeader");
-                            miniInfoPercentage.style.fontSize = "15px";
+                            miniInfoPercentage.setAttribute("class", "miniInfoPercent");
                             // miniInfoPercentage.style.height = (cellHeight * headers.length) * convertPercent(headerInfo[header]) + "px";
                             miniInfoPercentage.style.width = tableWidth * 2 / 5 + "vw";
 
@@ -461,7 +540,6 @@ function buildTeamTable(teamData, color) {
                                 
                                 miniMiniInfoHeader.setAttribute("class", "miniInfoHeader");
                                 miniMiniInfoHeader.style.backgroundColor = color["singleCellHeader"];
-                                miniMiniInfoHeader.style.fontSize = "15px";
 
                                 var calcHeight = Math.round((cellHeight * headers.length) * convertPercent(headerInfo[header][innerHeader]));
 
@@ -478,8 +556,7 @@ function buildTeamTable(teamData, color) {
                                 let miniMiniInfoPercentage = document.createElement("td");
                                 miniMiniInfoPercentage.appendChild(document.createTextNode(headerInfo[header][innerHeader]));
                                 
-                                miniMiniInfoPercentage.setAttribute("class", "miniInfoHeader");
-                                miniMiniInfoPercentage.style.fontSize = "15px";
+                                miniMiniInfoPercentage.setAttribute("class", "miniInfoPercent");
                                 miniMiniInfoPercentage.style.width = tableWidth * 2 / 5 + "vw";
 
                                 if (counter++ % 2 == 0) {
@@ -525,13 +602,33 @@ function buildHeaderTable(heightObj, color) {
 
     Object.keys(heightObj).forEach(section => {
         let sectionInfo = heightObj[section];
+        let sectionRow = document.createElement("tr");
 
+        let miniSectionTable = document.createElement("table");
+        let miniSectionRow = document.createElement("tr");
+        let miniSectionData = document.createElement("td");
+        let sectionHeight = sum(Object.values(sectionInfo).map(x => parseInt(x.replace("px", "").replace("SPACER", "")))) + (Object.values(sectionInfo).length - 1) * parseInt(marginTopSpacing.replace("px", ""));
+
+        miniSectionData.setAttribute("class", "sectionData");
+        miniSectionData.style.backgroundColor = color["sectionHeader"];
+        miniSectionData.style.width = displayTableWidth / 2 + "vw";
+        miniSectionData.style.height = sectionHeight + "px";
+        miniSectionTable.style.marginRight = marginTopSpacing;
+        miniSectionTable.style.marginTop = marginTopSpacing;
+
+        miniSectionData.appendChild(document.createTextNode(section));
+        miniSectionRow.appendChild(miniSectionData);
+        miniSectionTable.appendChild(miniSectionRow);
+        sectionRow.appendChild(miniSectionTable);
+
+        let miniHeaderData = document.createElement("td");
+        let miniHeaderTable = document.createElement("table");
         Object.keys(sectionInfo).forEach(header => {
             let height = sectionInfo[header];
+            let miniHeaderRow = document.createElement("tr");
+            let headerData = document.createElement("td");
 
             if (typeof height != "object") {
-                let headerRow = document.createElement("tr");
-                let headerData = document.createElement("td");
                 let innerTable = document.createElement("table");
                 let innerRow = document.createElement("tr");
                 let innerData = document.createElement("td");
@@ -556,14 +653,20 @@ function buildHeaderTable(heightObj, color) {
                 innerRow.appendChild(innerData);
                 innerTable.appendChild(innerRow);
                 headerData.appendChild(innerTable);
-                headerRow.appendChild(headerData);
-                headerTable.appendChild(headerRow);
             }
+
+            miniHeaderRow.appendChild(headerData);
+            miniHeaderTable.appendChild(miniHeaderRow);
         });
+        miniHeaderData.appendChild(miniHeaderTable);
+        sectionRow.appendChild(miniHeaderData);
+
+        headerTable.appendChild(sectionRow);
     });
 
     headerTable.style.backgroundColor = "black";
     headerTable.style.borderBottom = marginTopSpacing + " solid black";
+    headerTable.style.borderLeft = marginTopSpacing + " solid black";
 
     return headerTable;
 }
@@ -686,13 +789,12 @@ function createNormalMiniTable(data, color) {
     return miniTable;
 }
 
+//CHANGE YEARLY
 function compileAllTeamData(team, match, pre, pit) {
     var data = JSON.parse(JSON.stringify(dataTableWithMatchFormat));
     pre = pre.slice(1);
     pit = pit.slice(1);
     match = match.slice(1);
-
-    //TODO: GET DATA FROM BOTH FORMS AND UPATE ORIGINAL INFORMATION AND RETURN NEW OBJ
     
     if (match) {
         match = match.filter(x => x[1] == team);
@@ -707,21 +809,31 @@ function compileAllTeamData(team, match, pre, pit) {
     ////////////////////////////////////////////////////////GENERAL
     if (pre) {
         //DIMENSIONS
-        data["General"]["Dimensions"] = JSON.parse(pre[1]).join("\" x ") + "\"";
+        data["General"]["DIMS"] = JSON.parse(pre[1]).join("\" x ") + "\"";
 
         //DB INFO
         fillNewestData(data["General"]["DB Info"], "Type", pre[2], "none");
         fillNewestData(data["General"]["DB Info"], "Motor", pre[3], "none");
         checkEmpty(data["General"], "DB Info");
-
-        //OTF AUTO
-        fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], pit[10]);
-        fillNewestData(data["General"]["OTF Auto"], "Duration", pre[7], pit[11]);
-        fillNewestData(data["General"]["OTF Auto"], "Reliability", pre[8], pit[12]);
         checkEmpty(data["General"], "OTF Auto");
-        
-        //PLAYSTYLES
-        fillNewestHaveData(data["General"], "Playstyles", pre[19], pit[19]);
+
+        if (pit) {
+            //OTF AUTO
+            fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], pit[10]);
+            fillNewestData(data["General"]["OTF Auto"], "Duration", pre[7], pit[11]);
+            fillNewestData(data["General"]["OTF Auto"], "Reliability", pre[8], pit[12]);
+
+            //PLAYSTYLES
+            fillNewestHaveData(data["General"], "Playstyles", pre[19], pit[19]);
+        } else {
+            //OTF AUTO
+            fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], "none");
+            fillNewestData(data["General"]["OTF Auto"], "Duration", pre[7], "none");
+            fillNewestData(data["General"]["OTF Auto"], "Reliability", pre[8], "none");
+            
+            //PLAYSTYLES
+            fillNewestHaveData(data["General"], "Playstyles", pre[19], "none");
+        }
     } else {
         data["General"] = {
             "Failure%": {
@@ -767,8 +879,8 @@ function compileAllTeamData(team, match, pre, pit) {
     //DOCKED
     var dockSuccessArray = match.map(x => x[5]);
     var dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "none"]);
-    data["Autonomous"]["Docked"]["Attempt%"]["ATPT"] = getPercent(dockSuccess["Docked"] + dockSuccess["Failed Dock"], dockSuccessArray.length);
-    data["Autonomous"]["Docked"]["Attempt%"]["NA"] = getPercent(dockSuccess["none"], dockSuccessArray.length);
+    data["Autonomous"]["Docked"]["ATPT%"]["ATPT"] = getPercent(dockSuccess["Docked"] + dockSuccess["Failed Dock"], dockSuccessArray.length);
+    data["Autonomous"]["Docked"]["ATPT%"]["NA"] = getPercent(dockSuccess["none"], dockSuccessArray.length);
     
     dockSuccessArray = match.map(x => x[5]).filter(x => x != "none");
     dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "Failed Dock"]);
@@ -844,9 +956,9 @@ function compileAllTeamData(team, match, pre, pit) {
 
     var teleEndgameArray = match.map(x => x[12]).filter(x => x != "Failed Dock");
     var teleEndgame = getFreqObj(teleEndgameArray, ["Docked", "Parked", "none"]);
-    data["Teleop"]["Endgame"]["Attempt%"]["Docked"] = getPercent(teleEndgame["Docked"], teleEndgameArray.length);
-    data["Teleop"]["Endgame"]["Attempt%"]["Parked"] = getPercent(teleEndgame["Parked"], teleEndgameArray.length);
-    data["Teleop"]["Endgame"]["Attempt%"]["NA"] = getPercent(teleEndgame["none"], teleEndgameArray.length);
+    data["Teleop"]["Endgame"]["ATPT%"]["Docked"] = getPercent(teleEndgame["Docked"], teleEndgameArray.length);
+    data["Teleop"]["Endgame"]["ATPT%"]["Parked"] = getPercent(teleEndgame["Parked"], teleEndgameArray.length);
+    data["Teleop"]["Endgame"]["ATPT%"]["NA"] = getPercent(teleEndgame["none"], teleEndgameArray.length);
 
     //ENGAGED
     engagedArray = match.map(x => x[13]).filter(x => x != "none");
@@ -868,16 +980,76 @@ function compileAllTeamData(team, match, pre, pit) {
 
     //CARDS
     var cards = getFreqObj(match.map(x => x[16]).filter(x => x != "none"), ["Red", "Yellow"]);
-    data["Teleop"]["Cards"]["Reds"] = cards["Red"] + Math.floor(cards["Yellow"] / 2);
-    data["Teleop"]["Cards"]["Yellow"] = cards["Yellow"] % 2 == 1;
+    data["Teleop"]["Cards"]["R"] = cards["Red"] + Math.floor(cards["Yellow"] / 2);
+    data["Teleop"]["Cards"]["Y"] = cards["Yellow"] % 2 == 1;
 
     //AGGRESSIVE
     var aggressiveArray = match.map(x => x[17]).filter(x => x != "none");
     var aggressive = getFreqObj(aggressiveArray, ["TRUE", "FALSE"]);
-    data["Teleop"]["Aggressive%"]["Yes"] = getPercent(aggressive["TRUE"], aggressiveArray.length);
-    data["Teleop"]["Aggressive%"]["No"] = getPercent(aggressive["FALSE"], aggressiveArray.length);
+    data["Teleop"]["Aggro%"]["Yes"] = getPercent(aggressive["TRUE"], aggressiveArray.length);
+    data["Teleop"]["Aggro%"]["No"] = getPercent(aggressive["FALSE"], aggressiveArray.length);
 
     return data;
+}
+
+//CHANGE YEARLY
+function compilePrePitTeamData(team, pre, pit) {
+    var data = JSON.parse(JSON.stringify(dataTableWithoutMatchFormat));
+    pre = pre.slice(1);
+    pit = pit.slice(1);
+    
+    if (pre) {
+        pre = pre.filter(x => x[0] == team);
+        pre = pre[pre.length - 1];
+    } if (pit) {
+        pit = pit.filter(x => x[0] == team);
+        pit = pit[pit.length - 1];
+
+        if (!pit) {
+            pit = ["none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"];
+        }
+    } 
+
+    ////////////////////////////////////////////////////////GENERAL
+    //DIMENSIONS
+    data["General"]["DIMS"] = JSON.parse(pre[1]).join("\" x ") + "\"";
+
+    //DB INFO
+    fillNewestData(data["General"]["DB Info"], "Type", pre[2], "none");
+    fillNewestData(data["General"]["DB Info"], "Motor", pre[3], "none");
+    checkEmpty(data["General"], "DB Info");
+
+    //GOM
+    data["General"]["GOM"] = pre[4];
+
+    //OTF AUTO
+    fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], pit[10]);
+    fillNewestData(data["General"]["OTF Auto"], "Duration", pre[7], pit[11]);
+    fillNewestData(data["General"]["OTF Auto"], "Reliability", pre[8], pit[12]);
+    checkEmpty(data["General"], "OTF Auto");
+
+    ////////////////////////////////////////////////////////AUTONOMOUS
+    //SET POS
+    fillNewestSingleData(data["Autonomous"], "Set Pos", pre[13], pit[17]);
+
+    //SETUP
+    fillNewestSingleData(data["Autonomous"], "Setup", pre[11], pit[15]);
+    if (data["Autonomous"]["Setup"]) {
+        data["Autonomous"]["Setup"] = JSON.parse(data["Autonomous"]["Setup"]).map(x => x.substring(0, 2)).join("|");
+    }
+
+    //DOCK
+    fillNewestSingleData(data["Autonomous"], "Dock", pre[9], pit[13]);
+
+    if (data["Autonomous"]["Dock"] == "TRUE") {
+        //ENGAGE
+        fillNewestSingleData(data["Autonomous"], "Engage", pre[10], pit[14]);
+    }
+
+    ////////////////////////////////////////////////////////TELEOP
+    
+
+    console.log(data)
 }
 
 //CHANGE YEARLY
@@ -933,6 +1105,16 @@ function storeScoringStats(data, obj) {
         data["Rng"] = bot + " - " + top;
     }
     data["ACC"] = getPercent(made, miss);
+}
+
+function fillNewestSingleData(obj, key, pre, pit) {
+    if (pit != "none") {
+        obj[key] = pit;
+    } else if (pre != "none") {
+        obj[key] = pre;
+    } else {
+        delete obj[key];
+    }
 }
 
 function fillNewestData(obj, key, pre, pit) {
@@ -1029,10 +1211,9 @@ function checkEmpty(obj, key) {
     }
 }
 
-
 //REMOVE LATER
 function test() {
-    document.getElementById("teamSearchInput").setAttribute("value", "10");
+    document.getElementById("teamSearchInput").setAttribute("value", "23");
     eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 }
 
