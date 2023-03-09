@@ -1283,6 +1283,86 @@ function checkEmpty(obj, key) {
     }
 }
 
+
+async function fillMissingHeaders(objs) {
+    var allHeaders = {
+        "General": [],
+        "Autonomous": [],
+        "Teleop": [] 
+    };
+    var groups = ["General", "Autonomous", "Teleop"];
+
+    var orderNum = curOrderNum++;
+    await getSheetData(config.preGSID, sheetName, orderNum);
+    var preForms = getOrder(orderNum);
+
+    orderNum = curOrderNum++;
+    await getSheetData(config.pitGSID, sheetName, orderNum);
+    var pitForms = getOrder(orderNum);
+
+    orderNum = curOrderNum++;
+    await getSheetData(config.matchGSID, sheetName, orderNum);
+    var matchForms = getOrder(orderNum);
+
+    for (var i = 0; i < objs.length; i++) {
+        let team = objs[i];        
+        var noMatch = matchForms.filter(x => x[1] == team).length == 0;
+        var noPrePit = pitForms.filter(x => x[0] == team).length == 0 && preForms.filter(x => x[0] == team).length == 0;
+        
+        var teamData;
+        var clone;
+        if (noMatch && noPrePit) {
+            showElement("teamSearchNotifDiv");
+            document.getElementById("teamSearchInput").style.border = "1px solid #eb776e";
+            changeNotif("teamSearchNotifText", "This Team Has No Data!");
+    
+            return;
+        } else if (noMatch) {
+            teamData = compilePrePitTeamData(team, preForms, pitForms);
+            clone = dataTableWithoutMatchFormat;
+        } else {
+            teamData = compileAllTeamData(team, matchForms, preForms, pitForms);
+            clone = dataTableWithMatchFormat;
+        }
+
+        objs[i] = teamData;
+    };
+
+    //KEEP BELOW
+    objs.forEach(obj => {
+        let counter = 0;
+
+        Object.keys(obj).forEach(key => {
+            Object.keys(obj[key]).forEach(header => {
+                if (!allHeaders[groups[counter]].includes(header)) {
+                    allHeaders[groups[counter]].push(header);
+                }
+            });
+
+            counter++;
+        });
+
+        counter = 0;
+    });
+
+    //TODO: FIX
+    objs.forEach(obj => {
+        var counter = 0;
+
+        Object.values(obj).forEach(section => {
+            allHeaders[groups[counter]].forEach(header => {
+                if (Object.keys(section).includes(header)) {
+                    section[header] = "ND";
+                }
+            });
+
+            counter++;
+        });
+    });
+
+    console.log(objs)
+}
+
 async function displayForms() {
     var team = document.getElementById("formsDisplayInput").value;
 
@@ -1314,5 +1394,11 @@ async function displayForms() {
         return;
     }
 
-    
+
 }
+
+function test() {
+    fillMissingHeaders([10, 1, 23]);
+}
+
+test();
