@@ -223,7 +223,7 @@ const dataTableWithoutMatchFormat = {
             "INFO": [[1, 1, 1], "NORMAL"]
         }
     },
-    "Autonomous": {
+    "Auto": {
         "Set Pos": "",
         "Setup": "",
         "Dock": "",
@@ -269,6 +269,8 @@ const marginTopSpacing = "2px";
 const cellHeight = 30;
 const tableWidth = 24;
 const displayTableWidth = 16;
+
+//TODO: FIX CONE AND CUBE HAVES AND CHANGE AUTONOMOUS TO AUTO IN THE NON MATCH STUFF
 
 async function teamSearch() {
     var team = document.getElementById("teamSearchInput").value;
@@ -357,6 +359,8 @@ async function teamSearch() {
     var noMatch = matchForms.filter(x => x[1] == team).length == 0;
     var noPrePit = pitForms.filter(x => x[0] == team).length == 0 && preForms.filter(x => x[0] == team).length == 0;
     
+    var teamData;
+    var clone;
     if (noMatch && noPrePit) {
         showElement("teamSearchNotifDiv");
         document.getElementById("teamSearchInput").style.border = "1px solid #eb776e";
@@ -364,12 +368,14 @@ async function teamSearch() {
 
         return;
     } else if (noMatch) {
-        var teamData = compilePrePitTeamData(team, preForms, pitForms);
-        return;
+        teamData = compilePrePitTeamData(team, preForms, pitForms);
+        clone = dataTableWithoutMatchFormat;
+    } else {
+        teamData = compileAllTeamData(team, matchForms, preForms, pitForms);
+        clone = dataTableWithMatchFormat;
     }
 
-    var teamData = compileAllTeamData(team, matchForms, preForms, pitForms);
-    var titleTable = buildHeaderTable(getHeightObj(teamData), blueDataTableColors);
+    var titleTable = buildHeaderTable(getHeightObj(teamData, clone), blueDataTableColors);
     var data = buildTeamTable(teamData, blueDataTableColors);
     
     var tble = document.createElement("table");
@@ -624,6 +630,7 @@ function buildHeaderTable(heightObj, color) {
         let miniHeaderData = document.createElement("td");
         let miniHeaderTable = document.createElement("table");
         Object.keys(sectionInfo).forEach(header => {
+
             let height = sectionInfo[header];
             let miniHeaderRow = document.createElement("tr");
             let headerData = document.createElement("td");
@@ -671,8 +678,9 @@ function buildHeaderTable(heightObj, color) {
     return headerTable;
 }
 
-function getHeightObj(data) {
-    var heightsObj = structuredClone(dataTableWithMatchFormat);
+function getHeightObj(data, clone) {
+    var heightsObj = structuredClone(clone);
+    console.log(heightsObj)
 
     Object.keys(data).forEach(section => {
         let sectionInfo = data[section];
@@ -810,18 +818,21 @@ function compileAllTeamData(team, match, pre, pit) {
     if (pre) {
         //DIMENSIONS
         data["General"]["DIMS"] = JSON.parse(pre[1]).join("\" x ") + "\"";
+        if (JSON.parse(pre[1]).filter(x => x != null).length == 0) {
+            delete data["General"]["DIMS"];
+        }
 
         //DB INFO
         fillNewestData(data["General"]["DB Info"], "Type", pre[2], "none");
         fillNewestData(data["General"]["DB Info"], "Motor", pre[3], "none");
         checkEmpty(data["General"], "DB Info");
-        checkEmpty(data["General"], "OTF Auto");
 
         if (pit) {
             //OTF AUTO
             fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], pit[10]);
             fillNewestData(data["General"]["OTF Auto"], "Duration", pre[7], pit[11]);
             fillNewestData(data["General"]["OTF Auto"], "Reliability", pre[8], pit[12]);
+            checkEmpty(data["General"], "OTF Auto");
 
             //PLAYSTYLES
             fillNewestHaveData(data["General"], "Playstyles", pre[19], pit[19]);
@@ -1013,6 +1024,9 @@ function compilePrePitTeamData(team, pre, pit) {
     ////////////////////////////////////////////////////////GENERAL
     //DIMENSIONS
     data["General"]["DIMS"] = JSON.parse(pre[1]).join("\" x ") + "\"";
+    if (JSON.parse(pre[1]).filter(x => x != null).length == 0) {
+        delete data["General"]["DIMS"];
+    }
 
     //DB INFO
     fillNewestData(data["General"]["DB Info"], "Type", pre[2], "none");
@@ -1020,7 +1034,7 @@ function compilePrePitTeamData(team, pre, pit) {
     checkEmpty(data["General"], "DB Info");
 
     //GOM
-    data["General"]["GOM"] = pre[4];
+    fillNewestSingleData(data["General"], "GOM", pre[4], "none");
 
     //OTF AUTO
     fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], pit[10]);
@@ -1030,26 +1044,84 @@ function compilePrePitTeamData(team, pre, pit) {
 
     ////////////////////////////////////////////////////////AUTONOMOUS
     //SET POS
-    fillNewestSingleData(data["Autonomous"], "Set Pos", pre[13], pit[17]);
+    fillNewestSingleData(data["Auto"], "Set Pos", pre[13], pit[17]);
 
     //SETUP
-    fillNewestSingleData(data["Autonomous"], "Setup", pre[11], pit[15]);
-    if (data["Autonomous"]["Setup"]) {
-        data["Autonomous"]["Setup"] = JSON.parse(data["Autonomous"]["Setup"]).map(x => x.substring(0, 2)).join("|");
+    fillNewestSingleData(data["Auto"], "Setup", pre[11], pit[15]);
+    if (data["Auto"]["Setup"]) {
+        data["Auto"]["Setup"] = JSON.parse(data["Auto"]["Setup"]).map(x => x.substring(0, 2)).join("|");
     }
 
     //DOCK
-    fillNewestSingleData(data["Autonomous"], "Dock", pre[9], pit[13]);
+    fillNewestSingleData(data["Auto"], "Dock", pre[9], pit[13]);
 
-    if (data["Autonomous"]["Dock"] == "TRUE") {
+    if (data["Auto"]["Dock"] == "TRUE") {
         //ENGAGE
-        fillNewestSingleData(data["Autonomous"], "Engage", pre[10], pit[14]);
+        fillNewestSingleData(data["Auto"], "Engage", pre[10], pit[14]);
+    } else {
+        delete data["Auto"]["Engage"];
     }
 
     ////////////////////////////////////////////////////////TELEOP
-    
+    //CYCLE
+    fillNewestSingleData(data["Teleop"], "Cycle", pre[14], pit[18]);
 
-    console.log(data)
+    //CONE
+    fillNewestData(data["Teleop"]["Cone"], "array", pre[15], pit[4]);
+    if (data["Teleop"]["Cone"]["array"] != "") {
+        let coneHeaders = Object.keys(data["Teleop"]["Cone"]).filter(x => x != "INFO" && x != "array");
+        let coneReaches = JSON.parse(data["Teleop"]["Cone"]["array"]);
+        let counter = 0;
+
+        coneHeaders.forEach(header => {
+            if (!coneReaches[counter++]) {
+                delete data["Teleop"]["Cone"][header];
+            }
+        });
+
+        delete data["Teleop"]["Cone"]["array"];
+    } else {
+        delete data["Teleop"]["Cone"];
+    } if (Object.keys(data["Teleop"]["Cone"]).length == 1) {
+        delete data["Teleop"]["Cone"];
+    }
+    
+    //CUBE
+    fillNewestData(data["Teleop"]["Cube"], "array", pre[16], pit[5]);
+    if (data["Teleop"]["Cube"]["array"] != "") {
+        let coneHeaders = Object.keys(data["Teleop"]["Cube"]).filter(x => x != "INFO" && x != "array");
+        let coneReaches = JSON.parse(data["Teleop"]["Cube"]["array"]);
+        let counter = 0;
+
+        coneHeaders.forEach(header => {
+            if (!coneReaches[counter++]) {
+                delete data["Teleop"]["Cube"][header];
+            }
+        });
+
+        delete data["Teleop"]["Cube"]["array"];
+    } else {
+        delete data["Teleop"]["Cube"];
+    } if (Object.keys(data["Teleop"]["Cube"]).length == 1) {
+        delete data["Teleop"]["Cube"];
+    }
+
+    //PREFERRED PLAYSTYLE
+    fillNewestSingleData(data["Teleop"], "Pref PS", pre[17], pit[21]);
+
+    //ABLE PLAYSTYLE
+    fillNewestHaveData(data["Teleop"], "Able PS", pre[19], pit[19])
+
+    //DOCK
+    fillNewestSingleData(data["Teleop"], "Dock", pre[21], pit[22]);
+
+    //DOCK TIME
+    fillNewestSingleData(data["Teleop"], "Dock Time", pre[23], pit[2]);
+
+    //ENGAGE
+    fillNewestSingleData(data["Teleop"], "Engage", pre[22], pit[23]);
+
+    return data;
 }
 
 //CHANGE YEARLY
@@ -1206,15 +1278,41 @@ function getPercent(percent, whole) {
 }
 
 function checkEmpty(obj, key) {
-    if (obj.length == 1) {
+    if (Object.keys(obj[key]).length == 1) {
         delete obj[key];
     }
 }
 
-//REMOVE LATER
-function test() {
-    document.getElementById("teamSearchInput").setAttribute("value", "23");
-    eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
-}
+async function displayForms() {
+    var team = document.getElementById("formsDisplayInput").value;
 
-test();
+    document.getElementById("formsDisplayTeamName").innerHTML = "Searching...";
+    document.getElementById("formsDisplayTeamNum").innerHTML = "";
+    hideElement("formsDisplayNotifDiv");
+    document.getElementById("formsDisplayInput").style.border = "1px solid #c5c7c5";
+    changeNotif("formsDisplayNotifText", "");
+
+    if (isNaN(parseInt(team))) {
+        showElement("formsDisplayNotifDiv");
+        document.getElementById("formsDisplayInput").style.border = "1px solid #eb776e";
+        changeNotif("formsDisplayNotifText", "That is Not a Number!");
+
+        document.getElementById("formsDisplayTeamName").innerHTML = "Enter A Team";
+        return;
+    }
+
+    var orderNum = curOrderNum++;
+    await getTBAData("team/frc" + team, orderNum);
+    var data = getOrder(orderNum);
+
+    if (data["Error"]) {
+        showElement("formsDisplayNotifDiv");
+        document.getElementById("formsDisplayInput").style.border = "1px solid #eb776e";
+        changeNotif("formsDisplayNotifText", "That is Not a Valid Team!");
+
+        document.getElementById("formsDisplayTeamName").innerHTML = "Enter A Team";
+        return;
+    }
+
+    
+}

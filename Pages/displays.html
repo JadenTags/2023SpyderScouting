@@ -20,13 +20,15 @@
 
 <div id="subNav">
   <p id="teamSearchButton" class="subNavButton">Team Search</p>
+  <p class="subNavDivider"></p>
+  <p id="formsDisplayButton" class="subNavButton">Forms</p>
 </div>
 
 <div id="sidebar">
   <p class="requiresCompElement sidebarButton">General Info</p>
   <p class="sidebarButton">Forms</p>
   <p class="sidebarButton selectedButton">Displays</p>
-  <!-- <p class="sidebarButton">Recruiting</p> -->
+  <p class="sidebarButton">Recruiting</p>
 </div>
 
 <body>
@@ -57,6 +59,30 @@
       <p id="teamSearchAdditionalInformation"></p>
 
       <div id="teamSearchDataTableDiv"></div>
+    </div>
+  </div>
+  
+  <div id="formsDisplayDiv" class="subNavDiv" style="display: none;">
+    <div class="innerDiv">
+      <input id="formsDisplayInput" class="inputInput" placeholder="Team#"></input>
+
+      <p id="formsDisplaySearchButton" class="button spacedElem" onclick="displayForms();">Search</p>
+
+      <div id="formsDisplayNotifDiv" style="display:none;">
+        <br>
+        <p id="formsDisplayNotifText" class="notifText"></p>
+      </div>
+
+      <br>
+      <h1 id="formsDisplayTeamName" class="title">Enter A Team</h1>
+      <h1 id="formsDisplayTeamNum"></h1>`
+
+      <p id="formsDisplayPreButton" class="formsDisplayTypeButton groupedButton startGroupedButton">Pre</p>
+      <p id="formsDisplayPitButton" class="formsDisplayTypeButton groupedButton">Pit</p>
+      <p id="formsDisplayMatchButton" class="formsDisplayTypeButton groupedButton endGroupedButton">Match</p>
+      
+
+      <select id="pitTeamNumDropdown" class="formNumDropdown" onchange=""></select>
     </div>
   </div>
 </body>
