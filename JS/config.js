@@ -2,7 +2,7 @@ var config = {
   tbaKey: 'SbjZMqawBlMTp7aRoJC5V73h7e4CBbQ2mbF8xJssv8nql1I0fCy8lX8O05qP0zqt',
   clientId: '1084130048210-7fog59udh3li01r1f3pibrceli874mc1.apps.googleusercontent.com',
   clientSecret: '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',
-  refreshToken: '1//04xTcMLXw3fk2CgYIARAAGAQSNwF-L9IrtEMvOrbSUw-7nL-Kbhxh1OwHX4Ja9SfYhoxGn1RS3n5IcOuR5MXWVHIFmaknuEXE40M',
+  refreshToken: '1//04Dq4ReNUsXf_CgYIARAAGAQSNwF-L9IrnyWailWdNid66_9C7WH1tWfrAxqcWHruT5Eg845werseiipqRxPQgXPim8cbUkFM1C0',
   userDatabaseGSID: '1mzkuHHLonKO10spvtKyDiqLP9OBwvpH9kr--1rlDA2I',
   matchGSID: '19CKK8bL1509-dcX-taznBRLV4hHJyQIB0nzCMmETrSs',
   pitGSID: '10Wj38-hrNQFcSW0vvcub3uV83KpauFQDP714uLyiK4E',
@@ -13,3 +13,5 @@ var config = {
   twitchAPIClientSecret: 'yd7u2vlrfmc1y2gq7ie36luuve3drb',
   twitchAPIRefreshToken: '8zeax50xx453k9i4nlsq40pyj4wx7fkqu4v0oxv5h8mbhw5asi'
 }
+
+//GOOGLE SHEETS API SCOPE: https://www.googleapis.com/auth/spreadsheets

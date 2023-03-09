@@ -1283,6 +1283,133 @@ function checkEmpty(obj, key) {
     }
 }
 
+async function allianceSearch() {
+    var teams = [];
+
+    for (var i = 1; i <= 3; i++) {
+        teams.push(document.getElementById("allianceTeam" + i + "SearchInput").value);
+    }
+
+    hideElement("allianceSearchNotifDiv");
+    document.getElementById("allianceTeam1SearchInput").style.border = "1px solid #c5c7c5";
+    document.getElementById("allianceTeam2SearchInput").style.border = "1px solid #c5c7c5";
+    changeNotif("allianceSearchNotifText", "");
+
+    if (teams.includes("")) {
+        var counter = 0;
+
+        for (var i = 1; i <= 3; i++) {
+            if (teams[i - 1] == "") {
+                document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
+                counter++;
+            }
+        }
+
+        if (counter == 1) {
+            changeNotif("allianceSearchNotifText", "Please Enter a Team!");
+        } else {
+            changeNotif("allianceSearchNotifText", "Please Enter Teams!");
+        }
+
+        showElement("allianceSearchNotifDiv");
+        return;
+    }
+
+    var nonNumbers = teams.map(team => isNaN(parseInt(team)) && team != "");
+    if (nonNumbers.includes(true)) {
+        var counter = 0;
+
+        for (var i = 1; i <= 3; i++) {
+            if (nonNumbers[i - 1]) {
+                document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
+                counter++;
+            }
+        }
+
+        if (counter == 1) {
+            changeNotif("allianceSearchNotifText", "That is Not a Number!");
+        } else {
+            changeNotif("allianceSearchNotifText", "Those Aren't Numbers!");
+        }
+
+        showElement("allianceSearchNotifDiv");
+        return;
+    }
+
+    var passed = [];
+    var multiples = false;
+    var multiple;
+    teams.forEach(x => {
+        if (!passed.includes(x)) {
+            passed.push(x);
+        } else {
+            multiples = true;
+            multiple = x;
+        }
+    });
+    if (multiples) {
+        for (var i = 1; i <= 3; i++) {
+            if (teams[i - 1] == multiple) {
+                document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
+            }
+        }
+        
+        changeNotif("allianceSearchNotifText", "You Have Multiples!");
+        showElement("allianceSearchNotifDiv");
+        return;
+    }
+
+    var counter = 0
+    for (var i = 0; i < 3; i++) {
+        if (document.getElementById("allianceTeam" + (i + 1) + "SearchInput").style.border != "1px solid #eb776e") {
+            var orderNum = curOrderNum++;
+            await getTBAData("team/frc" + teams[i], orderNum);
+            var data = getOrder(orderNum);
+    
+            if (data["Error"]) {
+                if (counter >= 1) {
+                    changeNotif("allianceSearchNotifText", "Those Aren't Valid Teams!");
+                } else {
+                    changeNotif("allianceSearchNotifText", "That is Not a Valid Team!");
+                }
+    
+                showElement("allianceSearchNotifDiv");
+                document.getElementById("allianceTeam" + (i + 1) + "SearchInput").style.border = "1px solid #eb776e";
+                counter++;
+            }
+        }
+    }
+
+    if (counter > 0) {
+        return;
+    }
+
+    var orderNum = curOrderNum++;
+    await getSheetData(config.preGSID, sheetName, orderNum);
+    var preForms = getOrder(orderNum).filter(x => teams.includes(x[0]));
+
+    orderNum = curOrderNum++;
+    await getSheetData(config.pitGSID, sheetName, orderNum);
+    var pitForms = getOrder(orderNum).filter(x => teams.includes(x[0]));
+
+    orderNum = curOrderNum++;
+    await getSheetData(config.matchGSID, sheetName, orderNum);
+    var matchForms = getOrder(orderNum).filter(x => teams.includes(x[1]));
+
+    if (preForms + pitForms + matchForms == "") {
+        for (var i = 1; i <= 3; i++) {
+            document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
+        }
+
+        changeNotif("allianceSearchNotifText", "No Data!");
+
+        showElement("allianceSearchNotifDiv");
+        return;
+    }
+
+    //TODO: ACTUALLY DO MISSING HEADERS AND STUFF
+    //TODO: GOODNIGHT AND FINISH BEFORE COMP LOLS
+}
 
 async function fillMissingHeaders(objs) {
     var allHeaders = {
@@ -1351,7 +1478,7 @@ async function fillMissingHeaders(objs) {
 
         Object.values(obj).forEach(section => {
             allHeaders[groups[counter]].forEach(header => {
-                if (Object.keys(section).includes(header)) {
+                if (!Object.keys(section).includes(header)) {
                     section[header] = "ND";
                 }
             });
@@ -1361,40 +1488,6 @@ async function fillMissingHeaders(objs) {
     });
 
     console.log(objs)
-}
-
-async function displayForms() {
-    var team = document.getElementById("formsDisplayInput").value;
-
-    document.getElementById("formsDisplayTeamName").innerHTML = "Searching...";
-    document.getElementById("formsDisplayTeamNum").innerHTML = "";
-    hideElement("formsDisplayNotifDiv");
-    document.getElementById("formsDisplayInput").style.border = "1px solid #c5c7c5";
-    changeNotif("formsDisplayNotifText", "");
-
-    if (isNaN(parseInt(team))) {
-        showElement("formsDisplayNotifDiv");
-        document.getElementById("formsDisplayInput").style.border = "1px solid #eb776e";
-        changeNotif("formsDisplayNotifText", "That is Not a Number!");
-
-        document.getElementById("formsDisplayTeamName").innerHTML = "Enter A Team";
-        return;
-    }
-
-    var orderNum = curOrderNum++;
-    await getTBAData("team/frc" + team, orderNum);
-    var data = getOrder(orderNum);
-
-    if (data["Error"]) {
-        showElement("formsDisplayNotifDiv");
-        document.getElementById("formsDisplayInput").style.border = "1px solid #eb776e";
-        changeNotif("formsDisplayNotifText", "That is Not a Valid Team!");
-
-        document.getElementById("formsDisplayTeamName").innerHTML = "Enter A Team";
-        return;
-    }
-
-
 }
 
 function test() {
