@@ -42,7 +42,6 @@ tr, td, table {
 
 .sectionData {
   display: relative;
-  transform: rotate(180deg);
   writing-mode: vertical-lr;
 }
 
