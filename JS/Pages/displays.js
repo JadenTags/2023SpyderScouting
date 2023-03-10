@@ -1707,4 +1707,4 @@ function test() {
     eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 }
 
-test();
+// test();
