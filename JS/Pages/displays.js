@@ -420,7 +420,6 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
 
 
             let headerInfo = sectionInfo[header];
-            console.log(header, headerInfo)
             let headerRow = document.createElement("tr");
             let headerData = document.createElement("td");
             
@@ -464,7 +463,10 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                         miniTable.appendChild(miniMiniTable);
                     }
                 } else if (type == "HAVE") {
+                    console.log(headerInfo)
+                    console.log(Object.keys(headerInfo))
                     var height = Math.round(parseInt(heightsObj[section][header].replace("px", "")) / Object.values(headerInfo).filter(x => x && typeof x == "boolean").length);
+                    console.log(height)
                     var counter = 0;
                     var headers = Object.keys(headerInfo).filter(x => x != "INFO");
                     headers.forEach(header => {
@@ -681,7 +683,6 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                         outSideLecounterTwo = 0;
                     }
                     lastNDNested = header;
-                    console.log(outSideLecounterTwo)
 
                     let miniTable = document.createElement("table");
                     let miniRow = document.createElement("tr");
@@ -843,7 +844,8 @@ function getHeightObj(data, clone) {
                 if (type == "NORMAL") {
                     heightsObj[section][header] = headerInfo["INFO"][0].length * 2 * cellHeight + "px";
                 } else if (type == "HAVE") {
-                    heightsObj[section][header] = Math.round(Object.keys(headerInfo).filter(x => x != "INFO").length * cellHeight / Object.values(headerInfo).filter(x => x && typeof x == "boolean").length) * Object.values(headerInfo).filter(x => x && typeof x == "boolean").length + "px";
+                    heightsObj[section][header] = Math.round(Object.keys(headerInfo).filter(x => x != "INFO").length * cellHeight) + "px";
+                    console.log(heightsObj[section][header])
                 } else if (type == "%") {
                     heightsObj[section][header] = Math.ceil(Object.keys(headerInfo).filter(x => x != "INFO" && x != "0%").length / 2) * 2 * cellHeight + cellHeight + 1 + "px";
                 } else if (type == "NESTED" || heightsObj[section][header]["INFO"] == "ND") {
@@ -1213,6 +1215,8 @@ function compilePrePitTeamData(team, pre, pit) {
         coneHeaders.forEach(header => {
             if (!coneReaches[counter++]) {
                 delete data["Teleop"]["Cone"][header];
+            } else {
+                data["Teleop"]["Cone"][header] = true;
             }
         });
 
@@ -1233,6 +1237,8 @@ function compilePrePitTeamData(team, pre, pit) {
         coneHeaders.forEach(header => {
             if (!coneReaches[counter++]) {
                 delete data["Teleop"]["Cube"][header];
+            } else {
+                data["Teleop"]["Cube"][header] = true;
             }
         });
 
