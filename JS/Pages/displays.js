@@ -815,6 +815,7 @@ function buildHeaderTable(heightObj, color) {
         headerTable.appendChild(sectionRow);
     });
 
+    miniSectionData.style.textAlign = "center";
     headerTable.style.backgroundColor = color["sectionHeader"];
     headerTable.style.border = marginTopSpacing + " solid black";
     headerTable.style.borderTop = "0 solid black";
