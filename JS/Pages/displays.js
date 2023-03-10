@@ -155,7 +155,7 @@ const dataTableWithMatchFormat = {
         "Almost Tipped": {
             "Type%": {
                 "CS": "",
-                "Non-CS": "",
+                "O": "",
                 "INFO": [[2], "%"]
             },
             "Tip%": {//WHETHER A ROBOT ALMOST TIPS IN A MATCH OR NOT REGARDLESS OF TIMES
@@ -1064,7 +1064,7 @@ function compileAllTeamData(team, match, pre, pit) {
     var almostTippedCS = match.map(x => parseInt(x[9])).filter(x => !isNaN(x));
     var almostTippedNonCS = match.map(x => parseInt(x[10])).filter(x => !isNaN(x));
     data["Teleop"]["Almost Tipped"]["Type%"]["CS"] = getPercent(almostTippedCS, almostTippedNonCS);
-    data["Teleop"]["Almost Tipped"]["Type%"]["Non-CS"] = getPercent(almostTippedNonCS, almostTippedCS);
+    data["Teleop"]["Almost Tipped"]["Type%"]["O"] = getPercent(almostTippedNonCS, almostTippedCS);
     
     var almostTippedAll = match.map(x => x[9]);
     var almostTippedOccur = 0;
