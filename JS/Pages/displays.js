@@ -761,7 +761,6 @@ function buildHeaderTable(heightObj, color) {
         miniSectionData.style.backgroundColor = color["sectionHeader"];
         miniSectionData.style.width = displayTableWidth / 2 + "vw";
         miniSectionData.style.height = sectionHeight + "px";
-        miniSectionTable.style.borderRight = marginTopSpacing + " solid black";
         miniSectionTable.style.borderTop = marginTopSpacing + " solid black";
 
         miniSectionData.appendChild(document.createTextNode(section));
@@ -800,6 +799,7 @@ function buildHeaderTable(heightObj, color) {
                 }
 
                 innerTable.style.borderTop = marginTopSpacing + " solid black";
+                innerTable.style.borderLeft = marginTopSpacing + " solid black";
 
                 innerRow.appendChild(innerData);
                 innerTable.appendChild(innerRow);
