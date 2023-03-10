@@ -26,7 +26,7 @@ const dataTableWithMatchFormat = {
         },
         "Matches": ""
     },
-    "Autonomous": {
+    "Auto": {
         "Mobility%": {
             "GOT": "",
             "NG": "",
@@ -622,7 +622,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                                 
                                 miniInfoHeader.setAttribute("class", "miniInfoHeader");
                                 miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
-                                var height = parseInt(heightsObj[section][header].split("|")[leCounter].replace("px", "")) - (cellHeight * 2);
+                                var height = parseInt(heightsObj[section][header].split("|")[leCounter].replace("px", "")) - (cellHeight * 2 - 1);
 
                                 if (leCounter == 0 || (subHeader && outSideLecounter == 0)) {
                                     height -= parseInt(marginTopSpacing.replace("px", ""));
@@ -1014,44 +1014,44 @@ function compileAllTeamData(team, match, pre, pit) {
     //MOBILITY%
     var mobilityArray = match.map(x => x[2]).filter(x => x != "none");
     var mobility = getFreqObj(mobilityArray, ["TRUE", "FALSE"]);
-    data["Autonomous"]["Mobility%"]["GOT"] = getPercent(mobility["TRUE"], mobilityArray.length);
-    data["Autonomous"]["Mobility%"]["NG"] = getPercent(mobility["FALSE"], mobilityArray.length);
+    data["Auto"]["Mobility%"]["GOT"] = getPercent(mobility["TRUE"], mobilityArray.length);
+    data["Auto"]["Mobility%"]["NG"] = getPercent(mobility["FALSE"], mobilityArray.length);
     if (sum(Object.values(mobility)) == 0) {
-        delete data["Autonomous"]["Mobility%"];
+        delete data["Auto"]["Mobility%"];
     }
 
     //CUBE
-    storeScoringStats(data["Autonomous"]["CUBE Top Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
-    storeScoringStats(data["Autonomous"]["CUBE Mid Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
-    storeScoringStats(data["Autonomous"]["CUBE Bot Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
+    storeScoringStats(data["Auto"]["CUBE Top Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
+    storeScoringStats(data["Auto"]["CUBE Mid Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
+    storeScoringStats(data["Auto"]["CUBE Bot Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
 
     //CONE
-    storeScoringStats(data["Autonomous"]["CONE Top Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
-    storeScoringStats(data["Autonomous"]["CONE Mid Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
-    storeScoringStats(data["Autonomous"]["CONE Bot Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
+    storeScoringStats(data["Auto"]["CONE Top Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
+    storeScoringStats(data["Auto"]["CONE Mid Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
+    storeScoringStats(data["Auto"]["CONE Bot Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
 
     //DOCKED
     var dockSuccessArray = match.map(x => x[5]);
     var dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "none", "Failed Dock"]);
-    data["Autonomous"]["Docked"]["ATPT%"]["ATPT"] = getPercent(dockSuccess["Docked"] + dockSuccess["Failed Dock"], dockSuccessArray.length);
-    data["Autonomous"]["Docked"]["ATPT%"]["NA"] = getPercent(dockSuccess["none"], dockSuccessArray.length);
+    data["Auto"]["Docked"]["ATPT%"]["ATPT"] = getPercent(dockSuccess["Docked"] + dockSuccess["Failed Dock"], dockSuccessArray.length);
+    data["Auto"]["Docked"]["ATPT%"]["NA"] = getPercent(dockSuccess["none"], dockSuccessArray.length);
     
     dockSuccessArray = match.map(x => x[5]).filter(x => x != "none");
     dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "Failed Dock"]);
-    data["Autonomous"]["Docked"]["Success%"]["Success"] = getPercent(dockSuccess["Docked"], dockSuccessArray.length);
-    data["Autonomous"]["Docked"]["Success%"]["Fail"] = getPercent(dockSuccess["Failed Dock"], dockSuccessArray.length);
+    data["Auto"]["Docked"]["Success%"]["Success"] = getPercent(dockSuccess["Docked"], dockSuccessArray.length);
+    data["Auto"]["Docked"]["Success%"]["Fail"] = getPercent(dockSuccess["Failed Dock"], dockSuccessArray.length);
     if (sum(Object.values(dockSuccess)) == 0) {
-        delete data["Autonomous"]["Docked"]["Success%"];
-        data["Autonomous"]["Docked"]["INFO"] = [[1], "NESTED"];
+        delete data["Auto"]["Docked"]["Success%"];
+        data["Auto"]["Docked"]["INFO"] = [[1], "NESTED"];
     }
 
     //ENGAGED
     var engagedArray = match.map(x => x[6]).filter(x => x != "none");
     var engaged = getFreqObj(engagedArray, ["TRUE", "FALSE"]);
-    data["Autonomous"]["Engaged%"]["Eng"] = getPercent(engaged["TRUE"], engagedArray.length);
-    data["Autonomous"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
+    data["Auto"]["Engaged%"]["Eng"] = getPercent(engaged["TRUE"], engagedArray.length);
+    data["Auto"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
     if (sum(Object.values(engaged)) == 0) {
-        delete data["Autonomous"]["Engaged%"];
+        delete data["Auto"]["Engaged%"];
     }
 
     ////////////////////////////////////////////////////////TELEOP
