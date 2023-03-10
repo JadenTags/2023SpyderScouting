@@ -759,7 +759,7 @@ function buildHeaderTable(heightObj, color) {
 
         miniSectionData.setAttribute("class", "sectionData");
         miniSectionData.style.backgroundColor = color["sectionHeader"];
-        miniSectionData.style.width = displayTableWidth / 2 + "vw";
+        miniSectionData.style.width = displayTableWidth * 3 / 4 + "vw";
         miniSectionData.style.height = sectionHeight + "px";
         miniSectionTable.style.borderTop = marginTopSpacing + " solid black";
 
