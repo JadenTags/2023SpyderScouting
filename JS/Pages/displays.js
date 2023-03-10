@@ -622,10 +622,10 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                                 
                                 miniInfoHeader.setAttribute("class", "miniInfoHeader");
                                 miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
-                                var height = parseInt(heightsObj[section][header].split("|")[leCounter].replace("px", "")) - (cellHeight * 2 + 1 + parseInt(marginTopSpacing.replace("px", "")));
+                                var height = parseInt(heightsObj[section][header].split("|")[leCounter].replace("px", "")) - (cellHeight * 2);
 
-                                if (leCounter != 0 || (subHeader && outSideLecounter != 0)) {
-                                    height += parseInt(marginTopSpacing.replace("px", ""));
+                                if (leCounter == 0 || (subHeader && outSideLecounter == 0)) {
+                                    height -= parseInt(marginTopSpacing.replace("px", ""));
                                 }
 
                                 miniInfoHeader.style.height = height / headers.length + "px";
@@ -980,6 +980,7 @@ function compileAllTeamData(team, match, pre, pit) {
             fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], "none");
             fillNewestData(data["General"]["OTF Auto"], "Duration", pre[7], "none");
             fillNewestData(data["General"]["OTF Auto"], "Reliability", pre[8], "none");
+            checkEmpty(data["General"], "OTF Auto");
             
             //PLAYSTYLES
             fillNewestHaveData(data["General"], "Playstyles", pre[20], "none");
