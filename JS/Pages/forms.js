@@ -1122,6 +1122,8 @@ async function storeSelectedMatch() {
 
 //ONLY USE TO FILL ASSIGNMENTS BEFORE A COMP
 async function fillPreAssignments() {
+    await waitGlobalData();
+
     var orderNum = curOrderNum++;
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/teams", orderNum);
     appendData(config.assignmentsGSID, "pre" + sheetName, getOrder(orderNum).map(x => x.key.replace("frc", "")));

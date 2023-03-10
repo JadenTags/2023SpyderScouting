@@ -96,7 +96,7 @@ const dataTableWithMatchFormat = {
             "INFO": [[1, 1], "NESTED"]
         },
         "Engaged%": {
-            "Engaged": "",
+            "Eng": "",
             "NE": "",
             "INFO": [[2], "%"]
         },
@@ -186,7 +186,7 @@ const dataTableWithMatchFormat = {
             "INFO": [[1, 1], "NESTED"]
         },
         "Engaged%": {
-            "Engaged": "",
+            "Eng": "",
             "NE": "",
             "INFO": [[2], "%"]
         },
@@ -269,6 +269,7 @@ const marginTopSpacing = "2px";
 const cellHeight = 30;
 const tableWidth = 24;
 const displayTableWidth = 16;
+const percentageColorOrder = ["#7286D3", "#8EA7E9", "#E4EDF1", "#FF9F9F", "#FD8A8A"];
 
 async function teamSearch() {
     var team = document.getElementById("teamSearchInput").value;
@@ -392,19 +393,30 @@ async function teamSearch() {
     dataTableDiv.appendChild(tble);
 }
 
-function buildTeamTable(teamData, color, heightsObj, headerOrder) { 
-    //TODO: INCLUDE Max heights and headerOrder
+function buildTeamTable(teamData, color, heightsObj, headerOrder) {
+    console.log(headerOrder, teamData)
     var table = document.createElement("table");
+    var outSideLecounter = 0;
+    var lastNested;
 
     Object.keys(teamData).forEach(section => {
-        let counter = 0;
+        var outCounter = 0;
         let sectionInfo = teamData[section];
         let sectionRow = document.createElement("tr");
 
-        Object.keys(sectionInfo).forEach(header => {
-            if (headerOrder) {
-                header = headerOrder[section][counter++];
+        let iterateThrough = Object.keys(sectionInfo);
+        if (headerOrder) {
+            iterateThrough = headerOrder[section];
+        }
+
+        iterateThrough.forEach(header => {
+            let subHeader;
+            if (header.includes("|")) {
+                subHeader = header.split("|")[1];
+                header = header.split("|")[0];
             }
+
+            // console.log(section, header)
 
             let headerInfo = sectionInfo[header];
             let headerRow = document.createElement("tr");
@@ -414,7 +426,6 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                 let miniTable = document.createElement("table");
                 let miniRow = document.createElement("tr");
                 let miniData = document.createElement("td");
-                
                 if (headerInfo == "SPACER") {
                     miniData.setAttribute("class", "spacer");
                     miniData.style.backgroundColor = color["spacer"];
@@ -476,112 +487,187 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                     miniTable.style.marginTop = marginTopSpacing;
                 } else if (type == "%") {
                     var counter = 0;
-                    var headers = Object.keys(headerInfo).filter(x => x != "INFO");
+                    var headers = Object.keys(headerInfo).filter(x => x != "INFO" && headerInfo[x] != "0%");
+
+                    var widths = headers.map(x => Math.round(convertPercent(headerInfo[x]) * tableWidth));
+                    
+                    var widthsCounter = 0;
+                    while (sum(widths) < tableWidth) {
+                        widths[widthsCounter++]++;
+                    }
+
+                    var percentageOuterRow = document.createElement("tr");
+                    var percentageOuterData = document.createElement("td");
+                    var percentageTable = document.createElement("table");
+
+                    var barOuterRow = document.createElement("tr");
+                    var barOuterData = document.createElement("td");
+                    var barTable = document.createElement("table");
+                    var barRow = document.createElement("tr");
 
                     headers.forEach(innerHeader => {
-                        if (headerInfo[innerHeader] != "0%") {
-                            let percentageRow = document.createElement("tr");
+                        let percentageRow = document.createElement("tr");
 
-                            let miniInfoHeader = document.createElement("td");
-                            miniInfoHeader.appendChild(document.createTextNode(innerHeader));
-                            
-                            miniInfoHeader.setAttribute("class", "miniInfoHeader");
-                            miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
+                        let miniInfoHeader = document.createElement("td");
+                        miniInfoHeader.appendChild(document.createTextNode(innerHeader));
+                        
+                        miniInfoHeader.setAttribute("class", "miniInfoHeader");
+                        miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
+                        miniInfoHeader.style.height = (parseInt(heightsObj[section][header].replace("px", "")) - cellHeight - 1) / headers.length + "px";
+                        miniInfoHeader.style.width = tableWidth / 2 + "vw";
 
-                            var calcHeight = Math.round((parseInt(heightsObj[section][header].split("px")[1])) * convertPercent(headerInfo[innerHeader]));
-                            if (calcHeight < 18) {
-                                calcHeight = 18;
-                            }
+                        percentageRow.appendChild(miniInfoHeader);
 
-                            miniInfoHeader.style.height = calcHeight + "px";
-                            miniInfoHeader.style.width = tableWidth * 3 / 5 + "vw";
+                        let miniInfoPercentage = document.createElement("td");
+                        miniInfoPercentage.appendChild(document.createTextNode(headerInfo[innerHeader]));
+                        
+                        miniInfoPercentage.setAttribute("class", "miniInfoPercent");
+                        miniInfoPercentage.style.width = tableWidth / 2 + "vw";
+                        miniInfoPercentage.style.backgroundColor = percentageColorOrder[counter];
 
-                            percentageRow.appendChild(miniInfoHeader);
+                        percentageRow.appendChild(miniInfoPercentage)
 
-                            let miniInfoPercentage = document.createElement("td");
-                            miniInfoPercentage.appendChild(document.createTextNode(headerInfo[innerHeader]));
-                            
-                            miniInfoPercentage.setAttribute("class", "miniInfoPercent");
-                            miniInfoPercentage.style.width = tableWidth * 2 / 5 + "vw";
+                        percentageTable.appendChild(percentageRow);
+                        
+                        let miniBarPercentage = document.createElement("td");
+                        miniBarPercentage.setAttribute("class", "miniInfoHeader");
+                        miniBarPercentage.style.backgroundColor = percentageColorOrder[counter];
+                        miniBarPercentage.style.height = cellHeight + "px";
+                        miniBarPercentage.style.width = widths[counter++] + "vw";
+                        miniBarPercentage.style.borderTop = "1px solid black";
 
-                            if (counter++ % 2 == 0) {
-                                miniInfoPercentage.style.backgroundColor = color["singleCellData"];
-                            } else {
-                                miniInfoPercentage.style.backgroundColor = color["singleCellDataAlt"];
-                            }
-
-                            percentageRow.appendChild(miniInfoPercentage)
-
-                            miniTable.appendChild(percentageRow);
-                        }
+                        barRow.appendChild(miniBarPercentage);
+                        percentageOuterData.appendChild(percentageTable);
+                        percentageOuterRow.appendChild(percentageOuterData);
                     });
                     
+                    miniTable.appendChild(percentageOuterRow);
+                    barTable.appendChild(barRow);
+                    barOuterData.appendChild(barTable);
+                    barOuterRow.appendChild(barOuterData);
+                    miniTable.appendChild(barOuterRow);
                     miniTable.style.marginTop = marginTopSpacing;
                 } else if (type == "NESTED") {
                     var leCounter = 0;
                     Object.keys(headerInfo).filter(x => x != "INFO").forEach(innerHeader => {
-                        let miniRow = document.createElement("tr");
-                        let miniData = document.createElement("td");
-                        
-                        miniData.setAttribute("class", "spacer");
-                        miniData.style.backgroundColor = color["spacer"];
-                        miniData.appendChild(document.createTextNode(innerHeader));
-        
-                        miniData.style.height = cellHeight + "px";
-                        miniData.style.width = tableWidth + "vw";
-                        miniTable.style.marginTop = marginTopSpacing;
-        
-                        miniRow.appendChild(miniData);
-                        miniTable.appendChild(miniRow);
+                        if (subHeader) {
+                            innerHeader = subHeader;
+                        }
 
-                        let miniPercentageRow = document.createElement("tr");
-                        let miniPercentageData = document.createElement("td");
-                        let miniMiniTable = document.createElement("table");
-
-                        var counter = 0;
-                        var headers = Object.keys(headerInfo[innerHeader]).filter(x => x != "INFO");
-                        headers.forEach(innerInnerHeader => {
-                            if (headerInfo[innerHeader][innerInnerHeader] != "0%") {
-                                let percentageRow = document.createElement("tr");
-
-                                let miniMiniInfoHeader = document.createElement("td");
-                                miniMiniInfoHeader.appendChild(document.createTextNode(innerInnerHeader));
-                                
-                                miniMiniInfoHeader.setAttribute("class", "miniInfoHeader");
-                                miniMiniInfoHeader.style.backgroundColor = color["singleCellHeader"];
-                                var calcHeight = Math.round((parseInt(heightsObj[section][header].split("|")[0].split("px")[1 + leCounter])) * convertPercent(headerInfo[innerHeader][innerInnerHeader]));
-                                if (calcHeight < 18) {
-                                    calcHeight = 18;
-                                }
-
-                                miniMiniInfoHeader.style.height = calcHeight + "px";
-
-                                miniMiniInfoHeader.style.width = tableWidth * 3 / 5 + "vw";
-
-                                percentageRow.appendChild(miniMiniInfoHeader);
-
-                                let miniMiniInfoPercentage = document.createElement("td");
-                                miniMiniInfoPercentage.appendChild(document.createTextNode(headerInfo[innerHeader][innerInnerHeader]));
-                                
-                                miniMiniInfoPercentage.setAttribute("class", "miniInfoPercent");
-                                miniMiniInfoPercentage.style.width = tableWidth * 2 / 5 + "vw";
-
-                                if (counter++ % 2 == 0) {
-                                    miniMiniInfoPercentage.style.backgroundColor = color["singleCellData"];
-                                } else {
-                                    miniMiniInfoPercentage.style.backgroundColor = color["singleCellDataAlt"];
-                                }
-
-                                percentageRow.appendChild(miniMiniInfoPercentage)
-
-                                miniMiniTable.appendChild(percentageRow);
+                        if (!subHeader || (subHeader && leCounter == 0)) {
+                            if (header != lastNested) {
+                                outSideLecounter = 0;
+                            } if (subHeader) {
+                                leCounter = outSideLecounter;
                             }
-                        });
+                            let nd = false;
 
-                        miniPercentageData.appendChild(miniMiniTable);
-                        miniPercentageRow.appendChild(miniPercentageData);
-                        miniTable.appendChild(miniPercentageRow);
-                        leCounter++;
+                            lastNested = header;
+
+                            var innerHeaderOuterData = document.createElement("td");
+                            var innerHeaderTable = document.createElement("table");
+                            var innerHeaderRow = document.createElement("tr");
+                            var innerHeaderData = document.createElement("td");
+                            innerHeaderData.appendChild(document.createTextNode(innerHeader));
+
+                            innerHeaderData.setAttribute("class", "miniInfoHeader");
+                            innerHeaderData.style.backgroundColor = color["spacer"];
+                            innerHeaderData.style.height = cellHeight + "px";
+                            innerHeaderData.style.width = tableWidth + "vw";
+                            innerHeaderTable.style.marginTop = marginTopSpacing;
+
+                            innerHeaderRow.appendChild(innerHeaderData);
+                            innerHeaderTable.appendChild(innerHeaderRow);
+                            innerHeaderOuterData.appendChild(innerHeaderTable);
+                            miniTable.appendChild(innerHeaderOuterData);
+                            
+                            var counter = 0;
+                            var headers = Object.keys(headerInfo[innerHeader]).filter(x => x != "INFO" && headerInfo[innerHeader][x] != "0%");
+                            if (headers[0] == "0") {
+                                headers = ["N"];
+                                headerInfo[innerHeader] = {};
+                                headerInfo[innerHeader]["N"] = "D";
+                                nd = true;
+                            }
+        
+                            var widths = headers.map(x => Math.round(convertPercent(headerInfo[innerHeader][x]) * tableWidth));
+                            
+                            var widthsCounter = 0;
+                            while (sum(widths) < tableWidth) {
+                                widths[widthsCounter++]++;
+                            }
+        
+                            var percentageOuterRow = document.createElement("tr");
+                            var percentageOuterData = document.createElement("td");
+                            var percentageTable = document.createElement("table");
+        
+                            var barOuterRow = document.createElement("tr");
+                            var barOuterData = document.createElement("td");
+                            var barTable = document.createElement("table");
+                            var barRow = document.createElement("tr");
+                            headers.forEach(innerInnerHeader => {
+                                let percentageRow = document.createElement("tr");
+        
+                                let miniInfoHeader = document.createElement("td");
+                                miniInfoHeader.appendChild(document.createTextNode(innerInnerHeader));
+                                
+                                miniInfoHeader.setAttribute("class", "miniInfoHeader");
+                                miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
+                                var height = parseInt(heightsObj[section][header].split("|")[leCounter].replace("px", "")) - (cellHeight * 2 + 1 + parseInt(marginTopSpacing.replace("px", "")));
+
+                                if (leCounter != 0 || (subHeader && outSideLecounter != 0)) {
+                                    height += parseInt(marginTopSpacing.replace("px", ""));
+                                }
+
+                                miniInfoHeader.style.height = height / headers.length + "px";
+                                miniInfoHeader.style.width = tableWidth / 2 + "vw";
+
+                                if (nd) {
+                                    miniInfoHeader.style.height = height / headers.length + 31 + "px";
+                                }
+        
+                                percentageRow.appendChild(miniInfoHeader);
+        
+                                let miniInfoPercentage = document.createElement("td");
+                                miniInfoPercentage.appendChild(document.createTextNode(headerInfo[innerHeader][innerInnerHeader]));
+                                miniInfoPercentage.setAttribute("class", "miniInfoPercent");
+                                miniInfoPercentage.style.width = tableWidth / 2 + "vw";
+                                miniInfoPercentage.style.backgroundColor = percentageColorOrder[counter];
+
+                                if (nd) {
+                                    miniInfoPercentage.style.backgroundColor = color["singleCellHeader"];
+                                    miniInfoPercentage.setAttribute("class", "miniInfoHeader");
+                                }
+        
+                                percentageRow.appendChild(miniInfoPercentage)
+        
+                                percentageTable.appendChild(percentageRow);
+                                
+                                let miniBarPercentage = document.createElement("td");
+
+                                if (!nd) {
+                                    miniBarPercentage.setAttribute("class", "miniInfoHeader");
+                                    miniBarPercentage.style.backgroundColor = percentageColorOrder[counter];
+                                    miniBarPercentage.style.height = cellHeight + "px";
+                                    miniBarPercentage.style.width = widths[counter++] + "vw";
+                                    miniBarPercentage.style.borderTop = "1px solid black";
+                                }
+
+        
+                                barRow.appendChild(miniBarPercentage);
+                                percentageOuterData.appendChild(percentageTable);
+                                percentageOuterRow.appendChild(percentageOuterData);
+                            });
+                            
+                            miniTable.appendChild(percentageOuterRow);
+                            barTable.appendChild(barRow);
+                            barOuterData.appendChild(barTable);
+                            barOuterRow.appendChild(barOuterData);
+                            miniTable.appendChild(barOuterRow);
+
+                            leCounter++;
+                            outSideLecounter++;
+                        }
                     });
                 } else {
                     // console.log(type)
@@ -601,6 +687,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
     table.style.backgroundColor = "black";
     table.style.border = marginTopSpacing + " solid black";
     table.style.borderTop = "0 solid black";
+    table.style.borderLeft = "0 solid black";
 
     return table;
 }
@@ -615,7 +702,21 @@ function buildHeaderTable(heightObj, color) {
         let miniSectionTable = document.createElement("table");
         let miniSectionRow = document.createElement("tr");
         let miniSectionData = document.createElement("td");
-        let sectionHeight = sum(Object.values(sectionInfo).map(x => parseInt(x.split("px")[0].replace("SPACER", "")))) + (Object.values(sectionInfo).length - 1) * parseInt(marginTopSpacing.replace("px", ""));
+        let sectionHeight = 0;
+
+        Object.values(sectionInfo).forEach(x => {
+            if (x.includes("SPACER")) {
+                sectionHeight += parseInt(x.replace("pxSPACER", ""));
+            } else if (x.includes("|")) {
+                sectionHeight += sum(x.split("|").map(y => parseInt(y.replace("px", ""))));
+            } else {
+                sectionHeight += parseInt(x.replace("px", ""));
+            }
+
+            sectionHeight += parseInt(marginTopSpacing.replace("px", ""));
+        });
+
+        sectionHeight -= parseInt(marginTopSpacing.replace("px", ""));
 
         miniSectionData.setAttribute("class", "sectionData");
         miniSectionData.style.backgroundColor = color["sectionHeader"];
@@ -646,7 +747,6 @@ function buildHeaderTable(heightObj, color) {
                 innerData.style.backgroundColor = color["sectionHeader"];
                 innerData.style.width = displayTableWidth + "vw";
                 innerData.style.height = height;
-                console.log(height)
                 if (height.includes("SPACER")) {
                     innerData.style.height = height.replace("SPACER", "");
                     innerData.style.color = color["sectionHeader"];
@@ -654,7 +754,7 @@ function buildHeaderTable(heightObj, color) {
                 } else if (header.includes("CUBE") || header.includes("CONE")) { //CHANGE YEARLY
                     innerData.appendChild(document.createTextNode(header.replace("CONE", "").replace("CUBE", "")));
                 } else if (height.split("px")[1] != "") {
-                    innerData.style.height = height.split("px")[0] + "px";
+                    innerData.style.height = sum(height.split("|").map(x => parseInt(x.replace("px", "")))) + "px";
                     innerData.appendChild(document.createTextNode(header));
                 } else {
                     innerData.appendChild(document.createTextNode(header));
@@ -677,8 +777,8 @@ function buildHeaderTable(heightObj, color) {
     });
 
     headerTable.style.backgroundColor = "black";
-    headerTable.style.borderBottom = marginTopSpacing + " solid black";
-    headerTable.style.borderLeft = marginTopSpacing + " solid black";
+    headerTable.style.border = marginTopSpacing + " solid black";
+    headerTable.style.borderTop = "0 solid black";
 
     return headerTable;
 }
@@ -708,43 +808,31 @@ function getHeightObj(data, clone) {
                 } else if (type == "HAVE") {
                     heightsObj[section][header] = Math.round(Object.keys(headerInfo).filter(x => x != "INFO").length * cellHeight / Object.values(headerInfo).filter(x => x && typeof x == "boolean").length) * Object.values(headerInfo).filter(x => x && typeof x == "boolean").length + "px";
                 } else if (type == "%") {
-                } else if (type == "NESTED") {
-                    var actualActualHeight = 0;
-                    var suffix = "px";
-                    var portionActuals = "|";
+                    heightsObj[section][header] = Math.ceil(Object.keys(headerInfo).filter(x => x != "INFO" && x != "0%").length / 2) * 2 * cellHeight + cellHeight + 1 + "px";
+                } else if (type == "NESTED" || heightsObj[section][header]["INFO"] == "ND") {
 
-                    Object.keys(headerInfo).filter(x => x != "INFO").forEach(key => {
-                        var totalHeight = Object.keys(headerInfo[key]).filter(x => x != "INFO").length * cellHeight;
-                        var actualHeight = 0;
+                    var adder = cellHeight * 2 + 1 + parseInt(marginTopSpacing.replace("px", ""));
+                    var heights = []
 
-                        Object.keys(headerInfo[key]).filter(x => x != "INFO").forEach(innerHeader => {
-                            if (headerInfo[innerHeader] != "0%") {
-                                var calcHeight = Math.round(totalHeight * convertPercent(headerInfo[key][innerHeader]));
-                                if (calcHeight < 18) {
-                                    calcHeight = 18;
-                                }
-        
-                                actualHeight += calcHeight;
+                    Object.keys(headerInfo).filter(x => x != "INFO").forEach(innerHeader => {
+                        if (headerInfo[innerHeader] == "ND") {
+                            heights.push("0px");
+                        } else {
+                            heights.push(Math.ceil(Object.keys(headerInfo[innerHeader]).filter(x => x != "INFO" && x != "0%").length / 2) * 2 * cellHeight + adder + "px");
+
+                            if (heights.length == 1) {
+                                heights[0] = parseInt(heights[0].replace("px", "")) - parseInt(marginTopSpacing.replace("px", "")) + "px";
                             }
-                        });
-                        
-                        if (suffix.split("px")[1] != "") {
-                            suffix += "px";
-                            portionActuals += "-";
                         }
-                        suffix += totalHeight;
-                        portionActuals += actualHeight;
-                        actualActualHeight += actualHeight + cellHeight;
                     });
-                    heightsObj[section][header] = actualActualHeight + suffix + portionActuals;
+
+                    heightsObj[section][header] = heights.join("|");
                 } else {
                     // console.log(headerInfo, type);
                 }
             }
         });
     });
-
-    //TODO: CHANGE COMPARING METHOD
 
     Object.keys(heightsObj).forEach(key => {
         Object.keys(heightsObj[key]).forEach(subkey => {
@@ -791,7 +879,7 @@ function createNormalMiniTable(data, color, height) {
         let miniInfoData = document.createElement("td");
 
         miniInfoData.setAttribute("class", "miniInfoData");
-        miniInfoData.style.height = cellHeight + "px";
+        miniInfoData.style.height = height;
 
         if (counter++ % 2 == 0) {
             miniInfoData.style.backgroundColor = color["singleCellData"];
@@ -917,7 +1005,7 @@ function compileAllTeamData(team, match, pre, pit) {
     //ENGAGED
     var engagedArray = match.map(x => x[6]).filter(x => x != "none");
     var engaged = getFreqObj(engagedArray, ["TRUE", "FALSE"]);
-    data["Autonomous"]["Engaged%"]["Engaged"] = getPercent(engaged["TRUE"], engagedArray.length);
+    data["Autonomous"]["Engaged%"]["Eng"] = getPercent(engaged["TRUE"], engagedArray.length);
     data["Autonomous"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
     if (sum(Object.values(engaged)) == 0) {
         delete data["Autonomous"]["Engaged%"];
@@ -986,7 +1074,7 @@ function compileAllTeamData(team, match, pre, pit) {
     //ENGAGED
     engagedArray = match.map(x => x[13]).filter(x => x != "none");
     engaged = getFreqObj(engagedArray, ["TRUE", "FALSE"]);
-    data["Teleop"]["Engaged%"]["Engaged"] = getPercent(engaged["TRUE"], engagedArray.length);
+    data["Teleop"]["Engaged%"]["Eng"] = getPercent(engaged["TRUE"], engagedArray.length);
     data["Teleop"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
     if (Object.values(data["Teleop"]["Engaged%"]).filter(x => x.includes("%") && x != "0%" && typeof x == "string").length == 0) {
         delete data["Teleop"]["Engaged%"];
@@ -1419,8 +1507,6 @@ async function allianceSearch() {
         showElement("allianceSearchNotifDiv");
         return;
     }
-
-    //TODO: ACTUALLY DO MISSING HEADERS AND STUFF
     
     teams.forEach(team => {
         var noMatch = matchForms.filter(x => x[1] == team).length == 0;
@@ -1442,6 +1528,7 @@ async function allianceSearch() {
             clone = dataTableWithMatchFormat;
         }
 
+        clone["General"]["Team"] = team;
         teamData["General"]["Team"] = team;
         teams[teams.indexOf(team)] = [teamData, clone];
     });
@@ -1453,6 +1540,22 @@ async function allianceSearch() {
     });
 
     var maxHeights = compareHeights(teams.map(x => x[1]));
+
+    var table = document.createElement("table");
+    var tr = document.createElement("tr");
+    let headerTd = document.createElement("td");
+    headerTd.appendChild(buildHeaderTable(maxHeights, blueDataTableColors));
+    tr.appendChild(headerTd);
+
+    teams.map(x => x[0]).forEach(team => {
+        let td = document.createElement("td");
+
+        td.appendChild(buildTeamTable(team, blueDataTableColors, maxHeights, headerOrder));
+        tr.appendChild(td);
+    });
+
+    table.appendChild(tr);
+    document.body.appendChild(table);
 }
 
 function compareHeights(heights) {
@@ -1462,20 +1565,29 @@ function compareHeights(heights) {
         maxHeights[section] = {};
 
         Object.keys(heights[0][section]).forEach(header => {
-            if (!["", "SPACER"].includes(heights[0][section][header].split("px")[1])) {
-                if (heights[0][section][header].split("|") == heights[0][section][header]) {
-                    var headerHeights = [heights[0][section][header], heights[1][section][header], heights[2][section][header]].map(x => x.split("px")[1]).filter(x => x != "").map(x => parseInt(x));
-                    maxHeights[section][header] = Math.max(...headerHeights) + "px";
-                    console.log(heights[0][section][header])
-                } else {
-                    //TODO: FOR NESTEDS
-                    // console.log(heights[0][section][header])
-                    var maxHeight = 0;
+            
+            var headerHeights = [heights[0][section][header], heights[1][section][header], heights[2][section][header]].map(x => x.replaceAll("px", "").replace("SPACER", ""));
+
+            if (headerHeights.map(x => x.includes("|")).includes(true)) {
+                var min = Math.max(...headerHeights.map(x => x.split("|").length));
+                var maxNestedHeights = [];
+
+                var heightsArrays = headerHeights.map(x => {
+                    let heights = [...x.split("|")];
+                    
+                    while (heights.length < min) {
+                        heights.push(0);
+                    }
+
+                    return heights.map(y => parseInt(y));
+                });
+
+                for (var i = 0; i < min; i++) {
+                    maxNestedHeights.push(Math.max(...heightsArrays.map(x => x[i])));
                 }
+
+                maxHeights[section][header] = maxNestedHeights.join("px|") + "px";
             } else {
-                var headerHeights = [heights[0][section][header], heights[1][section][header], heights[2][section][header]].map(x => parseInt(x.replace("px", "").replace("SPACER", "")));
-                // console.log(headerHeights)
-    
                 maxHeights[section][header] = Math.max(...headerHeights) + "px";
             }
         });
@@ -1497,15 +1609,21 @@ function fillMissingHeaders(objs) {
 
         Object.keys(obj).forEach(key => {
             Object.keys(obj[key]).forEach(header => {
-                if (!allHeaders[groups[counter]].includes(header)) {
+                if (Object.values(obj[key][header]).filter(x => typeof x == "object").length > 1) {
+                    Object.keys(obj[key][header]).forEach(x => {
+                        let id = header + "|" + x;
+                        
+                        if (!allHeaders[groups[counter]].includes(id)) {
+                            allHeaders[groups[counter]].push(id);
+                        }
+                    });
+                } else if (!allHeaders[groups[counter]].includes(header)) {
                     allHeaders[groups[counter]].push(header);
                 }
             });
 
             counter++;
         });
-
-        counter = 0;
     });
 
     objs.forEach(obj => {
@@ -1513,13 +1631,29 @@ function fillMissingHeaders(objs) {
 
         Object.values(obj).forEach(section => {
             allHeaders[groups[counter]].forEach(header => {
-                if (!Object.keys(section).includes(header)) {
+                if (header.includes("|")) {
+                    
+                    var mainHeader = header.split("|")[0];
+                    var subHeader = header.split("|")[1];
+
+                    if (!section[mainHeader]) {
+                        section[mainHeader] = [];
+                    }
+                    
+                    if (!section[mainHeader][subHeader]) {
+                        section[mainHeader][subHeader] = "ND";
+                    }
+                } else if (!Object.keys(section).includes(header)) {
                     section[header] = "ND";
                 }
             });
 
             counter++;
         });
+    });
+
+    Object.keys(allHeaders).forEach(section => {
+        allHeaders[section] = allHeaders[section].filter(x => !x.includes("INFO"));
     });
 
     return allHeaders;
@@ -1533,4 +1667,4 @@ function test() {
     eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 }
 
-test();
+// test();
