@@ -270,8 +270,6 @@ const cellHeight = 30;
 const tableWidth = 24;
 const displayTableWidth = 16;
 
-//TODO: FIX CONE AND CUBE HAVES AND CHANGE AUTONOMOUS TO AUTO IN THE NON MATCH STUFF
-
 async function teamSearch() {
     var team = document.getElementById("teamSearchInput").value;
     var dataTableDiv = document.getElementById("teamSearchDataTableDiv");
@@ -375,8 +373,9 @@ async function teamSearch() {
         clone = dataTableWithMatchFormat;
     }
 
-    var titleTable = buildHeaderTable(getHeightObj(teamData, clone), blueDataTableColors);
-    var data = buildTeamTable(teamData, blueDataTableColors);
+    var heightObj = getHeightObj(teamData, clone);
+    var titleTable = buildHeaderTable(heightObj, blueDataTableColors);
+    var data = buildTeamTable(teamData, blueDataTableColors, heightObj, null);
     
     var tble = document.createElement("table");
     var row = document.createElement("tr");
@@ -393,14 +392,20 @@ async function teamSearch() {
     dataTableDiv.appendChild(tble);
 }
 
-function buildTeamTable(teamData, color) {
+function buildTeamTable(teamData, color, heightsObj, headerOrder) { 
+    //TODO: INCLUDE Max heights and headerOrder
     var table = document.createElement("table");
 
     Object.keys(teamData).forEach(section => {
+        let counter = 0;
         let sectionInfo = teamData[section];
         let sectionRow = document.createElement("tr");
 
         Object.keys(sectionInfo).forEach(header => {
+            if (headerOrder) {
+                header = headerOrder[section][counter++];
+            }
+
             let headerInfo = sectionInfo[header];
             let headerRow = document.createElement("tr");
             let headerData = document.createElement("td");
@@ -415,14 +420,15 @@ function buildTeamTable(teamData, color) {
                     miniData.style.backgroundColor = color["spacer"];
                     
                     miniData.appendChild(document.createTextNode(header));
+                    miniData.style.height = heightsObj[section][header].replace("SPACER", "");
                 } else {
                     miniData.setAttribute("class", "miniInfoData");
                     miniData.style.backgroundColor = color["singleCellData"];
                     
                     miniData.appendChild(document.createTextNode(headerInfo));
+                    miniData.style.height = heightsObj[section][header];
                 }
-
-                miniData.style.height = cellHeight + "px";
+                
                 miniData.style.width = tableWidth + "vw";
                 miniTable.style.marginTop = marginTopSpacing;
 
@@ -432,12 +438,11 @@ function buildTeamTable(teamData, color) {
             } else {
                 let type = headerInfo["INFO"][1];
                 let miniTable = document.createElement("table");
-
                 if (type == "NORMAL") {
                     let ogLength = headerInfo["INFO"][0].length;
 
                     while (headerInfo["INFO"][0].length > 0) {
-                        let miniMiniTable = createNormalMiniTable(headerInfo, color);
+                        let miniMiniTable = createNormalMiniTable(headerInfo, color, (parseInt(heightsObj[section][header].replace("px", ""))) / ogLength / 2 + "px");
 
                         if (headerInfo["INFO"][0].length == ogLength - 1) {
                             miniMiniTable.style.marginTop = marginTopSpacing;
@@ -446,6 +451,7 @@ function buildTeamTable(teamData, color) {
                         miniTable.appendChild(miniMiniTable);
                     }
                 } else if (type == "HAVE") {
+                    var height = Math.round(parseInt(heightsObj[section][header].replace("px", "")) / Object.values(headerInfo).filter(x => x && typeof x == "boolean").length);
                     var counter = 0;
                     var headers = Object.keys(headerInfo).filter(x => x != "INFO");
                     headers.forEach(header => {
@@ -453,7 +459,7 @@ function buildTeamTable(teamData, color) {
                         let miniInfoData = document.createElement("td");
                 
                         miniInfoData.setAttribute("class", "miniInfoData");
-                        miniInfoData.style.height = cellHeight + "px";
+                        miniInfoData.style.height = height + "px";
                         miniInfoData.style.width = tableWidth + "vw";
                 
                         if (counter++ % 2 == 0) {
@@ -470,20 +476,19 @@ function buildTeamTable(teamData, color) {
                     miniTable.style.marginTop = marginTopSpacing;
                 } else if (type == "%") {
                     var counter = 0;
-
                     var headers = Object.keys(headerInfo).filter(x => x != "INFO");
-                    headers.forEach(header => {
-                        if (headerInfo[header] != "0%") {
+
+                    headers.forEach(innerHeader => {
+                        if (headerInfo[innerHeader] != "0%") {
                             let percentageRow = document.createElement("tr");
 
                             let miniInfoHeader = document.createElement("td");
-                            miniInfoHeader.appendChild(document.createTextNode(header));
+                            miniInfoHeader.appendChild(document.createTextNode(innerHeader));
                             
                             miniInfoHeader.setAttribute("class", "miniInfoHeader");
                             miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
 
-                            var calcHeight = Math.round((cellHeight * headers.length) * convertPercent(headerInfo[header]));
-
+                            var calcHeight = Math.round((parseInt(heightsObj[section][header].split("px")[1])) * convertPercent(headerInfo[innerHeader]));
                             if (calcHeight < 18) {
                                 calcHeight = 18;
                             }
@@ -494,10 +499,9 @@ function buildTeamTable(teamData, color) {
                             percentageRow.appendChild(miniInfoHeader);
 
                             let miniInfoPercentage = document.createElement("td");
-                            miniInfoPercentage.appendChild(document.createTextNode(headerInfo[header]));
+                            miniInfoPercentage.appendChild(document.createTextNode(headerInfo[innerHeader]));
                             
                             miniInfoPercentage.setAttribute("class", "miniInfoPercent");
-                            // miniInfoPercentage.style.height = (cellHeight * headers.length) * convertPercent(headerInfo[header]) + "px";
                             miniInfoPercentage.style.width = tableWidth * 2 / 5 + "vw";
 
                             if (counter++ % 2 == 0) {
@@ -512,17 +516,16 @@ function buildTeamTable(teamData, color) {
                         }
                     });
                     
-                    if (Object.values(headerInfo).filter(x => x.includes("%") && x != "0%" && typeof x == "string").length != 0) {
-                        miniTable.style.marginTop = marginTopSpacing;
-                    }
+                    miniTable.style.marginTop = marginTopSpacing;
                 } else if (type == "NESTED") {
-                    Object.keys(headerInfo).filter(x => x != "INFO").forEach(header => {
+                    var leCounter = 0;
+                    Object.keys(headerInfo).filter(x => x != "INFO").forEach(innerHeader => {
                         let miniRow = document.createElement("tr");
                         let miniData = document.createElement("td");
                         
                         miniData.setAttribute("class", "spacer");
                         miniData.style.backgroundColor = color["spacer"];
-                        miniData.appendChild(document.createTextNode(header));
+                        miniData.appendChild(document.createTextNode(innerHeader));
         
                         miniData.style.height = cellHeight + "px";
                         miniData.style.width = tableWidth + "vw";
@@ -536,19 +539,17 @@ function buildTeamTable(teamData, color) {
                         let miniMiniTable = document.createElement("table");
 
                         var counter = 0;
-                        var headers = Object.keys(headerInfo[header]).filter(x => x != "INFO");
-                        headers.forEach(innerHeader => {
-                            if (headerInfo[header][innerHeader] != "0%") {
+                        var headers = Object.keys(headerInfo[innerHeader]).filter(x => x != "INFO");
+                        headers.forEach(innerInnerHeader => {
+                            if (headerInfo[innerHeader][innerInnerHeader] != "0%") {
                                 let percentageRow = document.createElement("tr");
 
                                 let miniMiniInfoHeader = document.createElement("td");
-                                miniMiniInfoHeader.appendChild(document.createTextNode(innerHeader));
+                                miniMiniInfoHeader.appendChild(document.createTextNode(innerInnerHeader));
                                 
                                 miniMiniInfoHeader.setAttribute("class", "miniInfoHeader");
                                 miniMiniInfoHeader.style.backgroundColor = color["singleCellHeader"];
-
-                                var calcHeight = Math.round((cellHeight * headers.length) * convertPercent(headerInfo[header][innerHeader]));
-
+                                var calcHeight = Math.round((parseInt(heightsObj[section][header].split("|")[0].split("px")[1 + leCounter])) * convertPercent(headerInfo[innerHeader][innerInnerHeader]));
                                 if (calcHeight < 18) {
                                     calcHeight = 18;
                                 }
@@ -560,7 +561,7 @@ function buildTeamTable(teamData, color) {
                                 percentageRow.appendChild(miniMiniInfoHeader);
 
                                 let miniMiniInfoPercentage = document.createElement("td");
-                                miniMiniInfoPercentage.appendChild(document.createTextNode(headerInfo[header][innerHeader]));
+                                miniMiniInfoPercentage.appendChild(document.createTextNode(headerInfo[innerHeader][innerInnerHeader]));
                                 
                                 miniMiniInfoPercentage.setAttribute("class", "miniInfoPercent");
                                 miniMiniInfoPercentage.style.width = tableWidth * 2 / 5 + "vw";
@@ -580,6 +581,7 @@ function buildTeamTable(teamData, color) {
                         miniPercentageData.appendChild(miniMiniTable);
                         miniPercentageRow.appendChild(miniPercentageData);
                         miniTable.appendChild(miniPercentageRow);
+                        leCounter++;
                     });
                 } else {
                     // console.log(type)
@@ -613,7 +615,7 @@ function buildHeaderTable(heightObj, color) {
         let miniSectionTable = document.createElement("table");
         let miniSectionRow = document.createElement("tr");
         let miniSectionData = document.createElement("td");
-        let sectionHeight = sum(Object.values(sectionInfo).map(x => parseInt(x.replace("px", "").replace("SPACER", "")))) + (Object.values(sectionInfo).length - 1) * parseInt(marginTopSpacing.replace("px", ""));
+        let sectionHeight = sum(Object.values(sectionInfo).map(x => parseInt(x.split("px")[0].replace("SPACER", "")))) + (Object.values(sectionInfo).length - 1) * parseInt(marginTopSpacing.replace("px", ""));
 
         miniSectionData.setAttribute("class", "sectionData");
         miniSectionData.style.backgroundColor = color["sectionHeader"];
@@ -644,13 +646,16 @@ function buildHeaderTable(heightObj, color) {
                 innerData.style.backgroundColor = color["sectionHeader"];
                 innerData.style.width = displayTableWidth + "vw";
                 innerData.style.height = height;
-
+                console.log(height)
                 if (height.includes("SPACER")) {
                     innerData.style.height = height.replace("SPACER", "");
                     innerData.style.color = color["sectionHeader"];
                     innerData.appendChild(document.createTextNode("ello"));
                 } else if (header.includes("CUBE") || header.includes("CONE")) { //CHANGE YEARLY
                     innerData.appendChild(document.createTextNode(header.replace("CONE", "").replace("CUBE", "")));
+                } else if (height.split("px")[1] != "") {
+                    innerData.style.height = height.split("px")[0] + "px";
+                    innerData.appendChild(document.createTextNode(header));
                 } else {
                     innerData.appendChild(document.createTextNode(header));
                 }
@@ -680,59 +685,66 @@ function buildHeaderTable(heightObj, color) {
 
 function getHeightObj(data, clone) {
     var heightsObj = structuredClone(clone);
-    console.log(heightsObj)
 
     Object.keys(data).forEach(section => {
         let sectionInfo = data[section];
 
         Object.keys(sectionInfo).forEach(header => {
             let headerInfo = sectionInfo[header];
-
             if (typeof headerInfo != "object") {
-                heightsObj[section][header] = cellHeight + "px";
-
-                if (headerInfo == "SPACER") {
-                    heightsObj[section][header] += "SPACER";
+                if (headerInfo == "ND") {
+                    heightsObj[section][header] = "0px";
+                } else {
+                    heightsObj[section][header] = cellHeight + "px";
+    
+                    if (headerInfo == "SPACER") {
+                        heightsObj[section][header] += "SPACER";
+                    }
                 }
             } else {
                 let type = headerInfo["INFO"][1];
                 if (type == "NORMAL") {
                     heightsObj[section][header] = headerInfo["INFO"][0].length * 2 * cellHeight + "px";
                 } else if (type == "HAVE") {
-                    heightsObj[section][header] = Object.keys(headerInfo).filter(x => x != "INFO").length * cellHeight + "px";
+                    heightsObj[section][header] = Math.round(Object.keys(headerInfo).filter(x => x != "INFO").length * cellHeight / Object.values(headerInfo).filter(x => x && typeof x == "boolean").length) * Object.values(headerInfo).filter(x => x && typeof x == "boolean").length + "px";
                 } else if (type == "%") {
-                    var numSmall = Object.keys(headerInfo).filter(x => x != "INFO" && headerInfo[x] != "0%").map(x => convertPercent(headerInfo[x]) * cellHeight * (Object.keys(headerInfo).length - 1)).filter(x => x < 18).map(x => 18 - Math.round(x));
-
-                    if (numSmall.length > 0) {
-                        numSmall = sum(numSmall);
-                    } else {
-                        numSmall = 0;
-                    }
-
-                    heightsObj[section][header] = (Object.keys(headerInfo).filter(x => x != "INFO").length) * cellHeight + numSmall + "px";
                 } else if (type == "NESTED") {
-                    let height = 0;
+                    var actualActualHeight = 0;
+                    var suffix = "px";
+                    var portionActuals = "|";
 
                     Object.keys(headerInfo).filter(x => x != "INFO").forEach(key => {
-                        var numSmall = Object.keys(headerInfo[key]).filter(x => x != "INFO" && headerInfo[key][x] != "0%").map(x => convertPercent(headerInfo[key][x]) * cellHeight * (Object.keys(headerInfo[key]).length - 1)).filter(x => x < 18).map(x => 18 - Math.round(x));
+                        var totalHeight = Object.keys(headerInfo[key]).filter(x => x != "INFO").length * cellHeight;
+                        var actualHeight = 0;
+
+                        Object.keys(headerInfo[key]).filter(x => x != "INFO").forEach(innerHeader => {
+                            if (headerInfo[innerHeader] != "0%") {
+                                var calcHeight = Math.round(totalHeight * convertPercent(headerInfo[key][innerHeader]));
+                                if (calcHeight < 18) {
+                                    calcHeight = 18;
+                                }
+        
+                                actualHeight += calcHeight;
+                            }
+                        });
                         
-                        if (numSmall.length > 0) {
-                            numSmall = sum(numSmall);
-                        } else {
-                            numSmall = 0;
+                        if (suffix.split("px")[1] != "") {
+                            suffix += "px";
+                            portionActuals += "-";
                         }
-
-                        height += Object.keys(headerInfo[key]).length * cellHeight + numSmall;
+                        suffix += totalHeight;
+                        portionActuals += actualHeight;
+                        actualActualHeight += actualHeight + cellHeight;
                     });
-
-
-                    heightsObj[section][header] = height + "px";
+                    heightsObj[section][header] = actualActualHeight + suffix + portionActuals;
                 } else {
                     // console.log(headerInfo, type);
                 }
             }
         });
     });
+
+    //TODO: CHANGE COMPARING METHOD
 
     Object.keys(heightsObj).forEach(key => {
         Object.keys(heightsObj[key]).forEach(subkey => {
@@ -755,7 +767,7 @@ function convertPercent(percent) {
     return parseInt(percent.replace("%", "")) / 100;
 }
 
-function createNormalMiniTable(data, color) {
+function createNormalMiniTable(data, color, height) {
     var miniTable = document.createElement("table");
 
     var headers = Object.keys(data).slice(0, data["INFO"][0].shift());
@@ -765,7 +777,7 @@ function createNormalMiniTable(data, color) {
 
         miniHeaderData.setAttribute("class", "miniInfoHeader");
         miniHeaderData.style.backgroundColor = color["singleCellHeader"];
-        miniHeaderData.style.height = cellHeight + "px";
+        miniHeaderData.style.height = height;
         miniHeaderData.style.width = tableWidth / headers.length + "vw";
 
         miniHeaderData.appendChild(document.createTextNode(header));
@@ -835,7 +847,7 @@ function compileAllTeamData(team, match, pre, pit) {
             checkEmpty(data["General"], "OTF Auto");
 
             //PLAYSTYLES
-            fillNewestHaveData(data["General"], "Playstyles", pre[19], pit[19]);
+            fillNewestHaveData(data["General"], "Playstyles", pre[20], pit[19]);
         } else {
             //OTF AUTO
             fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], "none");
@@ -843,7 +855,7 @@ function compileAllTeamData(team, match, pre, pit) {
             fillNewestData(data["General"]["OTF Auto"], "Reliability", pre[8], "none");
             
             //PLAYSTYLES
-            fillNewestHaveData(data["General"], "Playstyles", pre[19], "none");
+            fillNewestHaveData(data["General"], "Playstyles", pre[20], "none");
         }
     } else {
         data["General"] = {
@@ -1110,7 +1122,7 @@ function compilePrePitTeamData(team, pre, pit) {
     fillNewestSingleData(data["Teleop"], "Pref PS", pre[17], pit[21]);
 
     //ABLE PLAYSTYLE
-    fillNewestHaveData(data["Teleop"], "Able PS", pre[19], pit[19])
+    fillNewestHaveData(data["Teleop"], "Able PS", pre[20], pit[19])
 
     //DOCK
     fillNewestSingleData(data["Teleop"], "Dock", pre[21], pit[22]);
@@ -1153,7 +1165,7 @@ function storeScoringStats(data, obj) {
 
         return;
     }
-    data["Avg"] = Math.round(made.reduce((x, y) => x + y) / made.length);
+    data["Avg"] = Math.round(made.reduce((x, y) => x + y) / made.length * 10) / 10;
 
     var totalDiff = 0;
     made.forEach(score => {
@@ -1293,6 +1305,7 @@ async function allianceSearch() {
     hideElement("allianceSearchNotifDiv");
     document.getElementById("allianceTeam1SearchInput").style.border = "1px solid #c5c7c5";
     document.getElementById("allianceTeam2SearchInput").style.border = "1px solid #c5c7c5";
+    document.getElementById("allianceTeam3SearchInput").style.border = "1px solid #c5c7c5";
     changeNotif("allianceSearchNotifText", "");
 
     if (teams.includes("")) {
@@ -1386,15 +1399,15 @@ async function allianceSearch() {
 
     var orderNum = curOrderNum++;
     await getSheetData(config.preGSID, sheetName, orderNum);
-    var preForms = getOrder(orderNum).filter(x => teams.includes(x[0]));
+    var preForms = getOrder(orderNum).filter(x => teams.includes(x[0]) || x[0] == "TEAM NUM");
 
     orderNum = curOrderNum++;
     await getSheetData(config.pitGSID, sheetName, orderNum);
-    var pitForms = getOrder(orderNum).filter(x => teams.includes(x[0]));
+    var pitForms = getOrder(orderNum).filter(x => teams.includes(x[0]) || x[0] == "TEAM NUM");
 
     orderNum = curOrderNum++;
     await getSheetData(config.matchGSID, sheetName, orderNum);
-    var matchForms = getOrder(orderNum).filter(x => teams.includes(x[1]));
+    var matchForms = getOrder(orderNum).filter(x => teams.includes(x[1]) || x[1] == "Team Number");
 
     if (preForms + pitForms + matchForms == "") {
         for (var i = 1; i <= 3; i++) {
@@ -1408,42 +1421,19 @@ async function allianceSearch() {
     }
 
     //TODO: ACTUALLY DO MISSING HEADERS AND STUFF
-    //TODO: GOODNIGHT AND FINISH BEFORE COMP LOLS
-}
-
-async function fillMissingHeaders(objs) {
-    var allHeaders = {
-        "General": [],
-        "Autonomous": [],
-        "Teleop": [] 
-    };
-    var groups = ["General", "Autonomous", "Teleop"];
-
-    var orderNum = curOrderNum++;
-    await getSheetData(config.preGSID, sheetName, orderNum);
-    var preForms = getOrder(orderNum);
-
-    orderNum = curOrderNum++;
-    await getSheetData(config.pitGSID, sheetName, orderNum);
-    var pitForms = getOrder(orderNum);
-
-    orderNum = curOrderNum++;
-    await getSheetData(config.matchGSID, sheetName, orderNum);
-    var matchForms = getOrder(orderNum);
-
-    for (var i = 0; i < objs.length; i++) {
-        let team = objs[i];        
+    
+    teams.forEach(team => {
         var noMatch = matchForms.filter(x => x[1] == team).length == 0;
         var noPrePit = pitForms.filter(x => x[0] == team).length == 0 && preForms.filter(x => x[0] == team).length == 0;
-        
         var teamData;
         var clone;
         if (noMatch && noPrePit) {
-            showElement("teamSearchNotifDiv");
-            document.getElementById("teamSearchInput").style.border = "1px solid #eb776e";
-            changeNotif("teamSearchNotifText", "This Team Has No Data!");
-    
-            return;
+            teamData = {
+                "General": {},
+                "Autonomous": {},
+                "Teleop": {},
+            };
+            clone = dataTableWithMatchFormat;
         } else if (noMatch) {
             teamData = compilePrePitTeamData(team, preForms, pitForms);
             clone = dataTableWithoutMatchFormat;
@@ -1452,10 +1442,56 @@ async function fillMissingHeaders(objs) {
             clone = dataTableWithMatchFormat;
         }
 
-        objs[i] = teamData;
-    };
+        teamData["General"]["Team"] = team;
+        teams[teams.indexOf(team)] = [teamData, clone];
+    });
 
-    //KEEP BELOW
+    var headerOrder = fillMissingHeaders(teams.map(x => x[0]));
+
+    teams.forEach(team => {
+        teams[teams.indexOf(team)][1] = getHeightObj(teams[teams.indexOf(team)][0], teams[teams.indexOf(team)][0]);
+    });
+
+    var maxHeights = compareHeights(teams.map(x => x[1]));
+}
+
+function compareHeights(heights) {
+    var maxHeights = {};
+
+    Object.keys(heights[0]).forEach(section => {
+        maxHeights[section] = {};
+
+        Object.keys(heights[0][section]).forEach(header => {
+            if (!["", "SPACER"].includes(heights[0][section][header].split("px")[1])) {
+                if (heights[0][section][header].split("|") == heights[0][section][header]) {
+                    var headerHeights = [heights[0][section][header], heights[1][section][header], heights[2][section][header]].map(x => x.split("px")[1]).filter(x => x != "").map(x => parseInt(x));
+                    maxHeights[section][header] = Math.max(...headerHeights) + "px";
+                    console.log(heights[0][section][header])
+                } else {
+                    //TODO: FOR NESTEDS
+                    // console.log(heights[0][section][header])
+                    var maxHeight = 0;
+                }
+            } else {
+                var headerHeights = [heights[0][section][header], heights[1][section][header], heights[2][section][header]].map(x => parseInt(x.replace("px", "").replace("SPACER", "")));
+                // console.log(headerHeights)
+    
+                maxHeights[section][header] = Math.max(...headerHeights) + "px";
+            }
+        });
+    });
+
+    return maxHeights;
+}
+
+function fillMissingHeaders(objs) {
+    var allHeaders = {
+        "General": [],
+        "Autonomous": [],
+        "Teleop": [],
+    }
+    var groups = ["General", "Autonomous", "Teleop"];
+
     objs.forEach(obj => {
         let counter = 0;
 
@@ -1472,7 +1508,6 @@ async function fillMissingHeaders(objs) {
         counter = 0;
     });
 
-    //TODO: FIX
     objs.forEach(obj => {
         var counter = 0;
 
@@ -1487,11 +1522,15 @@ async function fillMissingHeaders(objs) {
         });
     });
 
-    console.log(objs)
+    return allHeaders;
 }
 
 function test() {
-    fillMissingHeaders([10, 1, 23]);
+    document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1");
+    document.getElementById("allianceTeam2SearchInput").setAttribute("value", "10");
+    document.getElementById("allianceTeam3SearchInput").setAttribute("value", "24");
+
+    eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 }
 
 test();
