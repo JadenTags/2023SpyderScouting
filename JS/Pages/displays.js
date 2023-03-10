@@ -427,6 +427,11 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                 let miniTable = document.createElement("table");
                 let miniRow = document.createElement("tr");
                 let miniData = document.createElement("td");
+
+                if (header == "DIMS") {
+                    headerInfo = headerInfo.replaceAll("\"", "").replaceAll(" x ", "|");
+                }
+                
                 if (headerInfo == "SPACER") {
                     miniData.setAttribute("class", "spacer");
                     miniData.style.backgroundColor = color["spacer"];
