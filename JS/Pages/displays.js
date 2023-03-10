@@ -1573,7 +1573,7 @@ async function allianceSearch() {
         if (noMatch && noPrePit) {
             teamData = {
                 "General": {},
-                "Autonomous": {},
+                "Auto": {},
                 "Teleop": {},
             };
             clone = dataTableWithMatchFormat;
@@ -1656,10 +1656,10 @@ function compareHeights(heights) {
 function fillMissingHeaders(objs) {
     var allHeaders = {
         "General": [],
-        "Autonomous": [],
+        "Auto": [],
         "Teleop": [],
     }
-    var groups = ["General", "Autonomous", "Teleop"];
+    var groups = ["General", "Auto", "Teleop"];
 
     objs.forEach(obj => {
         let counter = 0;
