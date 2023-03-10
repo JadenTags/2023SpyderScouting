@@ -571,17 +571,23 @@ function submitForm(selector) {
 
         //TEAM NUMBER
         var teamNum;
-        Array.from(document.getElementsByClassName("inPersonAllianceButton")).forEach(button => {
-            if (button.value) {
-                teamNum = button.innerHTML;
-            }
-        });
-        if (isNaN(parseInt(teamNum))) {
-            changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
-            end = true;
+
+        if (document.getElementById("inPersonTeamNumInput")) {
+            teamNum = document.getElementById("inPersonTeamNumInput").value;
         } else {
-            changeNotif("inPersonTeamNumNotif", "");
+            Array.from(document.getElementsByClassName("inPersonAllianceButton")).forEach(button => {
+                if (button.value) {
+                    teamNum = button.innerHTML;
+                }
+            });
+            if (isNaN(parseInt(teamNum))) {
+                changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
+                end = true;
+            } else {
+                changeNotif("inPersonTeamNumNotif", "");
+            }
         }
+        
         form.push(teamNum);
 
         //LEFT COMMUNITY
