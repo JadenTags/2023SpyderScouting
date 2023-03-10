@@ -394,7 +394,6 @@ async function teamSearch() {
 }
 
 function buildTeamTable(teamData, color, heightsObj, headerOrder) {
-    console.log(headerOrder, teamData)
     var table = document.createElement("table");
     var outSideLecounterTwo = 0;
     var outSideLecounter = 0;
@@ -499,7 +498,6 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                     var headers = Object.keys(headerInfo).filter(x => x != "INFO" && headerInfo[x] != "0%");
 
                     var widths = headers.map(x => Math.round(convertPercent(headerInfo[x]) * tableWidth));
-                    
                     while (sum(widths) < tableWidth) {
                         widths[widths.indexOf(Math.max(...widths))]++;
                     }
@@ -696,14 +694,12 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                     miniData.setAttribute("class", "miniInfoData");
                     miniData.style.backgroundColor = color["singleCellData"];
                     miniData.appendChild(document.createTextNode("ND"));
-                    console.log(heightsObj[section][header].split("|")[outSideLecounterTwo])
                     var height = parseInt(heightsObj[section][header].split("|")[outSideLecounterTwo++].replace("px", "")) - (cellHeight * 2 + 1 + parseInt(marginTopSpacing.replace("px", "")));
 
                     if (outSideLecounterTwo != 0) {
                         height += parseInt(marginTopSpacing.replace("px", ""));
                     }
 
-                    console.log(height)
                     miniData.style.height = height + cellHeight * 2 + 3 - Object.keys(headerInfo).length + "px";
                     
                     miniData.style.width = tableWidth + "vw";
@@ -850,7 +846,6 @@ function getHeightObj(data, clone) {
                     heightsObj[section][header] = headerInfo["INFO"][0].length * 2 * cellHeight + "px";
                 } else if (type == "HAVE") {
                     heightsObj[section][header] = Math.round(Object.keys(headerInfo).filter(x => x != "INFO").length * cellHeight) + "px";
-                    console.log(heightsObj[section][header])
                 } else if (type == "%") {
                     heightsObj[section][header] = Math.ceil(Object.keys(headerInfo).filter(x => x != "INFO" && x != "0%").length / 2) * 2 * cellHeight + cellHeight + 1 + "px";
                 } else if (type == "NESTED" || heightsObj[section][header]["INFO"] == "ND") {
@@ -1020,6 +1015,9 @@ function compileAllTeamData(team, match, pre, pit) {
     var mobility = getFreqObj(mobilityArray, ["TRUE", "FALSE"]);
     data["Autonomous"]["Mobility%"]["GOT"] = getPercent(mobility["TRUE"], mobilityArray.length);
     data["Autonomous"]["Mobility%"]["NG"] = getPercent(mobility["FALSE"], mobilityArray.length);
+    if (sum(Object.values(mobility)) == 0) {
+        delete data["Autonomous"]["Mobility%"];
+    }
 
     //CUBE
     storeScoringStats(data["Autonomous"]["CUBE Top Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
@@ -1033,7 +1031,7 @@ function compileAllTeamData(team, match, pre, pit) {
 
     //DOCKED
     var dockSuccessArray = match.map(x => x[5]);
-    var dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "none"]);
+    var dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "none", "Failed Dock"]);
     data["Autonomous"]["Docked"]["ATPT%"]["ATPT"] = getPercent(dockSuccess["Docked"] + dockSuccess["Failed Dock"], dockSuccessArray.length);
     data["Autonomous"]["Docked"]["ATPT%"]["NA"] = getPercent(dockSuccess["none"], dockSuccessArray.length);
     
@@ -1070,8 +1068,12 @@ function compileAllTeamData(team, match, pre, pit) {
     //ALMOST TIPPED
     var almostTippedCS = match.map(x => parseInt(x[9])).filter(x => !isNaN(x));
     var almostTippedNonCS = match.map(x => parseInt(x[10])).filter(x => !isNaN(x));
-    data["Teleop"]["Almost Tipped"]["Type%"]["CS"] = getPercent(almostTippedCS, almostTippedNonCS);
-    data["Teleop"]["Almost Tipped"]["Type%"]["O"] = getPercent(almostTippedNonCS, almostTippedCS);
+    if (almostTippedCS + almostTippedNonCS == "") {
+        delete data["Teleop"]["Almost Tipped"]["Type%"];
+    } else {
+        data["Teleop"]["Almost Tipped"]["Type%"]["CS"] = getPercent(almostTippedCS, almostTippedNonCS);
+        data["Teleop"]["Almost Tipped"]["Type%"]["O"] = getPercent(almostTippedNonCS, almostTippedCS);
+    }
     
     var almostTippedAll = match.map(x => x[9]);
     var almostTippedOccur = 0;
@@ -1143,6 +1145,9 @@ function compileAllTeamData(team, match, pre, pit) {
     var aggressive = getFreqObj(aggressiveArray, ["TRUE", "FALSE"]);
     data["Teleop"]["Aggro%"]["Yes"] = getPercent(aggressive["TRUE"], aggressiveArray.length);
     data["Teleop"]["Aggro%"]["No"] = getPercent(aggressive["FALSE"], aggressiveArray.length);
+    if (sum(Object.values(aggressive)) == 0) {
+        delete data["Teleop"]["Aggro%"];
+    }
 
     return data;
 }
@@ -1585,7 +1590,7 @@ async function allianceSearch() {
     });
 
     var headerOrder = fillMissingHeaders(teams.map(x => x[0]));
-
+    console.log(teams)
     teams.forEach(team => {
         teams[teams.indexOf(team)][1] = getHeightObj(teams[teams.indexOf(team)][0], teams[teams.indexOf(team)][0]);
     });
@@ -1682,8 +1687,8 @@ function fillMissingHeaders(objs) {
 
         Object.values(obj).forEach(section => {
             allHeaders[groups[counter]].forEach(header => {
+                console.log(header)
                 if (header.includes("|")) {
-                    
                     var mainHeader = header.split("|")[0];
                     var subHeader = header.split("|")[1];
 
@@ -1694,7 +1699,7 @@ function fillMissingHeaders(objs) {
                     if (!section[mainHeader][subHeader]) {
                         section[mainHeader][subHeader] = "ND";
                     }
-                } else if (!Object.keys(section).includes(header)) {
+                } else if (!Object.keys(section).includes(header) || Object.keys(section[header]).length == 1) {
                     section[header] = "ND";
                 }
             });
