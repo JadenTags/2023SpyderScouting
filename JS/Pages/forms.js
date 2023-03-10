@@ -250,7 +250,11 @@ function submitForm(selector) {
             document.getElementById("cycleTimeInput").style.border = "1px solid #888888";
         }
 
-        form.push(parseFloat(cycleTime));
+        if (cycleTime != "") {
+            cycleTime = parseInt(cycleTime);
+        }
+
+        form.push(cycleTime);
 
         //CONE REACH
         var coneReach = [];
@@ -476,11 +480,11 @@ function submitForm(selector) {
         form.push(document.getElementById("cycleTimeInputChanges").value);
 
         if (form[form.length - 1] != "" && isNaN(parseInt(form[form.length - 1]))) {
-            showElement("pitCycleTimeNotifText");
+            showElement("pitCycleTimeNotifTextChanges");
             document.getElementById("cycleTimeInputChanges").style.border = "1px solid #eb776e";
             end = true;
         } else {
-            hideElement("pitCycleTimeNotifText");
+            hideElement("pitCycleTimeNotifTextChanges");
             document.getElementById("cycleTimeInputChanges").style.border = "1px solid #888888";
         }
         
@@ -1122,6 +1126,8 @@ async function storeSelectedMatch() {
 
 //ONLY USE TO FILL ASSIGNMENTS BEFORE A COMP
 async function fillPreAssignments() {
+    await waitGlobalData();
+
     var orderNum = curOrderNum++;
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/teams", orderNum);
     appendData(config.assignmentsGSID, "pre" + sheetName, getOrder(orderNum).map(x => x.key.replace("frc", "")));
