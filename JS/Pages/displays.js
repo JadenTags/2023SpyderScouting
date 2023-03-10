@@ -396,8 +396,10 @@ async function teamSearch() {
 function buildTeamTable(teamData, color, heightsObj, headerOrder) {
     console.log(headerOrder, teamData)
     var table = document.createElement("table");
+    var outSideLecounterTwo = 0;
     var outSideLecounter = 0;
     var lastNested;
+    var lastNDNested;
 
     Object.keys(teamData).forEach(section => {
         var outCounter = 0;
@@ -416,9 +418,9 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                 header = header.split("|")[0];
             }
 
-            // console.log(section, header)
 
             let headerInfo = sectionInfo[header];
+            console.log(header, headerInfo)
             let headerRow = document.createElement("tr");
             let headerData = document.createElement("td");
             
@@ -491,9 +493,8 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
 
                     var widths = headers.map(x => Math.round(convertPercent(headerInfo[x]) * tableWidth));
                     
-                    var widthsCounter = 0;
                     while (sum(widths) < tableWidth) {
-                        widths[widthsCounter++]++;
+                        widths[widths.indexOf(Math.max(...widths))]++;
                     }
 
                     var percentageOuterRow = document.createElement("tr");
@@ -561,25 +562,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                                 leCounter = outSideLecounter;
                             }
                             let nd = false;
-
                             lastNested = header;
-
-                            var innerHeaderOuterData = document.createElement("td");
-                            var innerHeaderTable = document.createElement("table");
-                            var innerHeaderRow = document.createElement("tr");
-                            var innerHeaderData = document.createElement("td");
-                            innerHeaderData.appendChild(document.createTextNode(innerHeader));
-
-                            innerHeaderData.setAttribute("class", "miniInfoHeader");
-                            innerHeaderData.style.backgroundColor = color["spacer"];
-                            innerHeaderData.style.height = cellHeight + "px";
-                            innerHeaderData.style.width = tableWidth + "vw";
-                            innerHeaderTable.style.marginTop = marginTopSpacing;
-
-                            innerHeaderRow.appendChild(innerHeaderData);
-                            innerHeaderTable.appendChild(innerHeaderRow);
-                            innerHeaderOuterData.appendChild(innerHeaderTable);
-                            miniTable.appendChild(innerHeaderOuterData);
                             
                             var counter = 0;
                             var headers = Object.keys(headerInfo[innerHeader]).filter(x => x != "INFO" && headerInfo[innerHeader][x] != "0%");
@@ -589,6 +572,27 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                                 headerInfo[innerHeader]["N"] = "D";
                                 nd = true;
                             }
+                            
+                            var innerHeaderOuterData = document.createElement("td");
+                            var innerHeaderTable = document.createElement("table");
+                            var innerHeaderRow = document.createElement("tr");
+                            var innerHeaderData = document.createElement("td");
+                            innerHeaderData.appendChild(document.createTextNode(innerHeader));
+
+                            if (!nd) {
+                                innerHeaderData.setAttribute("class", "miniInfoHeader");
+                                innerHeaderData.style.backgroundColor = color["spacer"];
+                                innerHeaderData.style.height = cellHeight + "px";
+                                innerHeaderData.style.width = tableWidth + "vw";
+
+                                innerHeaderRow.appendChild(innerHeaderData);
+                            }
+
+                            innerHeaderTable.style.marginTop = marginTopSpacing;
+
+                            innerHeaderTable.appendChild(innerHeaderRow);
+                            innerHeaderOuterData.appendChild(innerHeaderTable);
+                            miniTable.appendChild(innerHeaderOuterData);
         
                             var widths = headers.map(x => Math.round(convertPercent(headerInfo[innerHeader][x]) * tableWidth));
                             
@@ -609,7 +613,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                                 let percentageRow = document.createElement("tr");
         
                                 let miniInfoHeader = document.createElement("td");
-                                miniInfoHeader.appendChild(document.createTextNode(innerInnerHeader));
+                                let miniInfoText = document.createTextNode(innerInnerHeader);
                                 
                                 miniInfoHeader.setAttribute("class", "miniInfoHeader");
                                 miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
@@ -623,8 +627,13 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                                 miniInfoHeader.style.width = tableWidth / 2 + "vw";
 
                                 if (nd) {
-                                    miniInfoHeader.style.height = height / headers.length + 31 + "px";
+                                    miniInfoHeader.style.height = height + cellHeight * 2 + 1 + "px";
+                                    miniInfoHeader.style.width = tableWidth + "vw";
+                                    miniInfoText = document.createTextNode('ND');
+                                    miniInfoHeader.setAttribute("class", "miniInfoData");
+                                    miniInfoHeader.style.backgroundColor = color["singleCellData"];
                                 }
+                                miniInfoHeader.appendChild(miniInfoText);
         
                                 percentageRow.appendChild(miniInfoHeader);
         
@@ -634,12 +643,10 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                                 miniInfoPercentage.style.width = tableWidth / 2 + "vw";
                                 miniInfoPercentage.style.backgroundColor = percentageColorOrder[counter];
 
-                                if (nd) {
-                                    miniInfoPercentage.style.backgroundColor = color["singleCellHeader"];
-                                    miniInfoPercentage.setAttribute("class", "miniInfoHeader");
+                                if (!nd) {
+                                    percentageRow.appendChild(miniInfoPercentage);
                                 }
         
-                                percentageRow.appendChild(miniInfoPercentage)
         
                                 percentageTable.appendChild(percentageRow);
                                 
@@ -669,6 +676,36 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                             outSideLecounter++;
                         }
                     });
+                } else if (headerInfo["INFO"] == "ND") {
+                    if (lastNDNested != header) {
+                        outSideLecounterTwo = 0;
+                    }
+                    lastNDNested = header;
+                    console.log(outSideLecounterTwo)
+
+                    let miniTable = document.createElement("table");
+                    let miniRow = document.createElement("tr");
+                    let miniData = document.createElement("td");
+
+                    miniData.setAttribute("class", "miniInfoData");
+                    miniData.style.backgroundColor = color["singleCellData"];
+                    miniData.appendChild(document.createTextNode("ND"));
+                    console.log(heightsObj[section][header].split("|")[outSideLecounterTwo])
+                    var height = parseInt(heightsObj[section][header].split("|")[outSideLecounterTwo++].replace("px", "")) - (cellHeight * 2 + 1 + parseInt(marginTopSpacing.replace("px", "")));
+
+                    if (outSideLecounterTwo != 0) {
+                        height += parseInt(marginTopSpacing.replace("px", ""));
+                    }
+
+                    console.log(height)
+                    miniData.style.height = height + cellHeight * 2 + 3 - Object.keys(headerInfo).length + "px";
+                    
+                    miniData.style.width = tableWidth + "vw";
+                    miniTable.style.marginTop = marginTopSpacing;
+    
+                    miniRow.appendChild(miniData);
+                    miniTable.appendChild(miniRow);
+                    headerData.appendChild(miniTable);
                 } else {
                     // console.log(type)
                 }
@@ -1390,6 +1427,9 @@ async function allianceSearch() {
         teams.push(document.getElementById("allianceTeam" + i + "SearchInput").value);
     }
 
+    var dataTableDiv = document.getElementById("allianceSearchDataTableDiv");
+
+    dataTableDiv.innerHTML = "";
     hideElement("allianceSearchNotifDiv");
     document.getElementById("allianceTeam1SearchInput").style.border = "1px solid #c5c7c5";
     document.getElementById("allianceTeam2SearchInput").style.border = "1px solid #c5c7c5";
@@ -1555,7 +1595,7 @@ async function allianceSearch() {
     });
 
     table.appendChild(tr);
-    document.body.appendChild(table);
+    dataTableDiv.appendChild(table);
 }
 
 function compareHeights(heights) {
@@ -1667,4 +1707,4 @@ function test() {
     eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 }
 
-// test();
+test();
