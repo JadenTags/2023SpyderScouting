@@ -41,7 +41,9 @@ tr, td, table {
 }
 
 .sectionData {
-  transform: rotate(270);
+  display: relative;
+  text-orientation: sideways-right;
+  writing-mode: vertical-rl;
 }
 
 .miniInfoData {
