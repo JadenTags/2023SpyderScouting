@@ -1537,7 +1537,7 @@ async function allianceSearch() {
     await getSheetData(config.matchGSID, sheetName, orderNum);
     var matchForms = getOrder(orderNum).filter(x => teams.includes(x[1]) || x[1] == "Team Number");
 
-    if (preForms + pitForms + matchForms == "") {
+    if (preForms.slice(1) + pitForms.slice(1) + matchForms.slice(1) == "") {
         for (var i = 1; i <= 3; i++) {
             document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
         }
@@ -1707,4 +1707,4 @@ function test() {
     eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 }
 
-// test();
+test();
