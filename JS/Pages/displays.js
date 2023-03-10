@@ -622,10 +622,10 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                                 
                                 miniInfoHeader.setAttribute("class", "miniInfoHeader");
                                 miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
-                                var height = parseInt(heightsObj[section][header].split("|")[leCounter].replace("px", "")) - (cellHeight * 2 - 1);
+                                var height = parseInt(heightsObj[section][header].split("|")[leCounter].replace("px", "")) - (cellHeight * 2 + 1 + parseInt(marginTopSpacing.replace("px", "")));
 
                                 if (leCounter == 0 || (subHeader && outSideLecounter == 0)) {
-                                    height -= parseInt(marginTopSpacing.replace("px", ""));
+                                    height += parseInt(marginTopSpacing.replace("px", ""));
                                 }
 
                                 miniInfoHeader.style.height = height / headers.length + "px";
@@ -809,13 +809,13 @@ function buildHeaderTable(heightObj, color) {
             miniHeaderRow.appendChild(headerData);
             miniHeaderTable.appendChild(miniHeaderRow);
         });
+        miniSectionData.style.textAlign = "center";
         miniHeaderData.appendChild(miniHeaderTable);
         sectionRow.appendChild(miniHeaderData);
 
         headerTable.appendChild(sectionRow);
     });
 
-    miniSectionData.style.textAlign = "center";
     headerTable.style.backgroundColor = color["sectionHeader"];
     headerTable.style.border = marginTopSpacing + " solid black";
     headerTable.style.borderTop = "0 solid black";
