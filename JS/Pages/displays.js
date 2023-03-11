@@ -499,7 +499,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                     var headers = Object.keys(headerInfo).filter(x => x != "INFO" && headerInfo[x] != "0%");
 
                     var widths = headers.map(x => Math.round(convertPercent(headerInfo[x]) * tableWidth));
-                    
+                    console.log(headerInfo, header)
                     while (sum(widths) < tableWidth) {
                         widths[widths.indexOf(Math.max(...widths))]++;
                     }
@@ -1020,6 +1020,9 @@ function compileAllTeamData(team, match, pre, pit) {
     var mobility = getFreqObj(mobilityArray, ["TRUE", "FALSE"]);
     data["Autonomous"]["Mobility%"]["GOT"] = getPercent(mobility["TRUE"], mobilityArray.length);
     data["Autonomous"]["Mobility%"]["NG"] = getPercent(mobility["FALSE"], mobilityArray.length);
+    if (sum(Object.values(mobility)) == 0) {
+        delete data["Autonomous"]["Mobility%"];
+    }
 
     //CUBE
     storeScoringStats(data["Autonomous"]["CUBE Top Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
@@ -1070,8 +1073,13 @@ function compileAllTeamData(team, match, pre, pit) {
     //ALMOST TIPPED
     var almostTippedCS = match.map(x => parseInt(x[9])).filter(x => !isNaN(x));
     var almostTippedNonCS = match.map(x => parseInt(x[10])).filter(x => !isNaN(x));
-    data["Teleop"]["Almost Tipped"]["Type%"]["CS"] = getPercent(almostTippedCS, almostTippedNonCS);
-    data["Teleop"]["Almost Tipped"]["Type%"]["O"] = getPercent(almostTippedNonCS, almostTippedCS);
+    console.log(almostTippedCS, almostTippedNonCS)
+    if (almostTippedCS + almostTippedNonCS == "") {
+        delete data["Teleop"]["Almost Tipped"]["Type%"];
+    } else {
+        data["Teleop"]["Almost Tipped"]["Type%"]["CS"] = getPercent(almostTippedCS, almostTippedNonCS);
+        data["Teleop"]["Almost Tipped"]["Type%"]["O"] = getPercent(almostTippedNonCS, almostTippedCS);
+    }
     
     var almostTippedAll = match.map(x => x[9]);
     var almostTippedOccur = 0;
@@ -1143,6 +1151,9 @@ function compileAllTeamData(team, match, pre, pit) {
     var aggressive = getFreqObj(aggressiveArray, ["TRUE", "FALSE"]);
     data["Teleop"]["Aggro%"]["Yes"] = getPercent(aggressive["TRUE"], aggressiveArray.length);
     data["Teleop"]["Aggro%"]["No"] = getPercent(aggressive["FALSE"], aggressiveArray.length);
+    if (sum(Object.values(aggressive)) == 0) {
+        delete data["Teleop"]["Aggro%"];
+    }
 
     return data;
 }
