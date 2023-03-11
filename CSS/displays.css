@@ -41,9 +41,8 @@ tr, td, table {
 }
 
 .sectionData {
-  display: relative;
-  text-orientation: sideways-right;
-  writing-mode: vertical-rl;
+  font-size: 9px;
+  /* display: relative; */
 }
 
 .miniInfoData {

@@ -26,7 +26,7 @@ const dataTableWithMatchFormat = {
         },
         "Matches": ""
     },
-    "Autonomous": {
+    "Auto": {
         "Mobility%": {
             "GOT": "",
             "NG": "",
@@ -394,7 +394,6 @@ async function teamSearch() {
 }
 
 function buildTeamTable(teamData, color, heightsObj, headerOrder) {
-    console.log(headerOrder, teamData)
     var table = document.createElement("table");
     var outSideLecounterTwo = 0;
     var outSideLecounter = 0;
@@ -499,7 +498,10 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                     var headers = Object.keys(headerInfo).filter(x => x != "INFO" && headerInfo[x] != "0%");
 
                     var widths = headers.map(x => Math.round(convertPercent(headerInfo[x]) * tableWidth));
+<<<<<<< HEAD
                     console.log(headerInfo, header)
+=======
+>>>>>>> 4f0b160d1334b325a6b5756ef51e108f3249a84d
                     while (sum(widths) < tableWidth) {
                         widths[widths.indexOf(Math.max(...widths))]++;
                     }
@@ -626,7 +628,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                                 miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
                                 var height = parseInt(heightsObj[section][header].split("|")[leCounter].replace("px", "")) - (cellHeight * 2 + 1 + parseInt(marginTopSpacing.replace("px", "")));
 
-                                if (leCounter != 0 || (subHeader && outSideLecounter != 0)) {
+                                if (leCounter == 0 || (subHeader && outSideLecounter == 0)) {
                                     height += parseInt(marginTopSpacing.replace("px", ""));
                                 }
 
@@ -696,14 +698,12 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                     miniData.setAttribute("class", "miniInfoData");
                     miniData.style.backgroundColor = color["singleCellData"];
                     miniData.appendChild(document.createTextNode("ND"));
-                    console.log(heightsObj[section][header].split("|")[outSideLecounterTwo])
                     var height = parseInt(heightsObj[section][header].split("|")[outSideLecounterTwo++].replace("px", "")) - (cellHeight * 2 + 1 + parseInt(marginTopSpacing.replace("px", "")));
 
                     if (outSideLecounterTwo != 0) {
                         height += parseInt(marginTopSpacing.replace("px", ""));
                     }
 
-                    console.log(height)
                     miniData.style.height = height + cellHeight * 2 + 3 - Object.keys(headerInfo).length + "px";
                     
                     miniData.style.width = tableWidth + "vw";
@@ -763,10 +763,9 @@ function buildHeaderTable(heightObj, color) {
 
         miniSectionData.setAttribute("class", "sectionData");
         miniSectionData.style.backgroundColor = color["sectionHeader"];
-        miniSectionData.style.width = displayTableWidth / 2 + "vw";
+        miniSectionData.style.width = displayTableWidth * 3 / 4 + "vw";
         miniSectionData.style.height = sectionHeight + "px";
-        miniSectionTable.style.marginRight = marginTopSpacing;
-        miniSectionTable.style.marginTop = marginTopSpacing;
+        miniSectionTable.style.borderTop = marginTopSpacing + " solid black";
 
         miniSectionData.appendChild(document.createTextNode(section));
         miniSectionRow.appendChild(miniSectionData);
@@ -803,7 +802,8 @@ function buildHeaderTable(heightObj, color) {
                     innerData.appendChild(document.createTextNode(header));
                 }
 
-                innerTable.style.marginTop = marginTopSpacing;
+                innerTable.style.borderTop = marginTopSpacing + " solid black";
+                innerTable.style.borderLeft = marginTopSpacing + " solid black";
 
                 innerRow.appendChild(innerData);
                 innerTable.appendChild(innerRow);
@@ -813,13 +813,14 @@ function buildHeaderTable(heightObj, color) {
             miniHeaderRow.appendChild(headerData);
             miniHeaderTable.appendChild(miniHeaderRow);
         });
+        miniSectionData.style.textAlign = "center";
         miniHeaderData.appendChild(miniHeaderTable);
         sectionRow.appendChild(miniHeaderData);
 
         headerTable.appendChild(sectionRow);
     });
 
-    headerTable.style.backgroundColor = "black";
+    headerTable.style.backgroundColor = color["sectionHeader"];
     headerTable.style.border = marginTopSpacing + " solid black";
     headerTable.style.borderTop = "0 solid black";
 
@@ -850,7 +851,6 @@ function getHeightObj(data, clone) {
                     heightsObj[section][header] = headerInfo["INFO"][0].length * 2 * cellHeight + "px";
                 } else if (type == "HAVE") {
                     heightsObj[section][header] = Math.round(Object.keys(headerInfo).filter(x => x != "INFO").length * cellHeight) + "px";
-                    console.log(heightsObj[section][header])
                 } else if (type == "%") {
                     heightsObj[section][header] = Math.ceil(Object.keys(headerInfo).filter(x => x != "INFO" && x != "0%").length / 2) * 2 * cellHeight + cellHeight + 1 + "px";
                 } else if (type == "NESTED" || heightsObj[section][header]["INFO"] == "ND") {
@@ -985,6 +985,7 @@ function compileAllTeamData(team, match, pre, pit) {
             fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], "none");
             fillNewestData(data["General"]["OTF Auto"], "Duration", pre[7], "none");
             fillNewestData(data["General"]["OTF Auto"], "Reliability", pre[8], "none");
+            checkEmpty(data["General"], "OTF Auto");
             
             //PLAYSTYLES
             fillNewestHaveData(data["General"], "Playstyles", pre[20], "none");
@@ -1025,37 +1026,37 @@ function compileAllTeamData(team, match, pre, pit) {
     }
 
     //CUBE
-    storeScoringStats(data["Autonomous"]["CUBE Top Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
-    storeScoringStats(data["Autonomous"]["CUBE Mid Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
-    storeScoringStats(data["Autonomous"]["CUBE Bot Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
+    storeScoringStats(data["Auto"]["CUBE Top Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
+    storeScoringStats(data["Auto"]["CUBE Mid Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
+    storeScoringStats(data["Auto"]["CUBE Bot Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
 
     //CONE
-    storeScoringStats(data["Autonomous"]["CONE Top Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
-    storeScoringStats(data["Autonomous"]["CONE Mid Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
-    storeScoringStats(data["Autonomous"]["CONE Bot Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
+    storeScoringStats(data["Auto"]["CONE Top Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
+    storeScoringStats(data["Auto"]["CONE Mid Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
+    storeScoringStats(data["Auto"]["CONE Bot Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
 
     //DOCKED
     var dockSuccessArray = match.map(x => x[5]);
-    var dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "none"]);
-    data["Autonomous"]["Docked"]["ATPT%"]["ATPT"] = getPercent(dockSuccess["Docked"] + dockSuccess["Failed Dock"], dockSuccessArray.length);
-    data["Autonomous"]["Docked"]["ATPT%"]["NA"] = getPercent(dockSuccess["none"], dockSuccessArray.length);
+    var dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "none", "Failed Dock"]);
+    data["Auto"]["Docked"]["ATPT%"]["ATPT"] = getPercent(dockSuccess["Docked"] + dockSuccess["Failed Dock"], dockSuccessArray.length);
+    data["Auto"]["Docked"]["ATPT%"]["NA"] = getPercent(dockSuccess["none"], dockSuccessArray.length);
     
     dockSuccessArray = match.map(x => x[5]).filter(x => x != "none");
     dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "Failed Dock"]);
-    data["Autonomous"]["Docked"]["Success%"]["Success"] = getPercent(dockSuccess["Docked"], dockSuccessArray.length);
-    data["Autonomous"]["Docked"]["Success%"]["Fail"] = getPercent(dockSuccess["Failed Dock"], dockSuccessArray.length);
+    data["Auto"]["Docked"]["Success%"]["Success"] = getPercent(dockSuccess["Docked"], dockSuccessArray.length);
+    data["Auto"]["Docked"]["Success%"]["Fail"] = getPercent(dockSuccess["Failed Dock"], dockSuccessArray.length);
     if (sum(Object.values(dockSuccess)) == 0) {
-        delete data["Autonomous"]["Docked"]["Success%"];
-        data["Autonomous"]["Docked"]["INFO"] = [[1], "NESTED"];
+        delete data["Auto"]["Docked"]["Success%"];
+        data["Auto"]["Docked"]["INFO"] = [[1], "NESTED"];
     }
 
     //ENGAGED
     var engagedArray = match.map(x => x[6]).filter(x => x != "none");
     var engaged = getFreqObj(engagedArray, ["TRUE", "FALSE"]);
-    data["Autonomous"]["Engaged%"]["Eng"] = getPercent(engaged["TRUE"], engagedArray.length);
-    data["Autonomous"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
+    data["Auto"]["Engaged%"]["Eng"] = getPercent(engaged["TRUE"], engagedArray.length);
+    data["Auto"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
     if (sum(Object.values(engaged)) == 0) {
-        delete data["Autonomous"]["Engaged%"];
+        delete data["Auto"]["Engaged%"];
     }
 
     ////////////////////////////////////////////////////////TELEOP
@@ -1578,7 +1579,7 @@ async function allianceSearch() {
         if (noMatch && noPrePit) {
             teamData = {
                 "General": {},
-                "Autonomous": {},
+                "Auto": {},
                 "Teleop": {},
             };
             clone = dataTableWithMatchFormat;
@@ -1596,7 +1597,7 @@ async function allianceSearch() {
     });
 
     var headerOrder = fillMissingHeaders(teams.map(x => x[0]));
-
+    console.log(teams)
     teams.forEach(team => {
         teams[teams.indexOf(team)][1] = getHeightObj(teams[teams.indexOf(team)][0], teams[teams.indexOf(team)][0]);
     });
@@ -1661,10 +1662,10 @@ function compareHeights(heights) {
 function fillMissingHeaders(objs) {
     var allHeaders = {
         "General": [],
-        "Autonomous": [],
+        "Auto": [],
         "Teleop": [],
     }
-    var groups = ["General", "Autonomous", "Teleop"];
+    var groups = ["General", "Auto", "Teleop"];
 
     objs.forEach(obj => {
         let counter = 0;
@@ -1693,8 +1694,8 @@ function fillMissingHeaders(objs) {
 
         Object.values(obj).forEach(section => {
             allHeaders[groups[counter]].forEach(header => {
+                console.log(header)
                 if (header.includes("|")) {
-                    
                     var mainHeader = header.split("|")[0];
                     var subHeader = header.split("|")[1];
 
@@ -1705,7 +1706,7 @@ function fillMissingHeaders(objs) {
                     if (!section[mainHeader][subHeader]) {
                         section[mainHeader][subHeader] = "ND";
                     }
-                } else if (!Object.keys(section).includes(header)) {
+                } else if (!Object.keys(section).includes(header) || Object.keys(section[header]).length == 1) {
                     section[header] = "ND";
                 }
             });
