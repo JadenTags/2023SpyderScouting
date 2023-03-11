@@ -1,6 +1,8 @@
 const dataTableWithMatchFormat = {
     "General": {
-        "DIMS": "",
+        "Team": "",
+        "Rank":"",
+        "DIM": "",
         "DB Info": {
             "Type": "",
             "Motor": "",
@@ -12,6 +14,20 @@ const dataTableWithMatchFormat = {
             "Reliability": "",
             "INFO": [[1, 1, 1], "NORMAL"]
         },
+        "Cones": {
+            "Top": "",
+            "Mid": "",
+            "Low": "",
+            "INFO": [[1, 1, 1], "HAVE"]
+        },
+        "Cubes": {
+            "Top": "",
+            "Mid": "",
+            "Low": "",
+            "INFO": [[1, 1, 1], "HAVE"]
+        },
+        "Pref PS": "",
+        "Pref GP": "",
         "Playstyles": {
             "Offensive": "",
             "Defensive": "",
@@ -28,11 +44,11 @@ const dataTableWithMatchFormat = {
     },
     "Auto": {
         "Mobility%": {
-            "GOT": "",
-            "NG": "",
+            "Got": "",
+            "Not": "",
             "INFO": [[2], "%"]
         },
-        "Cones": "SPACER",
+        "Cubes": "SPACER",
         "CUBE Top Row": {
             "Min": "",
             "Max": "",
@@ -57,7 +73,7 @@ const dataTableWithMatchFormat = {
             "ACC": "",
             "INFO": [[3, 2], "NORMAL"]
         },
-        "Cubes": "SPACER",
+        "Cones": "SPACER",
         "CONE Top Row": { //DISPLAY AS TOP
             "Min": "",
             "Max": "",
@@ -84,22 +100,23 @@ const dataTableWithMatchFormat = {
         },
         "Docked": {
             "Success%": {
-                "Success": "",
+                "SCS": "",
                 "Fail": "",
                 "INFO": [[2], "%"]
             },
             "ATPT%": {
                 "ATPT": "",
-                "NA": "",
+                "Not": "",
                 "INFO": [[2], "%"]
             },
-            "INFO": [[1, 1], "NESTED"]
+            "INFO": [[], "NESTED"]
         },
         "Engaged%": {
-            "Eng": "",
-            "NE": "",
+            "ENG": "",
+            "Not": "",
             "INFO": [[2], "%"]
         },
+        "Auto AVG":""
     },
     "Teleop": {
         "Cones": "SPACER",
@@ -152,15 +169,17 @@ const dataTableWithMatchFormat = {
             "ACC": "",
             "INFO": [[3, 2], "NORMAL"]
         },
+        "Cargo AVG": "",
+        "Points AVG": "",
         "Almost Tipped": {
             "Type%": {
                 "CS": "",
-                "O": "",
+                "Not": "",
                 "INFO": [[2], "%"]
             },
             "Tip%": {//WHETHER A ROBOT ALMOST TIPS IN A MATCH OR NOT REGARDLESS OF TIMES
                 "Tip": "",
-                "NT": "",
+                "Not": "",
                 "INFO": [[2], "%"]
             },
             "INFO": [[1, 1], "NESTED"]
@@ -173,7 +192,7 @@ const dataTableWithMatchFormat = {
         },
         "Endgame": {
             "Success%": { //DOCK ONLY
-                "Success": "",
+                "SCS": "",
                 "Fail": "",
                 "INFO": [[2], "%"]
             },
@@ -186,8 +205,8 @@ const dataTableWithMatchFormat = {
             "INFO": [[1, 1], "NESTED"]
         },
         "Engaged%": {
-            "Eng": "",
-            "NE": "",
+            "ENG": "",
+            "Not": "",
             "INFO": [[2], "%"]
         },
         "Penalties": {
@@ -199,11 +218,6 @@ const dataTableWithMatchFormat = {
             "R": "",
             "Y": "", //ONLY IF TEAM IN POSSESSION OF YELLOW
             "INFO": [[2], "NORMAL"]
-        },
-        "Aggro%": {
-            "Yes": "",
-            "No": "",
-            "INFO": [[2], "%"]
         }
     }
 };
@@ -394,6 +408,7 @@ async function teamSearch() {
 }
 
 function buildTeamTable(teamData, color, heightsObj, headerOrder) {
+    console.log(teamData)
     var table = document.createElement("table");
     var outSideLecounterTwo = 0;
     var outSideLecounter = 0;
@@ -453,6 +468,8 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                 headerData.appendChild(miniTable);
             } else {
                 let type = headerInfo["INFO"][1];
+                let displayForm = headerInfo["INFO"][0];
+
                 let miniTable = document.createElement("table");
                 if (type == "NORMAL") {
                     let ogLength = headerInfo["INFO"][0].length;
@@ -467,10 +484,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                         miniTable.appendChild(miniMiniTable);
                     }
                 } else if (type == "HAVE") {
-                    console.log(headerInfo)
-                    console.log(Object.keys(headerInfo))
                     var height = Math.round(parseInt(heightsObj[section][header].replace("px", "")) / Object.values(headerInfo).filter(x => x && typeof x == "boolean").length);
-                    console.log(height)
                     var counter = 0;
                     var headers = Object.keys(headerInfo).filter(x => x != "INFO");
                     headers.forEach(header => {
@@ -498,7 +512,6 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                     var headers = Object.keys(headerInfo).filter(x => x != "INFO" && headerInfo[x] != "0%");
 
                     var widths = headers.map(x => Math.round(convertPercent(headerInfo[x]) * tableWidth));
-                    console.log(headerInfo, header)
                     while (sum(widths) < tableWidth) {
                         widths[widths.indexOf(Math.max(...widths))]++;
                     }
@@ -899,7 +912,7 @@ function convertPercent(percent) {
 function createNormalMiniTable(data, color, height) {
     var miniTable = document.createElement("table");
 
-    var headers = Object.keys(data).slice(0, data["INFO"][0].shift());
+    var headers = Object.keys(data).filter(x => x != "INFO").slice(0, data["INFO"][0].shift());
     var miniHeaderRow = document.createElement("tr");
     headers.forEach(header => {
         let miniHeaderData = document.createElement("td");
@@ -940,476 +953,380 @@ function createNormalMiniTable(data, color, height) {
 
 //CHANGE YEARLY
 function compileAllTeamData(team, match, pre, pit) {
-    var data = JSON.parse(JSON.stringify(dataTableWithMatchFormat));
-    pre = pre.slice(1);
-    pit = pit.slice(1);
-    match = match.slice(1);
-    
-    if (match) {
-        match = match.filter(x => x[1] == team);
-    } if (pre) {
-        pre = pre.filter(x => x[0] == team);
-        pre = pre[pre.length - 1];
-    } if (pit) {
-        pit = pit.filter(x => x[0] == team);
-        pit = pit[pit.length - 1];
-    }
+    pre = pre.slice(1).filter(x => x[0] == team);
+    pit = pit.slice(1).filter(x => x[0] == team);
+    match = match.slice(1).filter(x => x[1] == team);
 
-    ////////////////////////////////////////////////////////GENERAL
-    if (pre) {
-        //DIMENSIONS
-        data["General"]["DIMS"] = JSON.parse(pre[1]).join("\" x ") + "\"";
-        if (JSON.parse(pre[1]).filter(x => x != null).length == 0) {
-            delete data["General"]["DIMS"];
-        }
+    pre = pre[pre.length - 1];
+    pit = pit[pit.length - 1];
 
-        //DB INFO
-        fillNewestData(data["General"]["DB Info"], "Type", pre[2], "none");
-        fillNewestData(data["General"]["DB Info"], "Motor", pre[3], "none");
-        checkEmpty(data["General"], "DB Info");
-
-        if (pit) {
-            //OTF AUTO
-            fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], pit[10]);
-            fillNewestData(data["General"]["OTF Auto"], "Duration", pre[7], pit[11]);
-            fillNewestData(data["General"]["OTF Auto"], "Reliability", pre[8], pit[12]);
-            checkEmpty(data["General"], "OTF Auto");
-
-            //PLAYSTYLES
-            fillNewestHaveData(data["General"], "Playstyles", pre[20], pit[19]);
-        } else {
-            //OTF AUTO
-            fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], "none");
-            fillNewestData(data["General"]["OTF Auto"], "Duration", pre[7], "none");
-            fillNewestData(data["General"]["OTF Auto"], "Reliability", pre[8], "none");
-            checkEmpty(data["General"], "OTF Auto");
-            
-            //PLAYSTYLES
-            fillNewestHaveData(data["General"], "Playstyles", pre[20], "none");
-        }
-    } else {
-        data["General"] = {
-            "Failure%": {
-                "MF": "",
-                "CF": "",
-                "NS": "",
-                "N": "",
-                "INFO": [[4], "%"]
-            },
-            "Matches": "",
-        }
-    }
-
-    //FAILURES
-    var failuresArray = match.map(x => x[14]);
-    var failures = getFreqObj(failuresArray, ["Mech Fail", "Comm Fail", "No Show", "none"]);
-    data["General"]["Failure%"]["MF"] = getPercent(failures["Mech Fail"], failuresArray.length);
-    data["General"]["Failure%"]["CF"] = getPercent(failures["Comm Fail"], failuresArray.length);
-    data["General"]["Failure%"]["NS"] = getPercent(failures["No Show"], failuresArray.length);
-    data["General"]["Failure%"]["N"] = getPercent(failures["none"], failuresArray.length);
-
-    //MATCHES
-    data["General"]["Matches"] = match.length;
-
-    ////////////////////////////////////////////////////////AUTONOMOUS
-
-    //MOBILITY%
-    var mobilityArray = match.map(x => x[2]).filter(x => x != "none");
-    var mobility = getFreqObj(mobilityArray, ["TRUE", "FALSE"]);
-    data["Auto"]["Mobility%"]["GOT"] = getPercent(mobility["TRUE"], mobilityArray.length);
-    data["Auto"]["Mobility%"]["NG"] = getPercent(mobility["FALSE"], mobilityArray.length);
-    if (sum(Object.values(mobility)) == 0) {
-        delete data["Autonomous"]["Mobility%"];
-    }
-
-    //CUBE
-    storeScoringStats(data["Auto"]["CUBE Top Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
-    storeScoringStats(data["Auto"]["CUBE Mid Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
-    storeScoringStats(data["Auto"]["CUBE Bot Row"], match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
-
-    //CONE
-    storeScoringStats(data["Auto"]["CONE Top Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
-    storeScoringStats(data["Auto"]["CONE Mid Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
-    storeScoringStats(data["Auto"]["CONE Bot Row"], match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
-
-    //DOCKED
-    var dockSuccessArray = match.map(x => x[5]);
-    var dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "none", "Failed Dock"]);
-    data["Auto"]["Docked"]["ATPT%"]["ATPT"] = getPercent(dockSuccess["Docked"] + dockSuccess["Failed Dock"], dockSuccessArray.length);
-    data["Auto"]["Docked"]["ATPT%"]["NA"] = getPercent(dockSuccess["none"], dockSuccessArray.length);
-    
-    dockSuccessArray = match.map(x => x[5]).filter(x => x != "none");
-    dockSuccess = getFreqObj(dockSuccessArray, ["Docked", "Failed Dock"]);
-    data["Auto"]["Docked"]["Success%"]["Success"] = getPercent(dockSuccess["Docked"], dockSuccessArray.length);
-    data["Auto"]["Docked"]["Success%"]["Fail"] = getPercent(dockSuccess["Failed Dock"], dockSuccessArray.length);
-    if (sum(Object.values(dockSuccess)) == 0) {
-        delete data["Auto"]["Docked"]["Success%"];
-        data["Auto"]["Docked"]["INFO"] = [[1], "NESTED"];
-    }
-
-    //ENGAGED
-    var engagedArray = match.map(x => x[6]).filter(x => x != "none");
-    var engaged = getFreqObj(engagedArray, ["TRUE", "FALSE"]);
-    data["Auto"]["Engaged%"]["Eng"] = getPercent(engaged["TRUE"], engagedArray.length);
-    data["Auto"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
-    if (sum(Object.values(engaged)) == 0) {
-        delete data["Auto"]["Engaged%"];
-    }
-
-    ////////////////////////////////////////////////////////TELEOP
-
-    //CUBE
-    storeScoringStats(data["Teleop"]["CUBE Top Row"], match.map(x => x[8]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
-    storeScoringStats(data["Teleop"]["CUBE Mid Row"], match.map(x => x[8]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
-    storeScoringStats(data["Teleop"]["CUBE Bot Row"], match.map(x => x[8]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
-
-    //CONE
-    storeScoringStats(data["Teleop"]["CONE Top Row"], match.map(x => x[7]).filter(x => x != "none").map(x => JSON.parse(x)[0]));
-    storeScoringStats(data["Teleop"]["CONE Mid Row"], match.map(x => x[7]).filter(x => x != "none").map(x => JSON.parse(x)[1]));
-    storeScoringStats(data["Teleop"]["CONE Bot Row"], match.map(x => x[7]).filter(x => x != "none").map(x => JSON.parse(x)[2]));
-
-    //ALMOST TIPPED
-    var almostTippedCS = match.map(x => parseInt(x[9])).filter(x => !isNaN(x));
-    var almostTippedNonCS = match.map(x => parseInt(x[10])).filter(x => !isNaN(x));
-    console.log(almostTippedCS, almostTippedNonCS)
-    if (almostTippedCS + almostTippedNonCS == "") {
-        delete data["Teleop"]["Almost Tipped"]["Type%"];
-    } else {
-        data["Teleop"]["Almost Tipped"]["Type%"]["CS"] = getPercent(almostTippedCS, almostTippedNonCS);
-        data["Teleop"]["Almost Tipped"]["Type%"]["O"] = getPercent(almostTippedNonCS, almostTippedCS);
+    if (!pit) {
+        pit = ["none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"]
     }
     
-    var almostTippedAll = match.map(x => x[9]);
-    var almostTippedOccur = 0;
+    //TODO: DO ALL
+    var data = structuredClone(dataTableWithMatchFormat);
 
-    for (var i = 0; i < almostTippedCS.length; i++) {
-        if (almostTippedCS[i] > 0 || almostTippedNonCS[i] > 0) {
-            almostTippedOccur++;
-        }
-    }
+    ///////////////////////////GENERAL
+    //TEAM
+    data["General"]["Team"] = team;
 
-    data["Teleop"]["Almost Tipped"]["Tip%"]["Tip"] = getPercent(almostTippedOccur, almostTippedAll.length);
-    data["Teleop"]["Almost Tipped"]["Tip%"]["NT"] = getPercent(almostTippedAll.length - almostTippedOccur, almostTippedAll.length);
-    if (almostTippedOccur == 0) {
-        delete data["Teleop"]["Almost Tipped"]["Type%"];
-        data["Teleop"]["Almost Tipped"]["INFO"] = [[1], "NESTED"];
-    }
 
-    //PLAYSTYLES
-    var playstyleArray = match.map(x => x[11]).filter(x => x != "none");
-    var playstyle = getFreqObj(playstyleArray, ["Offensive", "Hybrid", "Defensive"]);
-    data["Teleop"]["Playstyle%"]["Off"] = getPercent(playstyle["Offensive"], playstyleArray.length);
-    data["Teleop"]["Playstyle%"]["Hyb"] = getPercent(playstyle["Hybrid"], playstyleArray.length);
-    data["Teleop"]["Playstyle%"]["Def"] = getPercent(playstyle["Defensive"], playstyleArray.length);
-    if (Object.values(data["Teleop"]["Playstyle%"]).filter(x => x.includes("%") && x != "0%" && typeof x == "string").length == 0) {
-        delete data["Teleop"]["Playstyle%"];
-    }
-
-    //ENDGAME
-    var teleDocksArray = match.map(x => x[12]).filter(x => x != "none" && ["Failed Dock", "Docked"].includes(x));
-    var teleDocks = getFreqObj(teleDocksArray, ["Docked", "Failed Dock"]);
-    data["Teleop"]["Endgame"]["Success%"]["Success"] = getPercent(teleDocks["Docked"], teleDocksArray.length);
-    data["Teleop"]["Endgame"]["Success%"]["Fail"] = getPercent(teleDocks["Failed Dock"], teleDocksArray.length);
-    if (sum(Object.values(teleDocks)) == 0) {
-        delete data["Teleop"]["Endgame"]["Success%"];
-        data["Teleop"]["Endgame"]["INFO"] = [[1], "NESTED"];
-    }
-
-    var teleEndgameArray = match.map(x => x[12]).filter(x => x != "Failed Dock");
-    var teleEndgame = getFreqObj(teleEndgameArray, ["Docked", "Parked", "none"]);
-    data["Teleop"]["Endgame"]["ATPT%"]["Docked"] = getPercent(teleEndgame["Docked"], teleEndgameArray.length);
-    data["Teleop"]["Endgame"]["ATPT%"]["Parked"] = getPercent(teleEndgame["Parked"], teleEndgameArray.length);
-    data["Teleop"]["Endgame"]["ATPT%"]["NA"] = getPercent(teleEndgame["none"], teleEndgameArray.length);
-
-    //ENGAGED
-    engagedArray = match.map(x => x[13]).filter(x => x != "none");
-    engaged = getFreqObj(engagedArray, ["TRUE", "FALSE"]);
-    data["Teleop"]["Engaged%"]["Eng"] = getPercent(engaged["TRUE"], engagedArray.length);
-    data["Teleop"]["Engaged%"]["NE"] = getPercent(engaged["FALSE"], engagedArray.length);
-    if (Object.values(data["Teleop"]["Engaged%"]).filter(x => x.includes("%") && x != "0%" && typeof x == "string").length == 0) {
-        delete data["Teleop"]["Engaged%"];
-    }
-
-    //PENALTIES
-    storeScoringStats(data["Teleop"]["Penalties"], match.map(x => x[15]).filter(x => x != "none"));
-    delete data["Teleop"]["Penalties"]["ACC"];
-    delete data["Teleop"]["Penalties"]["Min"];
-    delete data["Teleop"]["Penalties"]["Rng"];
-    if (Object.keys(data["Teleop"]["Penalties"]).length <= 1) {
-        delete data["Teleop"]["Penalties"];
-    }
-
-    //CARDS
-    var cards = getFreqObj(match.map(x => x[16]).filter(x => x != "none"), ["Red", "Yellow"]);
-    data["Teleop"]["Cards"]["R"] = cards["Red"] + Math.floor(cards["Yellow"] / 2);
-    data["Teleop"]["Cards"]["Y"] = cards["Yellow"] % 2 == 1;
-
-    //AGGRESSIVE
-    var aggressiveArray = match.map(x => x[17]).filter(x => x != "none");
-    var aggressive = getFreqObj(aggressiveArray, ["TRUE", "FALSE"]);
-    data["Teleop"]["Aggro%"]["Yes"] = getPercent(aggressive["TRUE"], aggressiveArray.length);
-    data["Teleop"]["Aggro%"]["No"] = getPercent(aggressive["FALSE"], aggressiveArray.length);
-    if (sum(Object.values(aggressive)) == 0) {
-        delete data["Teleop"]["Aggro%"];
-    }
-
-    return data;
-}
-
-//CHANGE YEARLY
-function compilePrePitTeamData(team, pre, pit) {
-    var data = JSON.parse(JSON.stringify(dataTableWithoutMatchFormat));
-    pre = pre.slice(1);
-    pit = pit.slice(1);
-    
-    if (pre) {
-        pre = pre.filter(x => x[0] == team);
-        pre = pre[pre.length - 1];
-    } if (pit) {
-        pit = pit.filter(x => x[0] == team);
-        pit = pit[pit.length - 1];
-
-        if (!pit) {
-            pit = ["none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"];
-        }
-    } 
-
-    ////////////////////////////////////////////////////////GENERAL
     //DIMENSIONS
-    data["General"]["DIMS"] = JSON.parse(pre[1]).join("\" x ") + "\"";
-    if (JSON.parse(pre[1]).filter(x => x != null).length == 0) {
-        delete data["General"]["DIMS"];
+    if (pre[1] != "none") {
+        var dims = JSON.parse(pre[1]).filter(dim => dim);
+
+        if (dims.length > 0) {
+            data["General"]["DIM"] = dims.join(" | ");
+        } else {
+            delete data["General"]["DIM"];
+        }
+    } else {
+        delete data["General"]["DIM"];
     }
+
 
     //DB INFO
     fillNewestData(data["General"]["DB Info"], "Type", pre[2], "none");
     fillNewestData(data["General"]["DB Info"], "Motor", pre[3], "none");
     checkEmpty(data["General"], "DB Info");
 
-    //GOM
-    fillNewestSingleData(data["General"], "GOM", pre[4], "none");
 
     //OTF AUTO
     fillNewestData(data["General"]["OTF Auto"], "Can", pre[6], pit[10]);
     fillNewestData(data["General"]["OTF Auto"], "Duration", pre[7], pit[11]);
-    fillNewestData(data["General"]["OTF Auto"], "Reliability", pre[8], pit[12]);
+    fillNewestData(data["General"]["OTF Auto"], "Relaibility", pre[8], pit[12]);
     checkEmpty(data["General"], "OTF Auto");
+   
+    //CONES
+    fillNewestHaveData(data["General"], "Cones", pre[15], pit[4]);
 
-    ////////////////////////////////////////////////////////AUTONOMOUS
-    //SET POS
-    fillNewestSingleData(data["Auto"], "Set Pos", pre[13], pit[17]);
 
-    //SETUP
-    fillNewestSingleData(data["Auto"], "Setup", pre[11], pit[15]);
-    if (data["Auto"]["Setup"]) {
-        data["Auto"]["Setup"] = JSON.parse(data["Auto"]["Setup"]).map(x => x.substring(0, 2)).join("|");
-    }
+    //CUBES
+    fillNewestHaveData(data["General"], "Cubes", pre[16], pit[5]);
 
-    //DOCK
-    fillNewestSingleData(data["Auto"], "Dock", pre[9], pit[13]);
-
-    if (data["Auto"]["Dock"] == "TRUE") {
-        //ENGAGE
-        fillNewestSingleData(data["Auto"], "Engage", pre[10], pit[14]);
-    } else {
-        delete data["Auto"]["Engage"];
-    }
-
-    ////////////////////////////////////////////////////////TELEOP
-    //CYCLE
-    fillNewestSingleData(data["Teleop"], "Cycle", pre[14], pit[18]);
-
-    //CONE
-    fillNewestData(data["Teleop"]["Cone"], "array", pre[15], pit[4]);
-    if (data["Teleop"]["Cone"]["array"] != "") {
-        let coneHeaders = Object.keys(data["Teleop"]["Cone"]).filter(x => x != "INFO" && x != "array");
-        let coneReaches = JSON.parse(data["Teleop"]["Cone"]["array"]);
-        let counter = 0;
-
-        coneHeaders.forEach(header => {
-            if (!coneReaches[counter++]) {
-                delete data["Teleop"]["Cone"][header];
-            } else {
-                data["Teleop"]["Cone"][header] = true;
-            }
-        });
-
-        delete data["Teleop"]["Cone"]["array"];
-    } else {
-        delete data["Teleop"]["Cone"];
-    } if (Object.keys(data["Teleop"]["Cone"]).length == 1) {
-        delete data["Teleop"]["Cone"];
-    }
-    
-    //CUBE
-    fillNewestData(data["Teleop"]["Cube"], "array", pre[16], pit[5]);
-    if (data["Teleop"]["Cube"]["array"] != "") {
-        let coneHeaders = Object.keys(data["Teleop"]["Cube"]).filter(x => x != "INFO" && x != "array");
-        let coneReaches = JSON.parse(data["Teleop"]["Cube"]["array"]);
-        let counter = 0;
-
-        coneHeaders.forEach(header => {
-            if (!coneReaches[counter++]) {
-                delete data["Teleop"]["Cube"][header];
-            } else {
-                data["Teleop"]["Cube"][header] = true;
-            }
-        });
-
-        delete data["Teleop"]["Cube"]["array"];
-    } else {
-        delete data["Teleop"]["Cube"];
-    } if (Object.keys(data["Teleop"]["Cube"]).length == 1) {
-        delete data["Teleop"]["Cube"];
-    }
 
     //PREFERRED PLAYSTYLE
-    fillNewestSingleData(data["Teleop"], "Pref PS", pre[17], pit[21]);
+    fillNewestData(data["General"], "Pref PS", pre[17], pit[21]);
+   
+    //PREF GP
+    fillNewestData(data["General"], "Pref GP", pre[18], "none");
 
-    //ABLE PLAYSTYLE
-    fillNewestHaveData(data["Teleop"], "Able PS", pre[20], pit[19])
 
-    //DOCK
-    fillNewestSingleData(data["Teleop"], "Dock", pre[21], pit[22]);
+    //PLAYSTYLES
+    fillNewestHaveData(data["General"], "Playstyles", pre[19], pit[19]);
+   
+    //FAILURE%
+    var equivObj = {
+        "Mech Fail": "MF",
+        "Comm Fail": "CF",
+        "No Show": "NS",
+        "none": "N"
+    };
 
-    //DOCK TIME
-    fillNewestSingleData(data["Teleop"], "Dock Time", pre[23], pit[2]);
 
-    //ENGAGE
-    fillNewestSingleData(data["Teleop"], "Engage", pre[22], pit[23]);
+    fillPercentData(data["General"], "Failure%", match.map(x => x[14]), equivObj);
+
+
+    //MATCHES
+    data["General"]["Matches"] = match.length;
+   
+    ///////////////////////////AUTO
+    //MOBILITY%
+    equivObj = {
+        "TRUE": "Got",
+        "FALSE": "Not"
+    };
+
+
+    fillPercentData(data["Auto"], "Mobility%", match.map(x => x[2]).filter(x => x != "none"), equivObj);
+
+
+    //CUBES
+    var autoCubes = match.map(x => x[4]).filter(x => x != "none").map(x => JSON.parse(x));
+    fillScoreData(data["Auto"]["CUBE Top Row"], autoCubes.map(x => x[0]));
+    fillScoreData(data["Auto"]["CUBE Mid Row"], autoCubes.map(x => x[1]));
+    fillScoreData(data["Auto"]["CUBE Bot Row"], autoCubes.map(x => x[2]));
+
+
+    //CONES
+    var autoCones = match.map(x => x[3]).filter(x => x != "none").map(x => JSON.parse(x));
+
+
+    fillScoreData(data["Auto"]["CONE Top Row"], autoCones.map(x => x[0]));
+    fillScoreData(data["Auto"]["CONE Mid Row"], autoCones.map(x => x[1]));
+    fillScoreData(data["Auto"]["CONE Bot Row"], autoCones.map(x => x[2]));
+
+
+    //SUCCESS%
+    equivObj = {
+        "Docked": "SCS",
+        "Failed Dock": "Fail"
+    };
+
+
+    fillPercentData(data["Auto"]["Docked"], "Success%", match.map(x => x[5]).filter(x => ["Docked", "Failed Dock"].includes(x)), equivObj);
+   
+    //ATTEMPT%
+    equivObj = {
+        "Docked": "ATPT",
+        "none": "Not"
+    };
+
+
+    fillPercentData(data["Auto"]["Docked"], "ATPT%", match.map(x => x[5]).map(x => {if (x == "Failed Dock") {return "Docked"} else {return x}}), equivObj);
+
+
+    //ENGAGED%
+    equivObj = {
+        "TRUE": "ENG",
+        "FALSE": "Not"
+    };
+
+
+    fillPercentData(data["Auto"], "Engaged%", match.map(x => x[6]).filter(x => x != "none"), equivObj);
+   
+    ///////////////////////////TELEOP
+    //CUBES
+    autoCubes = match.map(x => x[8]).filter(x => x != "none").map(x => JSON.parse(x));
+    fillScoreData(data["Teleop"]["CUBE Top Row"], autoCubes.map(x => x[0]));
+    fillScoreData(data["Teleop"]["CUBE Mid Row"], autoCubes.map(x => x[1]));
+    fillScoreData(data["Teleop"]["CUBE Bot Row"], autoCubes.map(x => x[2]));
+
+
+    //CONES
+    var autoCones = match.map(x => x[7]).filter(x => x != "none").map(x => JSON.parse(x));
+
+
+    fillScoreData(data["Teleop"]["CONE Top Row"], autoCones.map(x => x[0]));
+    fillScoreData(data["Teleop"]["CONE Mid Row"], autoCones.map(x => x[1]));
+    fillScoreData(data["Teleop"]["CONE Bot Row"], autoCones.map(x => x[2]));
+
+
+    //CARGO AVG
+    var cAve = 0;
+    
+    ["CUBE", "CONE"].forEach(type => {
+        ["Top", "Mid", "Bot"].forEach(row => {
+            if (data["Teleop"][type + " " + row + " Row"]["Avg"]) {
+                cAve += data["Teleop"][type + " " + row + " Row"]["Avg"];
+            }
+        });
+    });
+
+    data["Teleop"]["Cargo AVG"] = Math.round(cAve * 10) / 10;
+
+    //TYPE%
+    var csArray = match.map(x => x[9]).filter(x => x != "none").map(x => parseInt(x)).reduce((x, y) => x + y);
+    var noncsArray = match.map(x => x[10]).filter(x => x != "none").map(x => parseInt(x)).reduce((x, y) => x + y);
+    var csPercent = csArray / (csArray + noncsArray);
+    var noncsPercent = noncsArray / (csArray + noncsArray);
+   
+    if (isNaN(percent)) {
+        delete data["Teleop"]["Almost Tipped"]["Type%"];
+    } else {
+        data["Teleop"]["Almost Tipped"]["Type%"]["CS"] = csPercent;
+        data["Teleop"]["Almost Tipped"]["Type%"]["Not"] = noncsPercent;
+    }
+
+
+    //TIP%
+    var length = match.map(x => x[9]).filter(x => x != "none").length + match.map(x => x[10]).filter(x => x != "none").length;
+    var percent = Math.round((csArray + noncsArray) / length * 100) + "%";
+
+
+    if (isNaN(percent)) {
+        delete data["Teleop"]["Almost Tipped"]["Tip%"];
+    } else {
+        data["Teleop"]["Almost Tipped"]["Tip%"]["Tip"] = percent;
+        data["Teleop"]["Almost Tipped"]["Tip%"]["Not"] = 1 - percent;
+    }
+
+    checkEmpty(data["Teleop"], "Almost Tipped");
+
+
+    //PLAYSTYLE
+    equivObj = {
+        "Offensive": "Off",
+        "Defensive": "Def",
+        "Hybrid": "Hyb"
+    };
+
+
+    fillPercentData(data["Teleop"], "Playstyle%", match.map(x => x[11]).filter(x => x != "none"), equivObj);
+
+
+    //SUCCESS%
+    equivObj = {
+        "Docked": "SCS",
+        "Failed Dock": "Fail"
+    };
+
+
+    fillPercentData(data["Teleop"]["Endgame"], "Success%", match.map(x => x[12]).filter(x => ["Docked", "Failed Dock"].includes(x)), equivObj);
+
+
+    //ATTEMPT%
+    equivObj = {
+        "Docked": "Docked",
+        "Parked": "Parked",
+        "none": "NA"
+    };
+
+
+    fillPercentData(data["Teleop"]["Endgame"], "ATPT%", match.map(x => x[12]).map(x => {if (x == "Failed Dock") {return "Docked"} else {return x}}), equivObj);
+
+
+    //ENGAGED%
+    equivObj = {
+        "TRUE": "ENG",
+        "FALSE": "Not"
+    };
+
+
+    fillPercentData(data["Teleop"], "Engaged%", match.map(x => x[13]).filter(x => x != "none"), equivObj);
+
+    //PENALTIES
+    var pens = match.map(x => x[15]).filter(x => x != "none").map(x => parseInt(x));
+    if (pens.length != 0) {
+        data["Teleop"]["Penalties"]["Max"] = Math.max(...pens);
+
+
+        data["Teleop"]["Penalties"]["Avg"] = Math.round(pens.reduce((x, y) => x + y) / pens.length);
+    } else {
+        delete data["Teleop"]["Penalties"];
+    }
+
+    //CARDS
+    var cards = match.map(x => x[16]).filter(x => x != "none");
+    if (cards.length != 0) {
+        var occurences = getOccurencesObj(cards, ["Red", "Yellow"]);
+        data["Teleop"]["Cards"]["R"] = occurences["Red"] + (occurences["Yellow"] / 2);
+        data["Teleop"]["Cards"]["Y"] = occurences["Yellow"] % 2 == 1;
+    } else {
+        delete data["Teleop"]["Cards"];
+    }
 
     return data;
 }
 
+
 //CHANGE YEARLY
-function storeScoringStats(data, obj) {
-    var made = obj.map(x => parseInt(x[0]));
-    var miss = obj.map(x => parseInt(x[1]));
-    
-    if (made.length == 0 && miss.length == 0) {
-        Object.keys(data).forEach(key => {
-            delete data[key];
-        });
+function fillScoreData(data, match) {
+    match = match.map(x => x.map(y => parseInt(y)));
 
-        data["INFO"] = [[0], "NORMAL"];
-
-        return;
-    }
-
-    data["Min"] = Math.min(...made);
-    data["Max"] = Math.max(...made);
+    //MIN | MAX | RNG | AVG | ACC
+    data["Min"] = Math.min(...match.map(x => x[0]));
+    data["Max"] = Math.max(...match.map(x => x[0]));
 
     if (data["Min"] == data["Max"]) {
-        var always = data["Min"];
-        Object.keys(data).forEach(key => {
+        data["Always"] = data["Min"];
+
+
+        Object.keys(data).filter(x => x != "INFO" && x != "Always").forEach(x => {
+            delete data[x];
+        });
+        data["INFO"] = [[2], "NORMAL"];
+    } else {
+        var made = match.map(x => x[0]);
+
+
+        data["Avg"] = Math.round(made.reduce((x, y) => x + y) / made.length * 10) / 10;
+
+
+        var mad = Math.round(made.map(x => Math.abs(data["Avg"] - x)).reduce((x, y) => x + y) / made.length * 10) / 10;
+        var higher = Math.round((data["Avg"] + mad ) * 10) / 10;
+        var lower = Math.round((data["Avg"] - mad) * 10) / 10;
+
+
+        if (higher > data["Max"]) {
+            higher = data["Max"];
+        } if (lower < data["Min"]) {
+            lower = data["Min"];
+        }
+
+
+        data["Rng"] = lower + " - " + higher;
+
+        data["ACC"] = Math.round(made.reduce((x, y) => x + y) / (made.reduce((x, y) => x + y) + match.map(x => x[1]).reduce((x, y) => x + y)) * 100) + "%";
+    }
+}
+
+
+function fillNewestHaveData(data, key, pre, pit) {
+    fillNewestData(data[key], "Array", pre, pit);
+    if (!data[key]["Array"]) {
+        delete data[key];
+    } else {
+        var counter = 0;
+        var haveList = JSON.parse(data[key]["Array"]);
+        Object.keys(data[key]).filter(newKey => newKey != "Array" && key != "INFO").map(newKey => {
+            if (!haveList[counter++]) {
+                delete data[key][newKey];
+            } else {
+                data[key][newKey] = true;
+            }
+        });
+
+
+        delete data[key]["Array"];
+
+
+        if (Object.keys(data[key]).length == 1) {
             delete data[key];
-        });
-
-        data["Always"] = always;
-        data["INFO"] = [[1], "NORMAL"];
-
-        return;
-    }
-    data["Avg"] = Math.round(made.reduce((x, y) => x + y) / made.length * 10) / 10;
-
-    var totalDiff = 0;
-    made.forEach(score => {
-        totalDiff += Math.abs(data["Avg"] - score);
-    });
-    totalDiff /= made.length;
-    
-    var top = Math.round(data["Avg"] + totalDiff);
-    if (top > data["Max"]) {
-        top = data["Max"];
-    }
-
-    var bot = Math.round(data["Avg"] - totalDiff);
-    if (bot < data["Min"]) {
-        bot = data["Min"];
-    }
-
-    if (bot == top) {
-        data["Rng"] = top;
-    } else {
-        data["Rng"] = bot + " - " + top;
-    }
-    data["ACC"] = getPercent(made, miss);
-}
-
-function fillNewestSingleData(obj, key, pre, pit) {
-    if (pit != "none") {
-        obj[key] = pit;
-    } else if (pre != "none") {
-        obj[key] = pre;
-    } else {
-        delete obj[key];
-    }
-}
-
-function fillNewestData(obj, key, pre, pit) {
-    if (pit != "none") {
-        obj[key] = pit;
-    } else if (pre != "none") {
-        obj[key] = pre;
-    } else {
-        obj["INFO"][0][Object.keys(obj).indexOf(key)]--;
-
-        if (obj["INFO"][0][Object.keys(obj).indexOf(key)] == 0) {
-            obj["INFO"][0] = obj["INFO"][0].slice(0, Object.keys(obj).indexOf(key)).concat(obj["INFO"][0].splice(Object.keys(obj).indexOf(key) + 1, Object.keys(obj).length - 1));
         }
 
-        delete obj[key];
+
+        data[key]["INFO"] = [[0], "HAVE"];
     }
 }
 
-function fillNewestHaveData(obj, key, pre, pit) {
-    if (pit != "none") {
-        pit = JSON.parse(pit);
 
-        Object.keys(obj[key]).forEach(header => {
-            if (header != "INFO") {
-                if (pit.includes(header)) {
-                    obj[key][header] = true;
-                } else {
-                    delete obj[key][header];
-                }
-            }
-        });
-    } else if (pre != "none") {
-        pre = JSON.parse(pre);
-
-        Object.keys(obj[key]).forEach(header => {
-            if (header != "INFO") {
-                if (pre.includes(header)) {
-                    obj[key][header] = true;
-                } else {
-                    delete obj[key][header];
-                }
+function fillPercentData(data, key, matches, equivObj) {
+    if (matches.length != 0) {
+        var occurencesObj = getOccurencesObj(matches, Object.keys(equivObj));
+       
+        Object.keys(occurencesObj).forEach(x => {
+            let percent = occurencesObj[x] / matches.length;
+           
+            if (percent == 0) {
+                delete data[key][equivObj[x]];
+            } else {
+                data[key][equivObj[x]] = Math.round(percent * 100) + "%";
             }
         });
     } else {
-        delete obj[key];
+        delete data[key];
     }
 }
 
-function getFreqObj(obj, neededKeys) {
-    var freqObj = {};
-
-    obj.filter(x => x != "INFO").forEach(key => {
-        if (!freqObj[key]) {
-            freqObj[key] = 1;
-        } else {
-            freqObj[key]++;
-        }
-    });
-
-    var haveKeys = Object.keys(freqObj);
-    neededKeys.filter(x => !haveKeys.includes(x)).forEach(key => {
-        freqObj[key] = 0;
-    });
-
-    return freqObj;
+function fillNewestData(data, key, pre, pit) {
+    if (pit != "none" && pit) {
+        data[key] = pit;
+    } else if (pre != "none" && pre) {
+        data[key] = pre;
+    } else {
+        delete data[key];
+    }
 }
+
+function getOccurencesObj(data, keys) {
+    var occurencesObj = {};
+
+
+    keys.forEach(key => {
+        occurencesObj[key] = 0;
+    });
+
+
+    data.forEach(point => {
+        occurencesObj[point]++;
+    });
+
+
+    return occurencesObj;
+}
+
 
 function sum(array) {
     return array.reduce((x, y) => x + y);
@@ -1434,9 +1351,9 @@ function getPercent(percent, whole) {
     }
 }
 
-function checkEmpty(obj, key) {
-    if (Object.keys(obj[key]).length == 1) {
-        delete obj[key];
+function checkEmpty(data, key) {
+    if (Object.keys(header => header != "INFO").length == 0) {
+        delete(data[key]);
     }
 }
 
@@ -1571,7 +1488,7 @@ async function allianceSearch() {
     teams.forEach(team => {
         var noMatch = matchForms.filter(x => x[1] == team).length == 0;
         var noPrePit = pitForms.filter(x => x[0] == team).length == 0 && preForms.filter(x => x[0] == team).length == 0;
-        var teamData;
+        let teamData;
         var clone;
         if (noMatch && noPrePit) {
             teamData = {
@@ -1691,7 +1608,6 @@ function fillMissingHeaders(objs) {
 
         Object.values(obj).forEach(section => {
             allHeaders[groups[counter]].forEach(header => {
-                console.log(header)
                 if (header.includes("|")) {
                     var mainHeader = header.split("|")[0];
                     var subHeader = header.split("|")[1];
@@ -1720,11 +1636,14 @@ function fillMissingHeaders(objs) {
 }
 
 function test() {
-    document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1");
-    document.getElementById("allianceTeam2SearchInput").setAttribute("value", "10");
-    document.getElementById("allianceTeam3SearchInput").setAttribute("value", "24");
+    // document.getElementById("teamSearchInput").setAttribute("value", "1622");
+    // eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
+
+    document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
+    document.getElementById("allianceTeam2SearchInput").setAttribute("value", "1183");
+    document.getElementById("allianceTeam3SearchInput").setAttribute("value", "8005");
 
     eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 }
 
-// test();
+test();
