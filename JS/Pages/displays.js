@@ -498,10 +498,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                     var headers = Object.keys(headerInfo).filter(x => x != "INFO" && headerInfo[x] != "0%");
 
                     var widths = headers.map(x => Math.round(convertPercent(headerInfo[x]) * tableWidth));
-<<<<<<< HEAD
                     console.log(headerInfo, header)
-=======
->>>>>>> 4f0b160d1334b325a6b5756ef51e108f3249a84d
                     while (sum(widths) < tableWidth) {
                         widths[widths.indexOf(Math.max(...widths))]++;
                     }
@@ -1019,8 +1016,8 @@ function compileAllTeamData(team, match, pre, pit) {
     //MOBILITY%
     var mobilityArray = match.map(x => x[2]).filter(x => x != "none");
     var mobility = getFreqObj(mobilityArray, ["TRUE", "FALSE"]);
-    data["Autonomous"]["Mobility%"]["GOT"] = getPercent(mobility["TRUE"], mobilityArray.length);
-    data["Autonomous"]["Mobility%"]["NG"] = getPercent(mobility["FALSE"], mobilityArray.length);
+    data["Auto"]["Mobility%"]["GOT"] = getPercent(mobility["TRUE"], mobilityArray.length);
+    data["Auto"]["Mobility%"]["NG"] = getPercent(mobility["FALSE"], mobilityArray.length);
     if (sum(Object.values(mobility)) == 0) {
         delete data["Autonomous"]["Mobility%"];
     }
