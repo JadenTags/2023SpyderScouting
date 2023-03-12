@@ -1275,8 +1275,8 @@ function fillScoreData(data, match) {
 
 
         var mad = Math.round(made.map(x => Math.abs(data["Avg"] - x)).reduce((x, y) => x + y) / made.length * 10) / 10;
-        var higher = Math.round((data["Avg"] + mad ) * 10) / 10;
-        var lower = Math.round((data["Avg"] - mad) * 10) / 10;
+        var higher = Math.round(data["Avg"] + mad );
+        var lower = Math.round(data["Avg"] - mad);
 
 
         if (higher > data["Max"]) {
@@ -1393,8 +1393,9 @@ function getPercent(percent, whole) {
 }
 
 function checkEmpty(data, key) {
+    delete data[key];
     if (Object.keys(data).map(header => header != "INFO").length == 0) {
-        delete data[key];
+        // delete data[key];
     }
 }
 
