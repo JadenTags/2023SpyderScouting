@@ -1158,9 +1158,13 @@ async function fillPreAssignments() {
 }
 
 function removeFinalsDropdown() {
-    if (isFinals) {
+    if (!isFinals) {
         document.getElementById("matchFormFinalDropdown").remove();
     }
+}
+
+function checkFinalsDropdown() {
+
 }
 
 removeFinalsDropdown();
