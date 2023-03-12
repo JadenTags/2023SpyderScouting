@@ -1163,11 +1163,26 @@ function removeFinalsDropdown() {
     }
 }
 
-function checkFinalsDropdown() {
+async function checkFinalsDropdown() {
+    var suffixes = [];
 
+    var orderNum = curOrderNum++;
+    await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
+    getOrder(orderNum).forEach(match => {
+        if (!suffixes[match.comp_level]) {
+            suffixes.push(match.comp_level);
+        }
+    });
+
+    document.getElementById("matchFormFinalDropdown").childNodes.forEach(node => {
+        if (!suffixes.includes(node.value)) {
+            node.remove();
+        }
+    });
 }
 
 removeFinalsDropdown();
+checkFinalsDropdown();
 storeForms();
 activatePin("field", "fieldPin");
 activatePin("fieldChanges", "fieldPinChanges");
