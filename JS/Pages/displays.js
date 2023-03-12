@@ -363,8 +363,13 @@ async function teamSearch() {
     await getSheetData(config.pitGSID, sheetName, orderNum);
     var pitForms = getOrder(orderNum);
 
+    var tempName = sheetName;
+    if (isFinals) {
+        tempName += "FINALS";
+    }
+
     orderNum = curOrderNum++;
-    await getSheetData(config.matchGSID, sheetName, orderNum);
+    await getSheetData(config.matchGSID, tempName, orderNum);
     var matchForms = getOrder(orderNum);
     
     var noMatch = matchForms.filter(x => x[1] == team).length == 0;
