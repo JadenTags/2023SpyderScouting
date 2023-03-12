@@ -1512,8 +1512,13 @@ async function allianceSearch(divId) {
     await getSheetData(config.pitGSID, sheetName, orderNum);
     var pitForms = getOrder(orderNum).filter(x => teams.includes(x[0]) || x[0] == "TEAM NUM");
 
+    var tempName = sheetName;
+    if (isFinals) {
+        tempName += "FINALS"
+    }
+
     orderNum = curOrderNum++;
-    await getSheetData(config.matchGSID, sheetName, orderNum);
+    await getSheetData(config.matchGSID, tempName, orderNum);
     var matchForms = getOrder(orderNum).filter(x => teams.includes(x[1]) || x[1] == "Team Number");
 
     if (preForms.slice(1) + pitForms.slice(1) + matchForms.slice(1) == "") {

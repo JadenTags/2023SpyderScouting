@@ -926,8 +926,20 @@ function toggleGamePiece(gpId) {
 async function changeMatchAllianceButtons(selector) {
     var orderNum = curOrderNum++;
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
-    var match = getOrder(orderNum).filter(x => x.comp_level == "qm" && x.match_number == parseInt(document.getElementById(selector + "MatchNumInput").value))[0]; //&& x.comp_level == null 
+
+    var compLvl = "qm";
+    if (isFinals) {
+        compLvl = document.getElementById("matchFormFinalDropdown").value;
+    }
+
+    var match = getOrder(orderNum).filter(x => x.comp_level == compLvl); //&& x.comp_level == null
+    if (isFinals) {
+        match = match.filter(x => x.set_number == parseInt(document.getElementById(selector + "MatchNumInput").value))[0];
+    } else {
+        match = match.filter(x => x.match_number == parseInt(document.getElementById(selector + "MatchNumInput").value))[0];
+    }
     
+    console.log(match)
     if (!match) {
         hideElement(selector + "MatchInnerDiv");
         changeNotif(selector + "MatchNotif", "That Is Not A Valid Match!");
@@ -937,6 +949,7 @@ async function changeMatchAllianceButtons(selector) {
         changeNotif(selector + "MatchNotif", "")
         document.getElementById(selector + "MatchNumInput").style.border = "1px solid #c5c7c5";
     }
+
 
     Object.keys(match.alliances).forEach(key => {
         var alliance = match.alliances[key];
