@@ -1,7 +1,6 @@
 const dataTableWithMatchFormat = {
     "General": {
         "Team": "",
-        "Rank":"",
         "DIM": "",
         "DB Info": {
             "Type": "",
@@ -115,8 +114,7 @@ const dataTableWithMatchFormat = {
             "ENG": "",
             "Not": "",
             "INFO": [[2], "%"]
-        },
-        "Auto AVG":""
+        }
     },
     "Teleop": {
         "Cones": "SPACER",
@@ -408,7 +406,6 @@ async function teamSearch() {
 }
 
 function buildTeamTable(teamData, color, heightsObj, headerOrder) {
-    console.log(teamData)
     var table = document.createElement("table");
     var outSideLecounterTwo = 0;
     var outSideLecounter = 0;
@@ -416,7 +413,6 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
     var lastNDNested;
 
     Object.keys(teamData).forEach(section => {
-        var outCounter = 0;
         let sectionInfo = teamData[section];
         let sectionRow = document.createElement("tr");
 
@@ -951,6 +947,8 @@ function createNormalMiniTable(data, color, height) {
     return miniTable;
 }
 
+//TODO: DO ALL OF THE COMPILE PREPIT
+
 //CHANGE YEARLY
 function compileAllTeamData(team, match, pre, pit) {
     pre = pre.slice(1).filter(x => x[0] == team);
@@ -963,7 +961,7 @@ function compileAllTeamData(team, match, pre, pit) {
     if (!pit) {
         pit = ["none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"]
     }
-    
+
     //TODO: DO ALL
     var data = structuredClone(dataTableWithMatchFormat);
 
@@ -1011,7 +1009,9 @@ function compileAllTeamData(team, match, pre, pit) {
    
     //PREF GP
     fillNewestData(data["General"], "Pref GP", pre[18], "none");
-
+    if (data["General"]["Pref GP"] == "No Preference") {
+        data["General"]["Pref GP"] = "No Pref";
+    }
 
     //PLAYSTYLES
     fillNewestHaveData(data["General"], "Playstyles", pre[19], pit[19]);
@@ -1110,12 +1110,40 @@ function compileAllTeamData(team, match, pre, pit) {
         ["Top", "Mid", "Bot"].forEach(row => {
             if (data["Teleop"][type + " " + row + " Row"]["Avg"]) {
                 cAve += data["Teleop"][type + " " + row + " Row"]["Avg"];
+            } else {
+                cAve += data["Teleop"][type + " " + row + " Row"]["Always"];
             }
         });
     });
 
     data["Teleop"]["Cargo AVG"] = Math.round(cAve * 10) / 10;
 
+    //CARGO POINTS AVERAGE
+    var cPointsAve = 0;
+    
+    ["CUBE", "CONE"].forEach(type => {
+        ["Top", "Mid", "Bot"].forEach(row => {
+            var ave;
+
+            if (data["Teleop"][type + " " + row + " Row"]["Avg"]) {
+                ave = data["Teleop"][type + " " + row + " Row"]["Avg"];
+            } else {
+                ave = data["Teleop"][type + " " + row + " Row"]["Always"];
+            }
+
+            if (row == "Top") {
+                ave *= 6;
+            } else if (row == "Mid") {
+                ave *= 4;
+            } else {
+                ave *= 3;
+            }
+
+            cPointsAve += ave;
+        });
+    });
+
+    data["Teleop"]["Points AVG"] = Math.round(cPointsAve * 10) / 10;
     //TYPE%
     var csArray = match.map(x => x[9]).filter(x => x != "none").map(x => parseInt(x)).reduce((x, y) => x + y);
     var noncsArray = match.map(x => x[10]).filter(x => x != "none").map(x => parseInt(x)).reduce((x, y) => x + y);
@@ -1218,7 +1246,6 @@ function fillScoreData(data, match) {
     //MIN | MAX | RNG | AVG | ACC
     data["Min"] = Math.min(...match.map(x => x[0]));
     data["Max"] = Math.max(...match.map(x => x[0]));
-
     if (data["Min"] == data["Max"]) {
         data["Always"] = data["Min"];
 
@@ -1230,8 +1257,19 @@ function fillScoreData(data, match) {
     } else {
         var made = match.map(x => x[0]);
 
+        if (made.length == 0) {
+            ["Avg", "Rng", "ACC"].forEach(x => {
+                delete data[x];
+            });
 
-        data["Avg"] = Math.round(made.reduce((x, y) => x + y) / made.length * 10) / 10;
+            return;
+        }
+
+        if (made.length == 0) {
+            data["Avg"] = 0;
+        } else {
+            data["Avg"] = Math.round(made.reduce((x, y) => x + y) / made.length * 10) / 10;
+        }
 
 
         var mad = Math.round(made.map(x => Math.abs(data["Avg"] - x)).reduce((x, y) => x + y) / made.length * 10) / 10;
@@ -1246,7 +1284,7 @@ function fillScoreData(data, match) {
         }
 
 
-        data["Rng"] = lower + " - " + higher;
+        data["Rng"] = lower + "-" + higher;
 
         data["ACC"] = Math.round(made.reduce((x, y) => x + y) / (made.reduce((x, y) => x + y) + match.map(x => x[1]).reduce((x, y) => x + y)) * 100) + "%";
     }
@@ -1274,11 +1312,12 @@ function fillNewestHaveData(data, key, pre, pit) {
 
         if (Object.keys(data[key]).length == 1) {
             delete data[key];
+        } else {
+            data[key]["INFO"] = [[0], "HAVE"];
         }
-
-
-        data[key]["INFO"] = [[0], "HAVE"];
     }
+
+    checkEmpty(data, key);
 }
 
 
@@ -1357,14 +1396,14 @@ function checkEmpty(data, key) {
     }
 }
 
-async function allianceSearch() {
+async function allianceSearch(divId) {
     var teams = [];
 
     for (var i = 1; i <= 3; i++) {
         teams.push(document.getElementById("allianceTeam" + i + "SearchInput").value);
     }
 
-    var dataTableDiv = document.getElementById("allianceSearchDataTableDiv");
+    var dataTableDiv = document.getElementById(divId);
 
     dataTableDiv.innerHTML = "";
     hideElement("allianceSearchNotifDiv");
@@ -1490,7 +1529,16 @@ async function allianceSearch() {
         var noPrePit = pitForms.filter(x => x[0] == team).length == 0 && preForms.filter(x => x[0] == team).length == 0;
         let teamData;
         var clone;
-        if (noMatch && noPrePit) {
+        var allNones = true;
+
+        matchForms.filter(x => x[1] == team).forEach(submission => {
+            if (submission[3] != "none") {
+                allNones = false;
+            }
+        });
+
+
+        if ((noMatch && noPrePit) || allNones) {
             teamData = {
                 "General": {},
                 "Auto": {},
@@ -1511,7 +1559,6 @@ async function allianceSearch() {
     });
 
     var headerOrder = fillMissingHeaders(teams.map(x => x[0]));
-    console.log(teams)
     teams.forEach(team => {
         teams[teams.indexOf(team)][1] = getHeightObj(teams[teams.indexOf(team)][0], teams[teams.indexOf(team)][0]);
     });
@@ -1635,15 +1682,36 @@ function fillMissingHeaders(objs) {
     return allHeaders;
 }
 
+async function fillMatchDropdown() {
+    var dropdown = document.getElementById("matchSearchMatchNumDropdown");
+    var oN = curOrderNum++;
+    await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
+    var teamMatches = getOrder(oN);
+
+    var counter = 0;
+    teamMatches.map(x => x.match_number).sort((x, y) => x - y).forEach(match => {
+        let option = document.createElement("option");
+
+        if (teamMatches[counter++].actual_time != null) {
+            option.style.color = "#787878";
+        }
+
+        option.value = match;
+        option.innerHTML = "#" + match;
+        dropdown.appendChild(option);
+    });
+}
+
 function test() {
     // document.getElementById("teamSearchInput").setAttribute("value", "1622");
     // eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 
     document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
-    document.getElementById("allianceTeam2SearchInput").setAttribute("value", "1183");
-    document.getElementById("allianceTeam3SearchInput").setAttribute("value", "8005");
+    document.getElementById("allianceTeam2SearchInput").setAttribute("value", "7130");
+    document.getElementById("allianceTeam3SearchInput").setAttribute("value", "8006");
 
     eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 }
 
 test();
+fillMatchDropdown();
