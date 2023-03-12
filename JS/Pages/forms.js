@@ -1157,6 +1157,13 @@ async function fillPreAssignments() {
     appendData(config.assignmentsGSID, "pre" + sheetName, getOrder(orderNum).map(x => x.key.replace("frc", "")));
 }
 
+function removeFinalsDropdown() {
+    if (isFinals) {
+        document.getElementById("matchFormFinalDropdown").remove();
+    }
+}
+
+removeFinalsDropdown();
 storeForms();
 activatePin("field", "fieldPin");
 activatePin("fieldChanges", "fieldPinChanges");
