@@ -761,7 +761,12 @@ function submitForm(selector) {
             }
         });
 
-        appendData(config.matchGSID, sheetName, form);
+        var tempName = sheetName;
+        if (isFinals) {
+            tempName += "FINALS";
+        }
+
+        appendData(config.matchGSID, tempName, form);
         lockDiv(lockedDivs, curDiv, "matchDiv");
     } else if (selector.includes("matchonline")) {
         //MATCH NUMBER
