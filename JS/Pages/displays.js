@@ -1143,6 +1143,8 @@ function compileAllTeamData(team, match, pre, pit) {
         });
     });
 
+    
+
     data["Teleop"]["Points AVG"] = Math.round(cPointsAve * 10) / 10;
     //TYPE%
     var csArray = match.map(x => x[9]).filter(x => x != "none").map(x => parseInt(x)).reduce((x, y) => x + y);
@@ -1391,8 +1393,8 @@ function getPercent(percent, whole) {
 }
 
 function checkEmpty(data, key) {
-    if (Object.keys(header => header != "INFO").length == 0) {
-        delete(data[key]);
+    if (Object.keys(data).map(header => header != "INFO").length == 0) {
+        delete data[key];
     }
 }
 
