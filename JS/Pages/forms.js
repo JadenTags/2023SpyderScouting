@@ -12,6 +12,8 @@ var autoProfileFormat = document.getElementById("autoProfile1").innerHTML;
 var autoProfiles = [document.getElementById("autoProfile1")];
 var onlineSelectedMatch;
 var cyclingOnline;
+var notifColor = "#eb776e";
+var borderColor = "#c5c7c5";
 
 async function fillTeamDropdown(selector) {
     var dropdown = document.getElementById(selector + "TeamNumDropdown");
@@ -137,9 +139,65 @@ function submitForm(selector) {
     var end = false;
     
     if (selector == "pre") {
+        end = true;
         //TEAM NUM
         form.push(document.getElementById("preTeamNumDropdown").value);
 
+        //DIMENSIONS
+        var dimensions = [];
+        ["length", "width", "height"].forEach(dimension => {
+            let element = document.getElementById(dimension + "Input");
+
+            if (isNaN(parseInt(element.value)) && element.value != "") {
+                dimensions.push("");
+
+                showElement("dimensionsNotifText");
+            } else {
+                dimensions.push(element.value);
+            }
+        });
+
+        if (!dimensions.includes("")) {
+            hideElement("dimensionsNotifText");
+        }
+
+        //DB INFO
+        var dbInfos = [];
+        ["Type", "Motor"].forEach(dbInfoType => {
+            dbInfos.push(document.getElementById("db" + dbInfoType + "Input").value);
+        });
+
+        //HAS GOM
+        form.push(document.getElementById("hasGOMButton").value == true);
+        
+        //NO AUTO
+        form.push(document.getElementById("noAutoButton").value == true);
+
+        //AUTO GENERATING AUTO
+        form.push(document.getElementById("autoGenButton").value == true);
+
+        //AUTO PROFILES
+        var autoProfilesArray = [];
+        autoProfiles.forEach(profile => {
+            let id = profile.id;
+            let info = [];
+
+            //SET POS
+            if (document.getElementById("setPosButton" + id).value && document.getElementById("fieldPin" + id).value) {
+                info.push(document.getElementById("fieldPin" + id).value);
+            } else {
+                info.push("");
+            }
+
+            //REQUIRED SETUP
+            
+
+            console.log(profile)
+        });
+        
+        if (end) {
+            return true;
+        }
     } else if (selector == "pit") {
         //TEAM NUM
         form.push(document.getElementById("pitTeamNumDropdown").value);
@@ -983,9 +1041,9 @@ async function addAutoProfile() {
         await wait(100);
     }
 
-    console.log(autoProfiles.length - 1)
     activatePin("field" + div.id, "fieldPin" + div.id);
     document.getElementById("preAutoDropdown").selectedIndex = autoProfiles.length - 1;
+    selectAutoProfile();
 }
 
 function deleteAutoProfile() {
@@ -994,8 +1052,8 @@ function deleteAutoProfile() {
         profile.remove();
         document.getElementById("preAutoDropdown").childNodes[document.getElementById("preAutoDropdown").childNodes.length - 1].remove();
 
-        selectAutoProfile();
         document.getElementById("preAutoDropdown").selectedIndex = autoProfiles.length - 1;
+        selectAutoProfile();
     }
 }
 
