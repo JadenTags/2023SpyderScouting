@@ -75,7 +75,7 @@ async function appendData(gsId, sheet, data) {
 }
 
 async function clearData(gsId, sheet) {
-  var http = gsApiRoot + "/v4/spreadsheets/" + gsId + "/values/" + sheet + "!A1:Z100000:clear";
+  var http = gsApiRoot + "/v4/spreadsheets/" + gsId + "/values/" + sheet + "!A1:ZZ100000:clear";
   
   var orderNum = curOrderNum++;
   await getGsKey(orderNum);
@@ -91,3 +91,13 @@ async function clearData(gsId, sheet) {
       }
     });
 }
+
+async function testSheetData() {
+  var orderNum = curOrderNum++;
+  await getSheetData(config.preGSID, sheetName, orderNum);
+  var matchForms = getOrder(orderNum);
+
+  localStorage.setItem("pre", JSON.stringify(matchForms));
+}
+
+// testSheetData()

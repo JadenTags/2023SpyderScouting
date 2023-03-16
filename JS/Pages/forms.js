@@ -16,6 +16,7 @@ var notifColor = "#eb776e";
 var borderColor = "#c5c7c5";
 
 async function fillTeamDropdown(selector) {
+    return; //GET RID OF IT
     var dropdown = document.getElementById(selector + "TeamNumDropdown");
     var orderNum = curOrderNum++;
     await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
@@ -139,7 +140,6 @@ function submitForm(selector) {
     var end = false;
     
     if (selector == "pre") {
-        end = true;
         //TEAM NUM
         form.push(document.getElementById("preTeamNumDropdown").value);
 
@@ -151,8 +151,11 @@ function submitForm(selector) {
             if (isNaN(parseInt(element.value)) && element.value != "") {
                 dimensions.push("");
 
+                element.style.border = "1px solid " + notifColor;
                 showElement("dimensionsNotifText");
+                end = true
             } else {
+                element.style.border = "1px solid " + borderColor;
                 dimensions.push(element.value);
             }
         });
@@ -161,462 +164,354 @@ function submitForm(selector) {
             hideElement("dimensionsNotifText");
         }
 
+        form.push(JSON.stringify(dimensions));
+
         //DB INFO
         var dbInfos = [];
         ["Type", "Motor"].forEach(dbInfoType => {
             dbInfos.push(document.getElementById("db" + dbInfoType + "Input").value);
         });
+        form.push(JSON.stringify(dbInfos));
 
         //HAS GOM
         form.push(document.getElementById("hasGOMButton").value == true);
         
-        //NO AUTO
-        form.push(document.getElementById("noAutoButton").value == true);
+        //AUTO
+        if (!document.getElementById("noAutoButton").value == true) {
+            //AUTO GENERATING AUTO
+            form.push(document.getElementById("autoGenButton").value == true);
 
-        //AUTO GENERATING AUTO
-        form.push(document.getElementById("autoGenButton").value == true);
+            //AUTO PROFILES
+            var autoProfilesArray = [];
+            autoProfiles.forEach(profile => {
+                let id = profile.id;
+                let info = [];
 
-        //AUTO PROFILES
-        var autoProfilesArray = [];
-        autoProfiles.forEach(profile => {
-            let id = profile.id;
-            let info = [];
-
-            //SET POS
-            if (document.getElementById("setPosButton" + id).value && document.getElementById("fieldPin" + id).value) {
-                info.push(document.getElementById("fieldPin" + id).value);
-            } else {
-                info.push("");
-            }
-
-            //REQUIRED SETUP
-            
-
-            console.log(profile)
-        });
-        
-        if (end) {
-            return true;
-        }
-    } else if (selector == "pit") {
-        //TEAM NUM
-        form.push(document.getElementById("pitTeamNumDropdown").value);
-
-        //DRIVEBASE PROBLEMS
-        form.push(document.getElementById("dbProblemsButton").value == true);
-
-        if (form[form.length - 1]) {
-            //DRIVEBASE PROBLEMS NOTES
-            form.push(document.getElementById("dbProblemsNotes").value);
-        } else {
-            form.push("");
-        }
-
-        //GAME OBJECT MANIPULATOR PROBLEMS
-        form.push(document.getElementById("gomProblemsButton").value == true);
-
-        if (form[form.length - 1]) {
-            //CONE REACH CHANGES
-            var coneReach = [];
-            ["High", "Mid", "Bot"].forEach(row => {
-                coneReach.push(document.getElementById("cone" + row + "RowButtonChange").value == true);
-            });
-            form.push(JSON.stringify(coneReach));
-            
-            //CUBE REACH CHANGES
-            var cubeReach = [];
-            ["High", "Mid", "Bot"].forEach(row => {
-                cubeReach.push(document.getElementById("cube" + row + "RowButtonChange").value == true);
-            });
-            form.push(JSON.stringify(cubeReach));
-        } else {
-            for (var i = 0; i < 2; i++) {
-                form.push("");
-            }
-        }
-
-        //OTHER PROBLEMS
-        form.push(document.getElementById("otherProblemsButton").value == true);
-
-        if (form[form.length - 1]) {
-            //OTHER PROBLEMS NOTES
-            form.push(document.getElementById("otherProblemsNotes").value == true);
-        } else {
-            form.push("");
-        }
-
-        //AUTO CHANGES
-        form.push(document.getElementById("autoChangesButton").value == true);
-
-        if (form[form.length - 1]) {
-            //NO AUTO
-            form.push(document.getElementById("noAutoChangesButton").value == true);
-
-            if (!form[form.length - 1]) {
-                //CAN CREATE AUTO
-                form.push(document.getElementById("canCreateAutoButtonChanges").value == true);
-
-                if (form[form.length - 1] ) {
-                    //AUTO CREATING TIME
-                    form.push(document.getElementById("matchInputChanges").value);
-
-                    if (form[11] != "" && isNaN(parseInt(form[11]))) {
-                        showElement("pitMatchesNotifText");
-                        document.getElementById("MatchInputChanges").style.border = "1px solid #eb776e";
-                        end = true;
-                    } else {
-                        hideElement("pitMatchesNotifText");
-                        document.getElementById("matchInputChanges").style.border = "1px solid #888888";
-                    }
-
-                    //RELIABILITY LEVEL
-                    form.push(document.getElementById("reliabilitySlider").value);
+                //SET POS
+                if (document.getElementById("setPosButton" + id).value && document.getElementById("fieldPin" + id).value) {
+                    info.push(document.getElementById("fieldPin" + id).value);
                 } else {
-                    for (var i = 0; i < 2; i++) {
-                        form.push("");
-                    }
+                    info.push("");
                 }
 
-                //AUTO DOCKING
-                form.push(document.getElementById("canDockButtonAutoChanges").value == true);
-
-                if (form[form.length - 1]) {
-                    //AUTO ENGAGING
-                    form.push(document.getElementById("canEngageButtonAutoChanges").value == true);
-                } else {
-                    form.push("");
-                }
-                
                 //REQUIRED SETUP
                 var setup = [];
-                ["One", "Two", "Three", "Four"].forEach(num => {
-                    setup.push(elementsCycle[document.getElementById("requiredSetup" + num + "Changes").value]);
-                });
-
-                form.push(JSON.stringify(setup.map(x => {
-                    if (!x) {return "either";} else {return x;}
-                })));
-
-                //FIXED POS
-                form.push(document.getElementById("setPosButtonChanges").value == true);
-
-
-                if (form[form.length - 1]) {
-                    //FIELD POS
-                    var posCoords = JSON.stringify(document.getElementById("fieldPinChanges").value);
-                    if (!posCoords) {
-                        posCoords = "";
-                    }
+                if (document.getElementById("requiredSetupButton" + id).value) {
+                    ["One", "Two", "Three", "Four"].forEach(setupPiece => {
+                        let value = document.getElementById("requiredSetup" + setupPiece + id).value;
         
-                    form.push(posCoords);
+                        if (!value) {
+                            value = 0;
+                        }
+        
+                        setup.push(elementsCycle[value]);
+                    });
                 } else {
-                    form.push("");
+                    setup = "";
                 }
-            } else {
-                for (var i = 0; i < 8; i++) {
-                    form.push("");
+                info.push(setup);
+                
+                //SCORES
+                var scores = {};
+                if (document.getElementById("autoScoresButton" + id).value) {
+                    ["preload", "1st", "2nd", "3rd", "4th"].forEach(score => {
+                        let column = document.getElementById(score + "ColumnInput" + id).value;
+
+                        if (column != "") {
+                            scores[score] = [document.getElementById(score + "RowDropdown" + id).value, column];
+                        }
+                    });
+                } else {
+                    scores = "";
                 }
-            }
+                info.push(scores);
+
+                //MOBILE
+                info.push(document.getElementById("mobileButtonAuto" + id).value == true);
+
+                //DOCK TYPE
+                if (document.getElementById("canDockButtonAuto" + id).value) {
+                    var dockType;
+                    info.push(getGroupButtonValue("autoBalType" + id.replace("autoProfile", ""), null));
+                } else {
+                    info.push("");
+                }
+
+                //AUTO NOTES
+                info.push(document.getElementById("autoNotes" + id).value);
+
+                autoProfilesArray.push(info);
+            });
+
+            form.push(JSON.stringify(autoProfilesArray));
         } else {
-            for (var i = 0; i < 9; i++) {
-                form.push("");
-            }
+            form.push("");
+            form.push("");
         }
 
-        //CYCLE TIME
-        form.push(document.getElementById("cycleTimeInputChanges").value);
+        //CARGO CYCLED
+        form.push(document.getElementById("cargoCycledInput").value);
 
-        if (form[form.length - 1] != "" && isNaN(parseInt(form[form.length - 1]))) {
-            showElement("pitCycleTimeNotifTextChanges");
-            document.getElementById("cycleTimeInputChanges").style.border = "1px solid #eb776e";
+        if (isNaN(parseInt(form[form.length - 1])) && form[form.length - 1] != "") {
+            document.getElementById("cargoCycledInput").style.border = "1px solid " + notifColor;
+            showElement("cargoCycledNotifText");
             end = true;
         } else {
-            hideElement("pitCycleTimeNotifTextChanges");
-            document.getElementById("cycleTimeInputChanges").style.border = "1px solid #888888";
+            document.getElementById("cargoCycledInput").style.border = "1px solid " + borderColor;
+            hideElement("cargoCycledNotifText");
         }
+
+        //REACHES
+        var cones = [];
+        var cubes = [];
+        ["High", "Mid", "Bot"].forEach(row => {
+            ["cone", "cube"].forEach(type => {
+                if (document.getElementById(type + row + "RowButton").value) {
+                    if (type == "cone") {
+                        cones.push(true)
+                    } else {
+                        cubes.push(true);
+                    }
+                } else {
+                    if (type == "cone") {
+                        cones.push(false)
+                    } else {
+                        cubes.push(false);
+                    }
+                }
+            });
+        });
+        form.push(JSON.stringify(cones));
+        form.push(JSON.stringify(cubes));
+
+        //PREFERRED PLAYSTYLE
+        form.push(getGroupButtonValue("preferButton"));
         
+        //PREFERRED GAME PIECE
+        form.push(getGroupButtonValue("preferGPButton"));
+
         //ABLE PLAYSTYLES
         var ablePlaystyles = [];
         ["Off", "Def"].forEach(playstyle => {
-            let button = document.getElementById("able" + playstyle + "ButtonChanges");
-
-            if (button.value) {
-                ablePlaystyles.push(button.innerHTML);
+            if (document.getElementById("able" + playstyle + "Button").value) {
+                ablePlaystyles.push(playstyle + "ensive");
             }
         });
-        if (ablePlaystyles.length == 0) {
+        if (!ablePlaystyles) {
             ablePlaystyles = "";
         } else {
             ablePlaystyles = JSON.stringify(ablePlaystyles);
         }
+        form.push(ablePlaystyles)
 
-        form.push(ablePlaystyles);
+        //PREFERRED STATION
+        form.push(getGroupButtonValue("preferStationButton"));
 
-        //DEFENSE STRATEGY NOTES
-        if (form[form.length - 1] != "" && form[form.length - 1].includes("Defensive")) {
-            form.push(document.getElementById("defenseStrategyNotesChanges").value)
+        //PIC OF WHOLE ROBOT
+        // console.log(document.getElementById("robotPic").files[0])
+
+        //DOCK TIME
+        if (document.getElementById("canDockButtonTele").value) {
+            form.push(document.getElementById("balanceTimeInput").value);
+
+            if (isNaN(parseInt(form[form.length - 1])) && form[form.length - 1] != "") {
+                document.getElementById("balanceTimeInput").style.border = "1px solid " + notifColor;
+                showElement("balanceTimeNotifText");
+                end = true;
+            } else {
+                document.getElementById("balanceTimeInput").style.border = "1px solid " + borderColor;
+                hideElement("balanceTimeNotifText");
+            }
         } else {
             form.push("");
         }
 
-        //PREFERRED PLAYSTYLE
-        var preferredPlaystyle;
-        Array.from(document.getElementsByClassName("preferButtonChanges")).forEach(button => {
-            if (button.value) {
-                preferredPlaystyle = button.innerHTML;
-            }
-        });
-        if (!preferredPlaystyle) {
-            preferredPlaystyle = "";
-        }
-
-        form.push(preferredPlaystyle);
-
-        //TELE DOCKING
-        form.push(document.getElementById("canDockButtonTeleChanges").value == true);
-
-        //ENGAGE
-        if (form[form.length - 1]) {
-            form.push(document.getElementById("canEngageButtonTeleChanges").value == true);
-
-            form.push(document.getElementById("balanceTimeInputChanges").value);
-            
-            if (form[form.length - 1] != "" && isNaN(parseInt(form[form.length - 1]))) {
-                showElement("balanceTimeNotifTextChanges");
-                document.getElementById("balanceTimeInputChanges").style.border = "1px solid #eb776e";
-                end = true;
-            } else {
-                hideElement("pitCycleTimeNotifTextChanges");
-                document.getElementById("balanceTimeInputChanges").style.border = "1px solid #888888";
-            }
-        } else {
-            for (var i = 0; i < 3; i++) {
-                form.push("");
-            }
-        }
-
         //EXTRA NOTES
-        form.push(document.getElementById("pitExtraNotes").value);
-
+        form.push(document.getElementById("preExtraNotes").value);
+        
         if (end) {
             return true;
         }
         
-        form = form.map(x => {
-            if (x == "" && typeof x != typeof true) {
-                return "none";
-            } else {
-                return x;
-            }
-        });
+        appendData(config.preGSID, sheetName, form);
+        lockDiv(lockedDivs, curDiv, selector + "Div");
+    } else if (selector == "pit") {
+        end = true;
+        //TEAM NUM
+        form.push(document.getElementById("pitTeamNumDropdown").value);
+
+        //DB CHANGES
+
+
+        if (end) {
+            return true;
+        }
 
         appendData(config.pitGSID, sheetName, form);
         lockDiv(lockedDivs, curDiv, selector + "Div");
     } else if (selector == "matchInPerson") {
+        //TEAM NUMBER
+        var teamNum = getGroupButtonValue("inPersonAllianceButton");
+
+        if (!teamNum) {
+            changeNotif("inPersonTeamNumNotif", "You Did Not Select Team!");
+            // end = true;
+        } else if (isNaN(parseInt(teamNum))) {
+            changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
+            // end = true;
+        } else {
+            changeNotif("inPersonTeamNumNotif", "");
+        }
+        form.push(teamNum);
+
         //MATCH NUMBER
         form.push(document.getElementById("inPersonMatchNumInput").value);
-
-        //TEAM NUMBER
-        var teamNum;
-
-        if (document.getElementById("inPersonTeamNumInput")) {
-            teamNum = document.getElementById("inPersonTeamNumInput").value;
-        } else {
-            Array.from(document.getElementsByClassName("inPersonAllianceButton")).forEach(button => {
-                if (button.value) {
-                    teamNum = button.innerHTML;
-                }
-            });
-            if (isNaN(parseInt(teamNum))) {
-                changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
-                end = true;
-            } else {
-                changeNotif("inPersonTeamNumNotif", "");
-            }
-        }
-        
-        form.push(teamNum);
 
         //LEFT COMMUNITY
         form.push(document.getElementById("inPersonLeftCommunityButton").value == true);
 
-        //AUTO CONES
-        var autoCones = [];
-        ["Top", "Mid", "Bot"].forEach(row => {
-            let record = [];
+        //SCORES
+        var cones = [];
+        var cubes = [];
 
-            ["Made", "Miss"].forEach(shot => {
-                record.push(document.getElementById("inPersonAutoCones" + row + "Row" + shot + "Counter").innerHTML);
-            });
+        ["Cones", "Cubes"].forEach(type => {
+            ["Top", "Mid", "Bot"].forEach(row => {
+                let score = [];
 
-            autoCones.push(record);
+                ["Made", "Miss"].forEach(scoreType => {
+                    score.push(document.getElementById("inPersonAuto" + type + row + "Row" + scoreType + "Counter").innerHTML);
+                });
+
+                if (type == "Cones") {
+                    cones.push(score);
+                } else {
+                    cubes.push(score);
+                }
+            }); 
         });
-        form.push(JSON.stringify(autoCones));
+        form.push(JSON.stringify(cones));
+        form.push(JSON.stringify(cubes));
 
-        //AUTO CUBES
-        var autoCubes = [];
-        ["Top", "Mid", "Bot"].forEach(row => {
-            let record = [];
+       //ENDING
+        form.push(getGroupButtonValue("inPersonAutoEndgameButton"));
 
-            ["Made", "Miss"].forEach(shot => {
-                record.push(document.getElementById("inPersonAutoCubes" + row + "Row" + shot + "Counter").innerHTML);
-            });
-
-            autoCubes.push(record);
-        });
-        form.push(JSON.stringify(autoCubes));
-        
-        //AUTO ENDING
-        var autoEnd;
-        Array.from(document.getElementsByClassName("inPersonAutoEndgameButton")).forEach(button => {
-            if (button.value) {
-                autoEnd = button.innerHTML;
-            }
-        });
-        form.push(autoEnd);
-
-        //AUTO ENGAGED
+        //ENGAGED
         if (form[form.length - 1] == "Docked") {
             form.push(document.getElementById("inPersonAutoEngagedButton").value == true);
-        } else {
+        }  else {
             form.push("");
         }
-
-        //TELE CONES
-        var teleCones = [];
-        ["Top", "Mid", "Bot"].forEach(row => {
-            let record = [];
-
-            ["Made", "Miss"].forEach(shot => {
-                record.push(document.getElementById("inPersonTeleCones" + row + "Row" + shot + "Counter").innerHTML);
-            });
-
-            teleCones.push(record);
-        });
-        form.push(JSON.stringify(teleCones));
-
-        //TELE CUBES
-        var teleCubes = [];
-        ["Top", "Mid", "Bot"].forEach(row => {
-            let record = [];
-
-            ["Made", "Miss"].forEach(shot => {
-                record.push(document.getElementById("inPersonTeleCubes" + row + "Row" + shot + "Counter").innerHTML);
-            });
-
-            teleCubes.push(record);
-        });
-        form.push(JSON.stringify(teleCubes));
-
-        //TIPPED OVER NON CS
-        form.push(document.getElementById("inPersonNonChargeTipCounter").innerHTML);
-
-        //TIPPED OVER CS
-        form.push(document.getElementById("inPersonChargeTipCounter").innerHTML);
-
-        //PLAYSTYLE
-        var playstyle;
-        Array.from(document.getElementsByClassName("inPersonTelePlaystyleButton")).forEach(button => {
-            if (button.value) {
-                playstyle = button.innerHTML;
-            }
-        });
-        form.push(playstyle);
-        
-        //ENDGAME
-        var endgame;
-        Array.from(document.getElementsByClassName("inPersonTeleEndgameButton")).forEach(button => {
-            if (button.value) {
-                endgame = button.innerHTML;
-            }
-        });
-        form.push(endgame);
-
-        //TELE ENGAGED
-        if (form[form.length - 1] == "Docked") {
-            form.push(document.getElementById("inPersonTeleEngagedButton").value == true);
-        } else {
-            form.push("");
-        }
-
-        //FAILURE
-        var failure;
-        Array.from(document.getElementsByClassName("matchInPersonTagButton")).forEach(button => {
-            if (button.value) {
-                failure = button.innerHTML;
-            }
-        });
-        form.push(failure);
-
-        //PENS
-        form.push(document.getElementById("penaltiesInput").value);
-        
-        if (isNaN(parseInt(form[form.length - 1])) && form[form.length - 1] != "") {
-            changeNotif("penaltiesNotifText", "That Is Not A Valid Number!");
-            end = true;
-        } else {
-            changeNotif("penaltiesNotifText", "");
-        }
-
-        //CARDED
-        var carded;
-        Array.from(document.getElementsByClassName("inPersonMatchCardButton")).forEach(button => {
-            if (button.value) {
-                carded = button.innerHTML;
-            }
-        });
-        form.push(carded);
-
-        //PLAYED AGGRESSIVE
-        form.push(document.getElementById("inPersonAggressiveButton").value == true);
-
-        //OTHER NOTES
-        form.push(document.getElementById("matchInPersonExtraNotes").value);
-
-        if (end) {
-            return true;
-        }
-        
-        if (playstyle == "Defensive") {
-            var counter = 0;
-
-            form = form.map(x => {
-                if ([0, 1, 11, 18].includes(counter++)) {
-                    return x;
-                } else {
-                    return "";
-                }
-            });
-        }
-
-        if (failure) {
-            var counter = 0;
-            form = form.map(x => {
-                if ([0, 1, 14, 18].includes(counter++)) {
-                    return x;
-                } else {
-                    return "";
-                }
-            });
-        }
-
-        form = form.map(x => {
-            if (["", undefined].includes(x)) {
-                return "none";
-            } else {
-                return x;
-            }
-        });
 
         var tempName = sheetName;
         if (isFinals) {
             tempName += "FINALS";
         }
 
+        
+        //TELE SCORES
+        cones = [];
+        cubes = [];
+
+        ["Cones", "Cubes"].forEach(type => {
+            ["Top", "Mid", "Bot"].forEach(row => {
+                let score = [];
+
+                ["Made", "Miss"].forEach(scoreType => {
+                    score.push(document.getElementById("inPersonTele" + type + row + "Row" + scoreType + "Counter").innerHTML);
+                });
+
+                if (type == "Cones") {
+                    cones.push(score);
+                } else {
+                    cubes.push(score);
+                }
+            }); 
+        });
+        form.push(JSON.stringify(cones));
+        form.push(JSON.stringify(cubes));
+
+        //ALMOST TIPPED
+        var almostTipped = [];
+        ["NonCharge", "Charge"].forEach(tipType => {
+            almostTipped.push(document.getElementById("inPerson" + tipType + "TipCounter").innerHTML)
+        });
+        form.push(JSON.stringify(almostTipped));
+
+        //PLAYSTYLE
+        form.push(getGroupButtonValue("inPersonTelePlaystyleButton"));
+        var playstyle = form[form.length - 1];
+
+        //ENDGAME
+        form.push(getGroupButtonValue("inPersonTeleEndgameButton"));
+
+        //ENGAGED
+        if (form[form.length - 1] == "Docked") {
+            form.push(document.getElementById("inPersonTeleEngagedButton").value == true);
+        } else {
+            form.push("");
+        }
+
+        //FAILURES
+        form.push(getGroupButtonValue("matchInPersonTagButton"));
+        var failure = form[form.length - 1];
+
+        //PENALTIES
+        form.push(document.getElementById("penaltiesInput").value);
+
+        if (isNaN(parseInt(form[form.length - 1])) && form[form.length - 1] != "") {
+            dimensions.push("");
+
+            document.getElementById("penaltiesInput").style.border = "1px solid " + notifColor;
+            showElement("penaltiesNotifDiv");
+            end = true
+        } else {
+            document.getElementById("penaltiesInput").style.border = "1px solid " + borderColor;
+            hideElement("penaltiesNotifDiv");
+        }
+
+        //EXTRA NOTES
+        form.push(document.getElementById("matchInPersonExtraNotes").value);
+
+        if (failure != "" || playstyle == "Defensive") {
+            let counter = 0;
+            form = form.map(x => {
+                if (![0, 1, 10, 13, 15].includes(counter++)) {
+                    return "";
+                } else {
+                    return x;
+                }
+            });
+        }
+
+        console.log(form, playstyle, failure)
+
+        if (end) {
+            return true;
+        }
+
         appendData(config.matchGSID, tempName, form);
         lockDiv(lockedDivs, curDiv, "matchDiv");
     } else if (selector.includes("matchonline")) {
     }
+}
+
+function getGroupButtonValue(groupClass, additionalDiv) {
+    var search = document;
+    if (additionalDiv) {
+        search = document.getElementById(additionalDiv);
+    }
+
+    var value;
+    Array.from(search.getElementsByClassName(groupClass)).forEach(elem => {
+        if (elem.value) {
+            value = elem.innerHTML;
+        }
+    });
+    if (!value) {
+        value = "";
+    }
+
+    return value;
 }
 
 async function secureSubmit(selector) {
@@ -633,9 +528,22 @@ async function secureSubmit(selector) {
                 var orderNum = curOrderNum++;
                 await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
                 var team = document.getElementById(selector + "TeamNumDropdown").value;
-                
+                var temp = getOrder(orderNum);
+                var teams = temp[0].filter(x => parseInt(x) != team && x != "");
+                var orderNum = curOrderNum++;
+                await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
+                console.log(getOrder(orderNum), teams, team);
                 await clearData(config.assignmentsGSID, selector + sheetName);
-                appendData(config.assignmentsGSID, selector + sheetName, getOrder(orderNum)[0].filter(x => parseInt(x) != team && x != ""));
+                var orderNum = curOrderNum++;
+                await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
+
+                while (getOrder(orderNum) != "none") {
+                    await wait(500);
+                    var orderNum = curOrderNum++;
+                    await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
+                }
+
+                appendData(config.assignmentsGSID, selector + sheetName, teams);
             } if (selector.includes("match")) {
                 document.getElementById("matchFormDiv").remove();
                 document.getElementById("matchRefreshDiv").style.display = "inline-block";
@@ -670,11 +578,11 @@ function refreshForm(selector) { //TODO: REDO
     document.getElementById(selector + "Div").appendChild(formDivs[selector].cloneNode(true));
     
     if (selector == "pre") {``
-        activatePin("field", "fieldPin");
+        activatePin("fieldautoProfile1", "fieldPinautoProfile1");
         fillTeamDropdown(selector);
     } else if (selector == "pit") {
-        activatePin("fieldChanges", "fieldPinChanges");
-        fillTeamDropdown(selector);
+        // activatePin("fieldChanges", "fieldPinChanges");
+        // fillTeamDropdown(selector);
     }
 
     unlockDiv(lockedDivs, curDiv, selector + "Div");
@@ -767,7 +675,6 @@ async function changeMatchAllianceButtons(selector) {
         match = match.filter(x => x.match_number == parseInt(document.getElementById(selector + "MatchNumInput").value))[0];
     }
     
-    console.log(match)
     if (!match) {
         hideElement(selector + "MatchInnerDiv");
         changeNotif(selector + "MatchNotif", "That Is Not A Valid Match!");
@@ -827,7 +734,7 @@ async function storeForms() {
         await wait(100);
     }
 
-    var forms = ["pre", "pit", "match"];
+    var forms = ["pre",  "match"];//"pit",
     for (var i = 0; i < forms.length; i++) {
         let form = forms[i];
 
@@ -982,7 +889,7 @@ async function fillPreAssignments() {
 
 function removeFinalsDropdown() {
     if (!isFinals) {
-        // document.getElementById("matchFormFinalDropdown").remove();
+        document.getElementById("matchFormFinalDropdown").remove();
     }
 }
 
@@ -1024,7 +931,7 @@ async function addAutoProfile() {
     var num = (autoProfiles.length + 1);
     div.id = "autoProfile" + num;
     div.style.display = "none";
-    div.innerHTML = autoProfileFormat.replaceAll("autoProfile1", "autoProfile" + num);
+    div.innerHTML = autoProfileFormat.replaceAll("autoProfile1", "autoProfile" + num).replaceAll("autoBalType1", "autoBalType" + num);
 
     var option = document.createElement("option");
     option.innerHTML = "Auto " + num;
@@ -1074,4 +981,4 @@ removeFinalsDropdown();
 storeForms();
 activatePin("fieldautoProfile1", "fieldPinautoProfile1");
 cycleCheckDropdown("pre");
-cycleCheckDropdown("pit");
+// cycleCheckDropdown("pit");

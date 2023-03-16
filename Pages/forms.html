@@ -21,8 +21,8 @@
 <div id="subNav">
   <p id="preButton" class="subNavButton">Pre</p>
   <p class="subNavDivider"></p>
-  <p id="pitButton" class="subNavButton">Pit</p>
-  <p class="subNavDivider"></p>
+  <!-- <p id="pitButton" class="subNavButton">Pit</p>
+  <p class="subNavDivider"></p> -->
   <p id="matchButton" class="subNavButton" style="border:none;">Match</p>
 </div>
 
@@ -91,6 +91,7 @@
       <hr class="sectionLine">
 
       <p id="noAutoButton" class="pushButton" onclick="toggleElement('autoDiv');">No Auto</p>
+
       <br>
 
       <div id="autoDiv" style="margin-top:10px">
@@ -225,8 +226,8 @@
           <div id="autoDockTypeDivautoProfile1" style="display: none;">
             <br>
 
-            <p id="deadReckoningAutoBalautoProfile1" class="autoBalType groupedButton startGroupedButton" style="margin-top: 5px;">Dead Reckoning</p>
-            <p id="autoBalAutoBalautoProfile1" class="autoBalType groupedButton endGroupedButton">Auto Bal</p>
+            <p id="deadReckoningAutoBalautoProfile1" class="autoBalType1 groupedButton startGroupedButton" style="margin-top: 5px;">Dead Reckoning</p>
+            <p id="autoBalAutoBalautoProfile1" class="autoBalType1 groupedButton endGroupedButton">Auto Bal</p>
           </div>
 
           <br>
@@ -239,11 +240,11 @@
       <hr class="sectionLine">
 
       <p class="formSubheader">Cargo Cycled</p>
-      <input id="cargoCycledInput" placeholder="#" type="num" min="0"></input>
+      <input id="cargoCycledInput" class="measurementInput" placeholder="#" type="number" min="0"></input>
 
-      <div id="pitCycleTimeNotifText" style="display: none;">
+      <div id="cargoCycledNotifText" style="display: none;">
         <br>
-        <p class="toggleNotifText">Cycle Time Should Be</p>
+        <p class="toggleNotifText">Cargo Cycled Should Be a Number!</p>
       </div>
 
       <p class="formSubheader">Cone Reach</p>
@@ -288,9 +289,9 @@
       <p id="preferStationSingleButton" class="preferStationButton startGroupedButton groupedButton">Single</p>
       <p id="preferGPStationDoubleButton" class="preferStationButton endGroupedButton groupedButton">Double</p>
 
-      <br>
+      <!-- <br>
       <p class="formSubheader">Pic of Whole Robot</p>
-      <input id="file" type="file" accept="image/*" style="margin-top:10px;" multiple>
+      <input id="robotPic" type="file" accept="image/*" style="margin-top:10px;" multiple> -->
 
       <br>
       <p id="canDockButtonTele" class="pushButton" onclick="toggleElement('teleDockDiv');">Can Dock</p>
@@ -317,7 +318,7 @@
     </div>
   </div>
 
-  <div id="pitDiv" class="subNavDiv" style="display:none;">
+  <!-- <div id="pitDiv" class="subNavDiv" style="display:none;">
     <div>
       <p id="needToPreNotifText" class="toggleNotifText" style="display: none;"></p>
     </div>
@@ -386,73 +387,15 @@
         <br>
 
         <div id="autoChangesDiv">
-          <p id="canCreateAutoButtonChanges" class="pushButton" onclick="toggleElement('canCreateAutoChanges');">Can
-            Create New Auto On The Fly</p>
-          <br>
-          <div id="canCreateAutoChanges" style="display: none;">
-            <label class="formSubheader">It Would Take </label>
-            <input id="matchInputChanges" class="measurementInput" placeholder="#" type="number" min="0"
-              onchange="adjustMatchPlural();"></input>
-            <label id="matchesLabelChanges" class="formSubheader"> Matches</label>
-
-            <div id="pitMatchesNotifText" style="display: none;">
-              <br>
-              <p class="toggleNotifText">Matches Should Be A Number!</p>
-            </div>
-
-            <p class="formSubheader">How Reliable Would It Be?</p>
-            <label class="reliableSliderText">Unreliable <input type="range" min="1" max="100" value="50"
-                id="reliabilitySliderChanges"> Reliable</label>
-            <br>
-          </div>
-
-          <p id="canDockButtonAutoChanges" class="pushButton" onclick="toggleElement('canEngageButtonAutoChanges');">Can
-            Dock</p>
-          <p id="canEngageButtonAutoChanges" class="pushButton" style="display:none;">Can Engage</p>
-
-          <p class="formSubheader">Required Setup (Facing Center)</p>
-          <div id="requiredSetupDivChanges">
-            <img id="requiredSetupOneChanges" class="requiredSetupPiece" value="either" src="../Images/either.png">
-            <img id="requiredSetupTwoChanges" class="requiredSetupPiece" value="either" src="../Images/either.png">
-            <img id="requiredSetupThreeChanges" class="requiredSetupPiece" value="either" src="../Images/either.png">
-            <img id="requiredSetupFourChanges" class="requiredSetupPiece" value="either" src="../Images/either.png">
-          </div>
-          <div id="requiredSetupButtonsChanges">
-            <div class="requiredSetupPieceDiv">
-              <p id="leftCycleOneChanges" class="button" onclick="leftCycleSetup('OneChanges');">&lt;</p>
-              <p id="rightCycleOneChanges" class="button" onclick="rightCycleSetup('OneChanges');">&gt;</p>
-            </div>
-
-            <div class="requiredSetupPieceDiv">
-              <p id="leftCycleTwoChanges" class="button" onclick="leftCycleSetup('TwoChanges');">&lt;</p>
-              <p id="rightCycleTwoChanges" class="button" onclick="rightCycleSetup('TwoChanges');">&gt;</p>
-            </div>
-
-            <div class="requiredSetupPieceDiv">
-              <p id="leftCycleThreeChanges" class="button" onclick="leftCycleSetup('ThreeChanges');">&lt;</p>
-              <p id="rightCycleThreeChanges" class="button" onclick="rightCycleSetup('ThreeChanges');">&gt;</p>
-            </div>
-
-            <div class="requiredSetupPieceDiv">
-              <p id="leftCycleFourChanges" class="button" onclick="leftCycleSetup('FourChanges');">&lt;</p>
-              <p id="rightCycleFourChanges" class="button" onclick="rightCycleSetup('FourChanges');">&gt;</p>
-            </div>
-          </div>
-
-          <p id="setPosButtonChanges" class="pushButton" onclick="toggleElement('fieldPosDivChanges');">Fixed Position
-          </p>
-          <div id="fieldPosDivChanges" style="display: none;">
-            <img id="fieldChanges" src="../Images/field.png">
-            <img id="fieldPinChanges" src="../Images/pin.png">
-          </div>
+          <textarea id="autoChangesNotes" class="notesArea" placeholder="Auto Changes Notes"></textarea>
         </div>
       </div>
 
       <p class="sectionHeader">Teleop</p>
       <hr>
 
-      <p class="formSubheader">Cycle Time</p>
-      <input id="cycleTimeInputChanges" placeholder="Seconds" type="text"></input>
+      <p class="formSubheader">Cargo Cycled</p>
+      <input id="cargoCycleInputChanges" placeholder="Seconds" type="num"></input>
 
       <div id="pitCycleTimeNotifTextChanges" style="display: none;">
         <br>
@@ -461,26 +404,12 @@
 
       <p class="formSubheader">Able Playstyles</p>
       <p id="ableOffButtonChanges" class="pushButton">Offensive</p>
-      <p id="ableDefButtonChanges" class="pushButton" onclick="toggleElement('defenseStrategyNotesDivChanges');">
-        Defensive</p>
-
-      <div id="defenseStrategyNotesDivChanges" style="display: none;">
-        <br>
-        <textarea id="defenseStrategyNotesChanges" class="notesArea" placeholder="Defense Strategy"></textarea>
-      </div>
-
-
-      <p class="formSubheader">Preferred Playstyle</p>
-      <p id="preferOffButtonChanges" class="preferButtonChanges startGroupedButton groupedButton">Offensive</p>
-      <p id="preferDefButtonChanges" class="preferButtonChanges groupedButton">Defensive</p>
-      <p id="preferHybButtonChanges" class="preferButtonChanges endGroupedButton groupedButton">Hybrid</p>
+      <p id="ableDefButtonChanges" class="pushButton">Defensive</p>
 
       <br>
       <p id="canDockButtonTeleChanges" class="pushButton" onclick="toggleElement('teleDockDivChanges');">Can Dock</p>
 
       <div id="teleDockDivChanges" style="display:none;">
-        <p id="canEngageButtonTeleChanges" class="pushButton">Can Engage</p>
-
         <p class="formSubheader">Time To Balance</p>
         <input id="balanceTimeInputChanges" placeholder="Seconds" type="number" min="0"></input>
 
@@ -505,7 +434,7 @@
       <p id="pitRefreshButton" class="button" onclick="refreshForm('pit');" style="margin-top: 10px;">Submit Another
         Form</p>
     </div>
-  </div>
+  </div> -->
 
   <div id="matchDiv" class="subNavDiv" style="display:none">
     <div id="matchFormDiv" class="innerDiv">
@@ -943,12 +872,6 @@
           <br>
   
           <p id="penaltiesNotifText" class="notifText"></p>
-  
-          <br>
-  
-          <p class="formSubheader" style="margin-top:10px;">Carded</p>
-          <p id="onlineBlue1YellowCardButton" class="onlineBlue1MatchCardButton startGroupedButton groupedButton">Yellow</p>
-          <p id="onlineBlue1RedCardButton" class="onlineBlue1MatchCardButton endGroupedButton groupedButton">Red</p>
   
           <br>
   
@@ -3483,19 +3406,10 @@
         <p class="formSubheader">Penalties</p>
         <input id="penaltiesInput" type="number" class="inputInput" placeholder="#"></input>
 
-        <br>
-
-        <p id="penaltiesNotifText" class="notifText"></p>
-
-        <br>
-
-        <p class="formSubheader" style="margin-top:10px;">Carded</p>
-        <p id="inPersonYellowCardButton" class="inPersonMatchCardButton startGroupedButton groupedButton">Yellow</p>
-        <p id="inPersonRedCardButton" class="inPersonMatchCardButton endGroupedButton groupedButton">Red</p>
-
-        <br>
-
-        <p id="inPersonAggressiveButton" class="pushButton" style="margin-top:10px;">Played Aggressive</p>
+        <div id="penaltiesNotifDiv" style="display: none;">
+          <br>
+          <p class="notifText"></p>
+        </div>
 
         <br>
 
