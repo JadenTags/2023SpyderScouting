@@ -955,6 +955,7 @@ function createNormalMiniTable(data, color, height) {
 function compileAllTeamData(team, match, pre) {
     pre = pre.slice(1).filter(x => x[0] == team);
     pre = pre[pre.length - 1];
+    console.log(match[0])
     match = match.slice(1).filter(x => x[0] == team);
 
     match.forEach(submission => {
@@ -966,8 +967,6 @@ function compileAllTeamData(team, match, pre) {
             }
         }
     });
-
-    console.log(match, pre)
 
     var data = structuredClone(dataTableWithMatchFormat);
 

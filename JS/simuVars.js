@@ -1,8 +1,8 @@
-var testDate = new Date("3-17-23"); 
+var testDate = new Date(); 
 //COMP: TYPE FIRST DATE OF COMP IN MONTH-DAY-YEAR FORM
 //NOT COMP: TYPE TEST DATE IN MONTH-DAY-YEAR FORM
 
-var sheetName = "ORLANDO";
+var sheetName = "TEST";
 //COMP: USE THE KEYWORD THAT THE SHEETS USE (COMP NAME)
 //NOT COMP: LEAVE AS "TEST"
 
@@ -14,6 +14,6 @@ var matchNum;
 //COMP: LEAVE UNINITIALIZED
 //NOT COMP: DO WHATEVER
 
-// localStorage.clear()
+localStorage.clear()
 //COMP: LEAVE COMMENTED
 //TESTNG: LEAVE UNCOMMNETED
