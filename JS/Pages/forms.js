@@ -16,7 +16,6 @@ var notifColor = "#eb776e";
 var borderColor = "#c5c7c5";
 
 async function fillTeamDropdown(selector) {
-    return; //GET RID OF IT
     var dropdown = document.getElementById(selector + "TeamNumDropdown");
     var orderNum = curOrderNum++;
     await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
@@ -886,6 +885,8 @@ async function fillPreAssignments() {
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/teams", orderNum);
     appendData(config.assignmentsGSID, "pre" + sheetName, getOrder(orderNum).map(x => x.key.replace("frc", "")));
 }
+
+fillPreAssignments();
 
 function removeFinalsDropdown() {
     if (!isFinals) {

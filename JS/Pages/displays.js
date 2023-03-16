@@ -357,6 +357,7 @@ async function teamSearch() {
 
     orderNum = curOrderNum++;
     await getSheetData(config.preGSID, sheetName, orderNum);
+    var preForms = getOrder(orderNum);
 
     var tempName = sheetName;
     if (isFinals) {
@@ -368,7 +369,7 @@ async function teamSearch() {
     var matchForms = getOrder(orderNum);
     
     var noMatch = matchForms.filter(x => x[1] == team).length == 0;
-    var noPre = pitForms.filter(x => x[0] == team).length == 0;
+    var noPre = preForms.filter(x => x[0] == team).length == 0;
     
     var teamData;
     var clone;
@@ -382,6 +383,7 @@ async function teamSearch() {
         teamData = compilePrePitTeamData(team, preForms);
         clone = dataTableWithoutMatchFormat;
     } else {
+        console.log(matchForms, preForms)
         teamData = compileAllTeamData(team, matchForms, preForms);
         clone = dataTableWithMatchFormat;
     }
@@ -951,11 +953,6 @@ function createNormalMiniTable(data, color, height) {
 
 //CHANGE YEARLY
 function compileAllTeamData(team, match, pre) {
-    pre = JSON.parse(localStorage.getItem("pre"));
-    match = JSON.parse(localStorage.getItem("match"));
-    console.log(match[0])
-    pre[4][0] = "1";
-
     pre = pre.slice(1).filter(x => x[0] == team);
     pre = pre[pre.length - 1];
     match = match.slice(1).filter(x => x[0] == team);
@@ -970,65 +967,73 @@ function compileAllTeamData(team, match, pre) {
         }
     });
 
+    console.log(match, pre)
+
     var data = structuredClone(dataTableWithMatchFormat);
 
     ///////////////////////////GENERAL
     //TEAM
     data["General"]["Team"] = team;
 
-    //DIMENSIONS
-    var dims = JSON.parse(pre[1]);
-    fillData(data["General"]["DIM"], "Length", dims[0], 0);
-    fillData(data["General"]["DIM"], "Width", dims[1], 1);
-    fillData(data["General"]["DIM"], "Height", dims[2], 2);
-    checkEmpty(data["General"], "DIM");
-
-    //DB INFO
-    var dbInfo = JSON.parse(pre[2]);
-    fillData(data["General"]["DB Info"], "Type", dbInfo[0], 0);
-    fillData(data["General"]["DB Info"], "Motor", dbInfo[1], 0);
-    checkEmpty(data["General"], "DB INFO");
-
-    //AUTO GENERATING AUTO
-    fillData(data["General"], "Auto-Gen", pre[4], null);
-
-    //AUTOS
-    data["General"]["Autos"] = JSON.parse(pre[5]).length;
-
-    //CONES REACHES
-    var cones = JSON.parse(pre[7]);
-    var coneHeaders = Object.keys(data["General"]["Cones"]);
-    for (var i = 0; i < cones.length; i++) {
-        data["General"]["Cones"][coneHeaders[i]] = cones[i];
-    }
-
-    //CUBES REACHES
-    var cubes = JSON.parse(pre[8]);
-    var cubeHeaders = Object.keys(data["General"]["Cubes"]);
-    for (var i = 0; i < cubes.length; i++) {
-        data["General"]["Cubes"][cubeHeaders[i]] = cubes[i];
-    }
+    if (pre) {
+        //DIMENSIONS
+        var dims = JSON.parse(pre[1]);
+        fillData(data["General"]["DIM"], "Length", dims[0], 0);
+        fillData(data["General"]["DIM"], "Width", dims[1], 1);
+        fillData(data["General"]["DIM"], "Height", dims[2], 2);
+        checkEmpty(data["General"], "DIM");
     
-    //PREFERRED PLAYSTYLE
-    fillData(data["General"], "Pref PS", pre[9], null);
+        //DB INFO
+        var dbInfo = JSON.parse(pre[2]);
+        fillData(data["General"]["DB Info"], "Type", dbInfo[0], 0);
+        fillData(data["General"]["DB Info"], "Motor", dbInfo[1], 0);
+        checkEmpty(data["General"], "DB Info");
     
-    //PREFERRED GP
-    fillData(data["General"], "Pref GP", pre[10], null);
+        //AUTO GENERATING AUTO
+        fillData(data["General"], "Auto-Gen", pre[4], null);
     
-    //PREFERRED STATION
-    fillData(data["General"], "Pref SS", pre[12], null);
-
-    //PLAYSTYLES
-    var playstyles = JSON.parse(pre[11]);
-    Object.keys(data["General"]["Playstyles"]).forEach(key => {
-        if (key != "INFO") {
-            if (playstyles.includes(key)) {
-                data["General"]["Playstyles"][key] = true;
-            } else {
-                data["General"]["Playstyles"][key] = false;
-            }
+        //AUTOS
+        data["General"]["Autos"] = JSON.parse(pre[5]).length;
+    
+        //CONES REACHES
+        var cones = JSON.parse(pre[7]);
+        var coneHeaders = Object.keys(data["General"]["Cones"]);
+        for (var i = 0; i < cones.length; i++) {
+            data["General"]["Cones"][coneHeaders[i]] = cones[i];
         }
-    });
+    
+        //CUBES REACHES
+        var cubes = JSON.parse(pre[8]);
+        var cubeHeaders = Object.keys(data["General"]["Cubes"]);
+        for (var i = 0; i < cubes.length; i++) {
+            data["General"]["Cubes"][cubeHeaders[i]] = cubes[i];
+        }
+        
+        //PREFERRED PLAYSTYLE
+        fillData(data["General"], "Pref PS", pre[9], null);
+        
+        //PREFERRED GP
+        fillData(data["General"], "Pref GP", pre[10], null);
+        
+        //PREFERRED STATION
+        fillData(data["General"], "Pref SS", pre[12], null);
+    
+        //PLAYSTYLES
+        var playstyles = JSON.parse(pre[11]);
+        Object.keys(data["General"]["Playstyles"]).forEach(key => {
+            if (key != "INFO") {
+                if (playstyles.includes(key)) {
+                    data["General"]["Playstyles"][key] = true;
+                } else {
+                    data["General"]["Playstyles"][key] = false;
+                }
+            }
+        });
+    } else {
+        ["DIM", "DB Info", "Auto-Gen", "Autos", "Cones", "Cubes", "Pref PS", "Pref GP", "Pref SS", "Playstyles"].forEach(preData => {
+            delete data["General"][preData];
+        });
+    }
 
     //FAILURE%
     fillPercentData(data["General"], "Failure%", match.map(x => x[13]), {
@@ -1038,11 +1043,16 @@ function compileAllTeamData(team, match, pre) {
         "": "N"
     });
 
+    //MATCHES
+    data["General"]["Matches"] = match.length;
+    
+    ///////////////////////////AUTO
+    //MOBILITY%
+     
+
     console.log(match)
     console.log(data)
 }
-
-compileAllTeamData("1");
 
 
 //CHANGE YEARLY
@@ -1484,15 +1494,15 @@ async function fillMatchDropdown() {
 }
 
 function test() {
-    // document.getElementById("teamSearchInput").setAttribute("value", "1622");
-    // eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
+    document.getElementById("teamSearchInput").setAttribute("value", "1");
+    eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 
-    document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
-    document.getElementById("allianceTeam2SearchInput").setAttribute("value", "7130");
-    document.getElementById("allianceTeam3SearchInput").setAttribute("value", "8006");
+    // document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
+    // document.getElementById("allianceTeam2SearchInput").setAttribute("value", "7130");
+    // document.getElementById("allianceTeam3SearchInput").setAttribute("value", "8006");
 
-    eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
+    // eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 }
 
-// test();
-// fillMatchDropdown();
+test();
+fillMatchDropdown();
