@@ -353,7 +353,11 @@ function submitForm(selector) {
         var teamNum = getGroupButtonValue("inPersonAllianceButton");
 
         if (!teamNum) {
-            changeNotif("inPersonTeamNumNotif", "You Did Not Select Team!");
+            if (document.getElementById("inPersonTeamNumInput")) {
+                teamNum = document.getElementById("inPersonTeamNumInput").value;
+            } else {
+                changeNotif("inPersonTeamNumNotif", "You Did Not Select Team!");
+            }
             // end = true;
         } else if (isNaN(parseInt(teamNum))) {
             changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
@@ -885,8 +889,6 @@ async function fillPreAssignments() {
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/teams", orderNum);
     appendData(config.assignmentsGSID, "pre" + sheetName, getOrder(orderNum).map(x => x.key.replace("frc", "")));
 }
-
-fillPreAssignments();
 
 function removeFinalsDropdown() {
     if (!isFinals) {
