@@ -1068,7 +1068,21 @@ function compileAllTeamData(team, match, pre) {
     fillScoreData(data["Teleop"]["CUBE Bot Row"], match.map(x => JSON.parse(x[8])[2]));
 
     //CARGO AVG
-    delete ["Teleop"]["Cargo AVG"]; //TODO: FINISH
+    var cAve = 0;
+    ["CONE", "CUBE"].forEach(type => {
+        ["Top", "Mid", "Bot"].forEach(row => {
+            let scored = data["Teleop"][type + " " + row + " Row"];
+            console.log(scored)
+            if (!isNaN(scored["Always"])) {
+                scored = scored["Always"];
+            } else {
+                scored = scored["Avg"];
+            }
+            cAve += scored;
+        });
+    });
+    
+    data["Teleop"]["Cargo AVG"] = cAve;
 
     //ALMOST TIPPED
     if (match.map(x => JSON.parse(x[9]).map(y => parseInt(y))).map(x => x[0]).length == 0) {
@@ -1578,15 +1592,15 @@ async function fillMatchDropdown() {
 }
 
 function test() {
-    // document.getElementById("teamSearchInput").setAttribute("value", "1622");
-    // eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
+    document.getElementById("teamSearchInput").setAttribute("value", "1622");
+    eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 
-    document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
-    document.getElementById("allianceTeam2SearchInput").setAttribute("value", "7130");
-    document.getElementById("allianceTeam3SearchInput").setAttribute("value", "8006");
+    // document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
+    // document.getElementById("allianceTeam2SearchInput").setAttribute("value", "7130");
+    // document.getElementById("allianceTeam3SearchInput").setAttribute("value", "8006");
 
-    eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
+    // eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 }
 
-// test();
+test();
 fillMatchDropdown();
