@@ -942,7 +942,6 @@ function createNormalMiniTable(data, color, height) {
 function compileAllTeamData(team, match, pre) {
     pre = pre.slice(1).filter(x => x[0] == team);
     pre = pre[pre.length - 1];
-    console.log(match[0])
     match = match.slice(1).filter(x => x[0] == team);
 
     match.forEach(submission => {
@@ -954,6 +953,13 @@ function compileAllTeamData(team, match, pre) {
             }
         }
     });
+
+    let counter = 0;
+        while (pre.length < 16) {
+            if (!pre[counter++]) {
+                pre.push("");
+            }
+        }
 
     var data = structuredClone(dataTableWithMatchFormat);
 
@@ -983,12 +989,21 @@ function compileAllTeamData(team, match, pre) {
         for (var i = 0; i < cones.length; i++) {
             data["General"]["Cones"][coneHeaders[i]] = cones[i];
         }
+
+        if (Object.values(cones).filter(x => x && typeof x == "boolean").length == 0) {
+            delete data["General"]["Cones"];
+        }
     
         //CUBES REACHES
         var cubes = JSON.parse(pre[9]);
         var cubeHeaders = Object.keys(data["General"]["Cubes"]);
         for (var i = 0; i < cubes.length; i++) {
             data["General"]["Cubes"][cubeHeaders[i]] = cubes[i];
+        }
+
+        console.log(Object.values(cubes).filter(x => x && typeof x == "boolean").length)
+        if (Object.values(cubes).filter(x => x && typeof x == "boolean").length == 0) {
+            delete data["General"]["Cubes"];
         }
         
         //PREFERRED PLAYSTYLE
@@ -1036,7 +1051,7 @@ function compileAllTeamData(team, match, pre) {
     //Engaged%
     fillPercentData(data["Auto"], "Engaged%", match.map(x => x[6]).filter(x => x != ""), {
         "TRUE": "ENG",
-        "False": "Not"
+        "FALSE": "Not"
     });
 
     delete data["Auto"]["Score"]; //TODO: FINISH SCORE
@@ -1056,27 +1071,31 @@ function compileAllTeamData(team, match, pre) {
     delete ["Teleop"]["Cargo AVG"]; //TODO: FINISH
 
     //ALMOST TIPPED
-    var tipData = match.map(x => JSON.parse(x[9]).map(y => parseInt(y)));
-    var total = sum(tipData.map(x => x[0])) + sum(tipData.map(x => x[1]));
-    data["Teleop"]["Almost Tipped"]["Type%"]["Not"] = Math.round(sum(tipData.map(x => x[0])) / total) + "%";
-    if (isNaN(data["Teleop"]["Almost Tipped"]["Type%"]["Not"])) {
-        delete data["Teleop"]["Almost Tipped"]["Type%"];
+    if (match.map(x => JSON.parse(x[9]).map(y => parseInt(y))).map(x => x[0]).length == 0) {
+        delete data["Teleop"]["Almost Tipped"];
     } else {
-        data["Teleop"]["Almost Tipped"]["Type%"]["CS"] = Math.round(sum(tipData.map(x => x[0])) / total) + "%"; 
-    }
-
-    var temp = tipData.map(x => {
-        if (sum(x) > 0) {
-            return "t";
+        var tipData = match.map(x => JSON.parse(x[9]).map(y => parseInt(y)));
+        var total = sum(tipData.map(x => x[0])) + sum(tipData.map(x => x[1]));
+        data["Teleop"]["Almost Tipped"]["Type%"]["Not"] = Math.round(sum(tipData.map(x => x[0])) / total) + "%";
+        if (isNaN(data["Teleop"]["Almost Tipped"]["Type%"]["Not"])) {
+            delete data["Teleop"]["Almost Tipped"]["Type%"];
         } else {
-            return "f";
+            data["Teleop"]["Almost Tipped"]["Type%"]["CS"] = Math.round(sum(tipData.map(x => x[0])) / total) + "%"; 
         }
-    });
 
-    fillPercentData(data["Teleop"]["Almost Tipped"], "Tip%", temp, {
-        "t": "Tip",
-        "f": "Not",
-    });
+        var temp = tipData.map(x => {
+            if (sum(x) > 0) {
+                return "t";
+            } else {
+                return "f";
+            }
+        });
+
+        fillPercentData(data["Teleop"]["Almost Tipped"], "Tip%", temp, {
+            "t": "Tip",
+            "f": "Not",
+        });
+    }
 
     //PLAYSTYLE
     fillPercentData(data["Teleop"], "Playstyle%", match.map(x => x[10]).filter(x => x != ""), {
@@ -1120,7 +1139,6 @@ function compileAllTeamData(team, match, pre) {
 
     return data;
 }
-
 
 //CHANGE YEARLY
 function fillScoreData(data, match) {
@@ -1355,11 +1373,7 @@ async function allianceSearch(divId) {
 
     var orderNum = curOrderNum++;
     await getSheetData(config.preGSID, sheetName, orderNum);
-    var preForms = getOrder(orderNum).filter(x => teams.includes(x[0]) || x[0] == "TEAM NUM");
-
-    orderNum = curOrderNum++;
-    await getSheetData(config.pitGSID, sheetName, orderNum);
-    var pitForms = getOrder(orderNum).filter(x => teams.includes(x[0]) || x[0] == "TEAM NUM");
+    var preForms = getOrder(orderNum);
 
     var tempName = sheetName;
     if (isFinals) {
@@ -1368,9 +1382,9 @@ async function allianceSearch(divId) {
 
     orderNum = curOrderNum++;
     await getSheetData(config.matchGSID, tempName, orderNum);
-    var matchForms = getOrder(orderNum).filter(x => teams.includes(x[1]) || x[1] == "Team Number");
+    var matchForms = getOrder(orderNum);
 
-    if (preForms.slice(1) + pitForms.slice(1) + matchForms.slice(1) == "") {
+    if (preForms.filter(x => teams.includes(x[0])) + matchForms.filter(x => teams.includes(x[0])) == "") {
         for (var i = 1; i <= 3; i++) {
             document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
         }
@@ -1382,8 +1396,8 @@ async function allianceSearch(divId) {
     }
     
     teams.forEach(team => {
-        var noMatch = matchForms.filter(x => x[1] == team).length == 0;
-        var noPrePit = pitForms.filter(x => x[0] == team).length == 0 && preForms.filter(x => x[0] == team).length == 0;
+        var noMatch = matchForms.filter(x => x[0] == team).length == 0;
+        var noPrePit = preForms.filter(x => x[0] == team).length == 0;
         let teamData;
         var clone;
         var allNones = true;
@@ -1394,8 +1408,8 @@ async function allianceSearch(divId) {
             }
         });
 
-
-        if ((noMatch && noPrePit) || allNones) {
+        if ((noMatch && noPrePit)) { // || allNones
+            console.log("ball")
             teamData = {
                 "General": {},
                 "Auto": {},
@@ -1403,10 +1417,12 @@ async function allianceSearch(divId) {
             };
             clone = dataTableWithMatchFormat;
         } else if (noMatch) {
-            teamData = compilePrePitTeamData(team, preForms, pitForms);
+            console.log(team)
+            teamData = compilePrePitTeamData(team, preForms);
             clone = dataTableWithoutMatchFormat;
         } else {
-            teamData = compileAllTeamData(team, matchForms, preForms, pitForms);
+            console.log(team)
+            teamData = compileAllTeamData(team, matchForms, preForms);
             clone = dataTableWithMatchFormat;
         }
 
@@ -1562,14 +1578,14 @@ async function fillMatchDropdown() {
 }
 
 function test() {
-    document.getElementById("teamSearchInput").setAttribute("value", "7431");
-    eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
+    // document.getElementById("teamSearchInput").setAttribute("value", "1622");
+    // eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 
-    // document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
-    // document.getElementById("allianceTeam2SearchInput").setAttribute("value", "7130");
-    // document.getElementById("allianceTeam3SearchInput").setAttribute("value", "8006");
+    document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
+    document.getElementById("allianceTeam2SearchInput").setAttribute("value", "7130");
+    document.getElementById("allianceTeam3SearchInput").setAttribute("value", "8006");
 
-    // eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
+    eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 }
 
 test();
