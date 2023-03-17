@@ -573,7 +573,7 @@ async function changeMatchAllianceButtons(selector) {
 
         var orderNum = curOrderNum++;
         await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
-    var match = JSON.parse(getOrder(orderNum)).filter(x => x.comp_level == compLvl); //&& x.comp_level == null
+    var match = getOrder(orderNum).filter(x => x.comp_level == compLvl); //&& x.comp_level == null
 
     if (isFinals) {
         match = match.filter(x => x.set_number == parseInt(document.getElementById(selector + "MatchNumInput").value))[0];
