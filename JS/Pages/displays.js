@@ -360,7 +360,7 @@ async function teamSearch() {
     
     var teamData;
     var clone;
-    if (noMatch && noPre) {
+    if (noMatch) { // && noPre TODO: FINISH LASTER
         showElement("teamSearchNotifDiv");
         document.getElementById("teamSearchInput").style.border = "1px solid #eb776e";
         changeNotif("teamSearchNotifText", "This Team Has No Data!");
@@ -1408,7 +1408,7 @@ async function allianceSearch(divId) {
             }
         });
 
-        if ((noMatch && noPrePit)) { // || allNones
+        if ((noMatch)) { //  && noPrePit || allNones TODO: FIX THE COMPILE PRE PIT
             console.log("ball")
             teamData = {
                 "General": {},
@@ -1588,5 +1588,5 @@ function test() {
     eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 }
 
-test();
+// test();
 fillMatchDropdown();
