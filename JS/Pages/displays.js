@@ -1057,19 +1057,68 @@ function compileAllTeamData(team, match, pre) {
 
     //ALMOST TIPPED
     var tipData = match.map(x => JSON.parse(x[9]).map(y => parseInt(y)));
-    console.log(tipData, match)
     var total = sum(tipData.map(x => x[0])) + sum(tipData.map(x => x[1]));
-    console.log(total)
     data["Teleop"]["Almost Tipped"]["Type%"]["Not"] = Math.round(sum(tipData.map(x => x[0])) / total) + "%";
-    console.log(data["Teleop"]["Almost Tipped"]["Type%"])
     if (isNaN(data["Teleop"]["Almost Tipped"]["Type%"]["Not"])) {
         delete data["Teleop"]["Almost Tipped"]["Type%"];
     } else {
         data["Teleop"]["Almost Tipped"]["Type%"]["CS"] = Math.round(sum(tipData.map(x => x[0])) / total) + "%"; 
     }
 
-    console.log(match)
-    console.log(data)
+    var temp = tipData.map(x => {
+        if (sum(x) > 0) {
+            return "t";
+        } else {
+            return "f";
+        }
+    });
+
+    fillPercentData(data["Teleop"]["Almost Tipped"], "Tip%", temp, {
+        "t": "Tip",
+        "f": "Not",
+    });
+
+    //PLAYSTYLE
+    fillPercentData(data["Teleop"], "Playstyle%", match.map(x => x[10]).filter(x => x != ""), {
+        "Offensive": "Off",
+        "Defensive": "Def",
+        "Hybrid": "Hyb",
+    });
+
+    //SUCCESS%
+    fillPercentData(data["Teleop"]["Endgame"], "Success%", match.map(x => x[11]).filter(x => ["Failed Dock", "Docked"].includes(x)), {
+        "Docked": "SCS",
+        "Failed Dock": "Fail"
+    });
+
+    //ATTEMPT%
+    temp = match.map(x => x[11]).map(x => {
+        if (x == "Failed Dock") {
+            return "Docked";
+        } else {
+            return x;
+        }
+    });
+
+    fillPercentData(data["Teleop"]["Endgame"], "ATPT%", temp, {
+        "Docked": "Docked",
+        "Parked": "Parked",
+        "": "NA",
+    });
+
+    //ENGAGED
+    fillPercentData(data["Teleop"], "Engaged%", match.map(x => x[12]).filter(x => x != ""), {
+        "TRUE": "ENG",
+        "FALSE": "Not",
+    });
+
+    //REMOVE
+    delete data["Teleop"]["Penalties"];
+
+    //ADD LATER
+    delete data["Teleop"]["Score"]; //TODO: ADD LATER
+
+    return data;
 }
 
 
@@ -1513,7 +1562,7 @@ async function fillMatchDropdown() {
 }
 
 function test() {
-    document.getElementById("teamSearchInput").setAttribute("value", "5472");
+    document.getElementById("teamSearchInput").setAttribute("value", "7431");
     eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 
     // document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
