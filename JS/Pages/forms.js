@@ -118,7 +118,7 @@ async function fillTeamDropdown(selector) {
             }
         } else if (selector == "pre") {
             orderNum = curOrderNum++;
-            await getSheetData(config.assignmentsGSID, "pit" + sheetName, orderNum);
+            // await getSheetData(config.assignmentsGSID, "pit" + sheetName, orderNum);
             teams = getOrder(orderNum);
 
             var textElem = document.getElementById("preNoTeamsText");
@@ -430,7 +430,7 @@ async function secureSubmit(selector) {
         document.getElementById(selector + "UndoSubmitButton").style.display = "initial";
     } else {
         if (!submitForm(selector)) {
-            if (["pre", "pit"].includes(selector)) {
+            if (selector == "pre") {
                 var orderNum = curOrderNum++;
                 await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
                 var team = document.getElementById(selector + "TeamNumDropdown").value;
