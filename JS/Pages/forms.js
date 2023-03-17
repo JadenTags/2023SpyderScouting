@@ -381,7 +381,7 @@ function submitForm(selector) {
         if (failure != "" || playstyle == "Defensive") {
             let counter = 0;
             form = form.map(x => {
-                if (![0, 1, 10, 13, 15].includes(counter++)) {
+                if (![0, 1, 2, 3, 4, 5, 6, 10, 13, 15].includes(counter++)) {
                     return "";
                 } else {
                     return x;
