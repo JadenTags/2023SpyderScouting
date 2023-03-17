@@ -1052,6 +1052,22 @@ function compileAllTeamData(team, match, pre) {
     fillScoreData(data["Teleop"]["CUBE Mid Row"], match.map(x => JSON.parse(x[8])[1]));
     fillScoreData(data["Teleop"]["CUBE Bot Row"], match.map(x => JSON.parse(x[8])[2]));
 
+    //CARGO AVG
+    delete ["Teleop"]["Cargo AVG"]; //TODO: FINISH
+
+    //ALMOST TIPPED
+    var tipData = match.map(x => JSON.parse(x[9]).map(y => parseInt(y)));
+    console.log(tipData, match)
+    var total = sum(tipData.map(x => x[0])) + sum(tipData.map(x => x[1]));
+    console.log(total)
+    data["Teleop"]["Almost Tipped"]["Type%"]["Not"] = Math.round(sum(tipData.map(x => x[0])) / total) + "%";
+    console.log(data["Teleop"]["Almost Tipped"]["Type%"])
+    if (isNaN(data["Teleop"]["Almost Tipped"]["Type%"]["Not"])) {
+        delete data["Teleop"]["Almost Tipped"]["Type%"];
+    } else {
+        data["Teleop"]["Almost Tipped"]["Type%"]["CS"] = Math.round(sum(tipData.map(x => x[0])) / total) + "%"; 
+    }
+
     console.log(match)
     console.log(data)
 }

@@ -564,15 +564,15 @@ function toggleGamePiece(gpId) {
 }
 
 async function changeMatchAllianceButtons(selector) {
-    var orderNum = curOrderNum++;
-    await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
+    await waitGlobalData();
 
     var compLvl = "qm";
     if (isFinals) {
         compLvl = document.getElementById("matchFormFinalDropdown").value;
     }
 
-    var match = getOrder(orderNum).filter(x => x.comp_level == compLvl); //&& x.comp_level == null
+    var match = JSON.parse(localStorage.getItem("closestCompMatches")).filter(x => x.comp_level == compLvl); //&& x.comp_level == null
+
     if (isFinals) {
         match = match.filter(x => x.set_number == parseInt(document.getElementById(selector + "MatchNumInput").value))[0];
     } else {
@@ -595,31 +595,40 @@ async function changeMatchAllianceButtons(selector) {
         var counter = 1;
 
         alliance.team_keys.forEach(team => {
-            if (selector == "online") {
-                if (submittedForms[document.getElementById("onlineMatchNumInput").value].includes(team.replace("frc", ""))) {
-                    let button = document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter + "Button");
-                    button.innerHTML = "OK";
-                    button.setAttribute("onclick", "return;" + button.getAttribute("onclick"));
-
-                    if (button.getAttribute("class").includes("selectedButton")) {
-                        togglePushButton(selector + key[0].toUpperCase() + key.slice(1) + counter + "Button");
-                        hideElement(selector + key[0].toUpperCase() + key.slice(1) + counter + "FormDiv");
-                        showElement("onlineSelectFormDiv");
-                    }
-
-                    counter++;
-                } else {
-                    let button = document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button");
-                    button.innerHTML = team.replace("frc", "");
-                    button.setAttribute("onclick", button.getAttribute("onclick").replace("return;", ""));
-                }
-            } else {
-                document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button").innerHTML = team.replace("frc", "");
-            }
+            let button = document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button");
+            button.innerHTML = team.replace("frc", "");
+            button.setAttribute("onclick", button.getAttribute("onclick").replace("return;", ""));
         });
     });
     
     showElement(selector + "MatchInnerDiv");
+
+    var scoutedTeams = [];
+    
+    var orderNum = curOrderNum++;
+    var tempName = sheetName;
+    if (isFinals) {
+        tempName += "FINALS";
+    }
+    await getSheetData(config.matchGSID, tempName, orderNum);
+    getOrder(orderNum).forEach(form => {
+        if (form[1] == document.getElementById(selector + "MatchNumInput").value) {
+            scoutedTeams.push(form[0]);
+        }
+    });
+
+    Array.from(document.getElementsByClassName("inPersonAllianceButton")).forEach(button => {
+        if (scoutedTeams.includes(button.innerHTML)) {
+            button.innerHTML = "OK";
+            button.setAttribute("onclick", "return;" + button.getAttribute("onclick"));
+
+            if (button.getAttribute("class").includes("selectedButton")) {
+                togglePushButton(button.id);
+            }
+        }
+    });
+
+    console.log(scoutedTeams)
 }
 
 function changeCounter(counterId, isAdding) {
