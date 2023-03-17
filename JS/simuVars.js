@@ -14,6 +14,6 @@ var matchNum;
 //COMP: LEAVE UNINITIALIZED
 //NOT COMP: DO WHATEVER
 
-// localStorage.clear()
+localStorage.clear()
 //COMP: LEAVE COMMENTED
 //TESTNG: LEAVE UNCOMMNETED

@@ -8,8 +8,6 @@ var lockedDivs = {
 };
 var submittedForms = {};
 var curDiv = "mainDiv";
-var autoProfileFormat = document.getElementById("autoProfile1").innerHTML;
-var autoProfiles = [document.getElementById("autoProfile1")];
 var onlineSelectedMatch;
 var cyclingOnline;
 var notifColor = "#eb776e";
@@ -144,7 +142,7 @@ function submitForm(selector) {
 
         //DIMENSIONS
         var dimensions = [];
-        ["length", "width", "height"].forEach(dimension => {
+        ["length", "width"].forEach(dimension => {
             let element = document.getElementById(dimension + "Input");
 
             if (isNaN(parseInt(element.value)) && element.value != "") {
@@ -165,84 +163,26 @@ function submitForm(selector) {
 
         form.push(JSON.stringify(dimensions));
 
-        //DB INFO
-        var dbInfos = [];
-        ["Type", "Motor"].forEach(dbInfoType => {
-            dbInfos.push(document.getElementById("db" + dbInfoType + "Input").value);
-        });
-        form.push(JSON.stringify(dbInfos));
+        //DB TYPE
+        form.push(document.getElementById("dbTypeInput").value);
 
         //HAS GOM
         form.push(document.getElementById("hasGOMButton").value == true);
         
-        //AUTO
-        if (!document.getElementById("noAutoButton").value == true) {
+        //NO AUTO
+        form.push(document.getElementById("noAutoButton").value == true);
+
+
+        if (!form[form.length - 1]) {
             //AUTO GENERATING AUTO
             form.push(document.getElementById("autoGenButton").value == true);
 
-            //AUTO PROFILES
-            var autoProfilesArray = [];
-            autoProfiles.forEach(profile => {
-                let id = profile.id;
-                let info = [];
-
-                //SET POS
-                if (document.getElementById("setPosButton" + id).value && document.getElementById("fieldPin" + id).value) {
-                    info.push(document.getElementById("fieldPin" + id).value);
-                } else {
-                    info.push("");
-                }
-
-                //REQUIRED SETUP
-                var setup = [];
-                if (document.getElementById("requiredSetupButton" + id).value) {
-                    ["One", "Two", "Three", "Four"].forEach(setupPiece => {
-                        let value = document.getElementById("requiredSetup" + setupPiece + id).value;
-        
-                        if (!value) {
-                            value = 0;
-                        }
-        
-                        setup.push(elementsCycle[value]);
-                    });
-                } else {
-                    setup = "";
-                }
-                info.push(setup);
-                
-                //SCORES
-                var scores = {};
-                if (document.getElementById("autoScoresButton" + id).value) {
-                    ["preload", "1st", "2nd", "3rd", "4th"].forEach(score => {
-                        let column = document.getElementById(score + "ColumnInput" + id).value;
-
-                        if (column != "") {
-                            scores[score] = [document.getElementById(score + "RowDropdown" + id).value, column];
-                        }
-                    });
-                } else {
-                    scores = "";
-                }
-                info.push(scores);
-
-                //MOBILE
-                info.push(document.getElementById("mobileButtonAuto" + id).value == true);
-
-                //DOCK TYPE
-                if (document.getElementById("canDockButtonAuto" + id).value) {
-                    var dockType;
-                    info.push(getGroupButtonValue("autoBalType" + id.replace("autoProfile", ""), null));
-                } else {
-                    info.push("");
-                }
-
-                //AUTO NOTES
-                info.push(document.getElementById("autoNotes" + id).value);
-
-                autoProfilesArray.push(info);
-            });
-
-            form.push(JSON.stringify(autoProfilesArray));
+            //CLIMB TYPE
+            if (document.getElementById("autoClimbButton").value) {
+                form.push(getGroupButtonValue("autoClimbTypeButton"));
+            } else {
+                form.push("");
+            }
         } else {
             form.push("");
             form.push("");
@@ -285,48 +225,11 @@ function submitForm(selector) {
 
         //PREFERRED PLAYSTYLE
         form.push(getGroupButtonValue("preferButton"));
-        
-        //PREFERRED GAME PIECE
-        form.push(getGroupButtonValue("preferGPButton"));
-
-        //ABLE PLAYSTYLES
-        var ablePlaystyles = [];
-        ["Off", "Def"].forEach(playstyle => {
-            if (document.getElementById("able" + playstyle + "Button").value) {
-                ablePlaystyles.push(playstyle + "ensive");
-            }
-        });
-        if (!ablePlaystyles) {
-            ablePlaystyles = "";
-        } else {
-            ablePlaystyles = JSON.stringify(ablePlaystyles);
-        }
-        form.push(ablePlaystyles)
-
-        //PREFERRED STATION
-        form.push(getGroupButtonValue("preferStationButton"));
-
-        //PIC OF WHOLE ROBOT
-        // console.log(document.getElementById("robotPic").files[0])
-
-        //DOCK TIME
-        if (document.getElementById("canDockButtonTele").value) {
-            form.push(document.getElementById("balanceTimeInput").value);
-
-            if (isNaN(parseInt(form[form.length - 1])) && form[form.length - 1] != "") {
-                document.getElementById("balanceTimeInput").style.border = "1px solid " + notifColor;
-                showElement("balanceTimeNotifText");
-                end = true;
-            } else {
-                document.getElementById("balanceTimeInput").style.border = "1px solid " + borderColor;
-                hideElement("balanceTimeNotifText");
-            }
-        } else {
-            form.push("");
-        }
 
         //EXTRA NOTES
         form.push(document.getElementById("preExtraNotes").value);
+        
+        console.log(form)
         
         if (end) {
             return true;
@@ -535,7 +438,6 @@ async function secureSubmit(selector) {
                 var teams = temp[0].filter(x => parseInt(x) != team && x != "");
                 var orderNum = curOrderNum++;
                 await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
-                console.log(getOrder(orderNum), teams, team);
                 await clearData(config.assignmentsGSID, selector + sheetName);
                 var orderNum = curOrderNum++;
                 await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
@@ -580,8 +482,7 @@ function refreshForm(selector) { //TODO: REDO
     document.getElementById(selector + "RefreshDiv").style.display = "none";
     document.getElementById(selector + "Div").appendChild(formDivs[selector].cloneNode(true));
     
-    if (selector == "pre") {``
-        activatePin("fieldautoProfile1", "fieldPinautoProfile1");
+    if (selector == "pre") {
         fillTeamDropdown(selector);
     } else if (selector == "pit") {
         // activatePin("fieldChanges", "fieldPinChanges");
@@ -929,59 +830,8 @@ function displayAutoScoresDiv(selector) {
     }
 }
 
-async function addAutoProfile() {
-    var div = document.createElement("div");
-    var num = (autoProfiles.length + 1);
-    div.id = "autoProfile" + num;
-    div.style.display = "none";
-    div.innerHTML = autoProfileFormat.replaceAll("autoProfile1", "autoProfile" + num).replaceAll("autoBalType1", "autoBalType" + num);
-
-    var option = document.createElement("option");
-    option.innerHTML = "Auto " + num;
-    option.value = num;
-    document.getElementById("preAutoDropdown").appendChild(option);
-
-    activateDivButtons(div.id);
-
-    autoProfiles.push(div);
-
-    document.getElementById("autoDiv").appendChild(div);
-    
-    while (!document.getElementById("field" + div.id)) {
-        await wait(100);
-    }
-
-    activatePin("field" + div.id, "fieldPin" + div.id);
-    document.getElementById("preAutoDropdown").selectedIndex = autoProfiles.length - 1;
-    selectAutoProfile();
-}
-
-function deleteAutoProfile() {
-    if (autoProfiles.length > 1) {
-        var profile = autoProfiles.pop(); 
-        profile.remove();
-        document.getElementById("preAutoDropdown").childNodes[document.getElementById("preAutoDropdown").childNodes.length - 1].remove();
-
-        document.getElementById("preAutoDropdown").selectedIndex = autoProfiles.length - 1;
-        selectAutoProfile();
-    }
-}
-
-function selectAutoProfile() {
-    var profileId = "autoProfile" + document.getElementById("preAutoDropdown").value;
-
-    autoProfiles.forEach(profile => {
-        if (profile.id != profileId) {
-            profile.style.display = "none";
-        } else {
-            profile.style.display = "initial";
-        }
-    });
-}
-
 removeFinalsDropdown();
 // checkFinalsDropdown();
 storeForms();
-activatePin("fieldautoProfile1", "fieldPinautoProfile1");
 cycleCheckDropdown("pre");
 // cycleCheckDropdown("pit");

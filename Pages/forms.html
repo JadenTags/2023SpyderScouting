@@ -65,9 +65,6 @@
       <label class="measurementText">" x</label>
 
       <input id="widthInput" class="measurementInput" placeholder="W" type="number" max="999"></input>
-      <label class="measurementText">" x</label>
-
-      <input id="heightInput" class="measurementInput" placeholder="H" type="number" max="999"></input>
       <label class="measurementText">"</label>
 
       <div id="dimensionsNotifText" style="display: none;">
@@ -79,7 +76,6 @@
 
       <p class="formSubheader">Drivebase Information</p>
       <input id="dbTypeInput" placeholder="Type" type="text"></input>
-      <input id="dbMotorInput" placeholder="Motors" type="text"></input>
 
       <br>
 
@@ -99,140 +95,11 @@
 
         <br>
 
-        <p class="preAutoProfileButton" onclick="deleteAutoProfile()">-</p>
-        <select id="preAutoDropdown" onchange="selectAutoProfile()">
-          <option value="1">Auto 1</option>
-        </select>
-        <p class="preAutoProfileButton" onclick="addAutoProfile()">+</p>
-        
-        <br>
+        <p id="autoClimbButton" class="pushButton" onclick="toggleElement('autoClimbTypeDiv')" style="margin-top: 10px;">Climb</p>
 
-        <div id="autoProfile1"> <!--DO THIS-->
-          <p id="setPosButtonautoProfile1" class="pushButton" onclick="toggleElement('fieldPosDivautoProfile1');">Fixed Position</p>
-          <p id="requiredSetupButtonautoProfile1" class="pushButton" onclick="toggleElement('requiredSetupDivautoProfile1');">Required Setup</p>
-          <p id="autoScoresButtonautoProfile1" class="pushButton" onclick="toggleElement('autoScoresDivautoProfile1');">Scores</p>
-
-          <div id="autoScoresDivautoProfile1" style="display: none;">
-            <br>
-            <select id="autoScoresDropdownautoProfile1" class="teamNumDropdown" onchange="displayAutoScoresDiv('autoProfile1')">
-              <option value="preload">Preload</option>
-              <option value="1st">1st GP</option>
-              <option value="2nd">2nd GP</option>
-              <option value="3rd">3rd GP</option>
-              <option value="4th">4th GP</option>
-            </select>
-            
-            <div id="preloadScoresDivautoProfile1">
-              <select id="preloadRowDropdownautoProfile1" class="autoScoreRowDropdown" style="display:inline;">
-                <option value="high">High Row,</option>
-                <option value="mid">Mid Row,</option>
-                <option value="low">Low Row,</option>
-              </select>
-
-              <label class="autoScoreLabel"> Column </label>
-
-              <input id="preloadColumnInputautoProfile1" class="measurementInput" placeholder="C" type="number" min="1" max="9"></input>
-            </div>
-            
-            <div id="1stScoresDivautoProfile1" style="display:none;">
-              <select id="1stRowDropdownautoProfile1" class="autoScoreRowDropdown" style="display:inline;">
-                <option value="high">High Row,</option>
-                <option value="mid">Mid Row,</option>
-                <option value="low">Low Row,</option>
-              </select>
-
-              <label class="autoScoreLabel"> Column </label>
-
-              <input id="1stColumnInputautoProfile1" class="measurementInput" placeholder="C" type="number" min="1" max="9"></input>
-            </div>
-            
-            <div id="2ndScoresDivautoProfile1" style="display:none;">
-              <select id="2ndRowDropdownautoProfile1" class="autoScoreRowDropdown" style="display:inline;">
-                <option value="high">High Row,</option>
-                <option value="mid">Mid Row,</option>
-                <option value="low">Low Row,</option>
-              </select>
-
-              <label class="autoScoreLabel"> Column </label>
-
-              <input id="2ndColumnInputautoProfile1" class="measurementInput" placeholder="C" type="number" min="1" max="9"></input>
-            </div>
-            
-            <div id="3rdScoresDivautoProfile1" style="display:none;">
-              <select id="3rdRowDropdownautoProfile1" class="autoScoreRowDropdown" style="display:inline;">
-                <option value="high">High Row,</option>
-                <option value="mid">Mid Row,</option>
-                <option value="low">Low Row,</option>
-              </select>
-
-              <label class="autoScoreLabel"> Column </label>
-
-              <input id="3rdColumnInputautoProfile1" class="measurementInput" placeholder="C" type="number" min="1" max="9"></input>
-            </div>
-            
-            <div id="4thScoresDivautoProfile1" style="display:none;">
-              <select id="4thRowDropdownautoProfile1" class="autoScoreRowDropdown" style="display:inline;">
-                <option value="high">High Row,</option>
-                <option value="mid">Mid Row,</option>
-                <option value="low">Low Row,</option>
-              </select>
-
-              <label class="autoScoreLabel"> Column </label>
-
-              <input id="4thColumnInputautoProfile1" class="measurementInput" placeholder="C" type="number" min="1" max="9"></input>
-            </div>
-          </div>
-
-          <div id="fieldPosDivautoProfile1" style="display: none;">
-            <img id="fieldautoProfile1" class="field" src="../Images/field.png" style="margin-top:10px;">
-            <img id="fieldPinautoProfile1" class="fieldPin" src="../Images/pin.png">
-          </div>
-
-          <div id="requiredSetupDivautoProfile1" style="display: none;">
-            <div class="requiredSetupDiv">
-              <img id="requiredSetupOneautoProfile1" class="requiredSetupPiece" value="either" src="../Images/either.png">
-              <img id="requiredSetupTwoautoProfile1" class="requiredSetupPiece" value="either" src="../Images/either.png">
-              <img id="requiredSetupThreeautoProfile1" class="requiredSetupPiece" value="either" src="../Images/either.png">
-              <img id="requiredSetupFourautoProfile1" class="requiredSetupPiece" value="either" src="../Images/either.png">
-            </div>
-            <div class="requiredSetupButtons">
-              <div class="requiredSetupPieceDiv">
-                <p id="leftCycleOneautoProfile1" class="button" onclick="leftCycleSetup('OneautoProfile1');">&lt;</p>
-                <p id="rightCycleOneautoProfile1" class="button" onclick="rightCycleSetup('OneautoProfile1');">&gt;</p>
-              </div>
-
-              <div class="requiredSetupPieceDiv">
-                <p id="leftCycleTwoautoProfile1" class="button" onclick="leftCycleSetup('TwoautoProfile1');">&lt;</p>
-                <p id="rightCycleTwoautoProfile1" class="button" onclick="rightCycleSetup('TwoautoProfile1');">&gt;</p>
-              </div>
-
-              <div class="requiredSetupPieceDiv">
-                <p id="leftCycleThreeautoProfile1" class="button" onclick="leftCycleSetup('ThreeautoProfile1');">&lt;</p>
-                <p id="rightCycleThreeautoProfile1" class="button" onclick="rightCycleSetup('ThreeautoProfile1');">&gt;</p>
-              </div>
-
-              <div class="requiredSetupPieceDiv">
-                <p id="leftCycleOneFourautoProfile1" class="button" onclick="leftCycleSetup('FourautoProfile1');">&lt;</p>
-                <p id="rightCycleOneFourautoProfile1" class="button" onclick="rightCycleSetup('FourautoProfile1');">&gt;</p>
-              </div>
-            </div>
-          </div>
-
-          <br>
-
-          <p id="mobileButtonAutoautoProfile1" class="pushButton" style="margin-top: 10px;">Mobile</p>
-          <p id="canDockButtonAutoautoProfile1" class="pushButton" onclick="toggleElement('autoDockTypeDivautoProfile1');">Can Dock</p>
-
-          <div id="autoDockTypeDivautoProfile1" style="display: none;">
-            <br>
-
-            <p id="deadReckoningAutoBalautoProfile1" class="autoBalType1 groupedButton startGroupedButton" style="margin-top: 5px;">Dead Reckoning</p>
-            <p id="autoBalAutoBalautoProfile1" class="autoBalType1 groupedButton endGroupedButton">Auto Bal</p>
-          </div>
-
-          <br>
-
-          <textarea id="autoNotesautoProfile1" class="notesArea" placeholder="Auto Notes"></textarea>
+        <div id="autoClimbTypeDiv" style="display: none;">
+          <p id="autoClimbTypeDeadReckoning" class="autoClimbTypeButton groupedButton startGroupedButton">Dead Reckoning</p>
+          <p id="autoClimbTypeDeadAutoBal" class="autoClimbTypeButton groupedButton endGroupedButton">Auto</p>
         </div>
       </div>
 
@@ -276,34 +143,9 @@
       <p id="preferDefButton" class="preferButton groupedButton">Defensive</p>
       <p id="preferHybButton" class="preferButton endGroupedButton groupedButton">Hybrid</p>
 
-      <p class="formSubheader">Preferred Game Piece</p>
-      <p id="preferGPConeButton" class="preferGPButton startGroupedButton groupedButton">Cone</p>
-      <p id="preferGPCubeButton" class="preferGPButton groupedButton">Cube</p>
-      <p id="preferGPNoPrefButton" class="preferGPButton endGroupedButton groupedButton">No Preference</p>
-
-      <p class="formSubheader">Able Playstyles</p>
-      <p id="ableOffButton" class="pushButton">Offensive</p>
-      <p id="ableDefButton" class="pushButton">Defensive</p>
-
-      <p class="formSubheader">Preferred Station</p>
-      <p id="preferStationSingleButton" class="preferStationButton startGroupedButton groupedButton">Single</p>
-      <p id="preferGPStationDoubleButton" class="preferStationButton endGroupedButton groupedButton">Double</p>
-
       <!-- <br>
       <p class="formSubheader">Pic of Whole Robot</p>
       <input id="robotPic" type="file" accept="image/*" style="margin-top:10px;" multiple> -->
-
-      <br>
-      <p id="canDockButtonTele" class="pushButton" onclick="toggleElement('teleDockDiv');">Can Dock</p>
-
-      <div id="teleDockDiv" style="display:none;">
-        <p class="formSubheader">Time To Balance</p>
-        <input id="balanceTimeInput" placeholder="Seconds" type="number" min="0"></input>
-
-        <div id="balanceTimeNotifText" style="display:none;">
-          <p class="toggleNotifText">Time To Balance Has To Be A Number!</p>
-        </div>
-      </div>
 
       <br>
 
@@ -2999,7 +2841,7 @@
 
         <br>
 
-        <!-- <div id="inPersonMatchInnerDiv">
+        <div id="inPersonMatchInnerDiv">
           <P id="inPersonBlue1Button"
             class="inPersonAllianceButton blueAllianceButton startGroupedButton groupedButton">One</P>
           <P id="inPersonBlue2Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Two</P>
@@ -3009,11 +2851,11 @@
           <P id="inPersonRed2Button" class="inPersonAllianceButton redAllianceButton groupedButton">Two</P>
           <P id="inPersonRed3Button" class="inPersonAllianceButton redAllianceButton endGroupedButton groupedButton"
             style="margin-top: 10px;">Three</P>
-        </div> -->
+        </div>
         <br>
 
-        <input type="number" id="inPersonTeamNumInput" class="inputInput" placeholder="Team #"
-          onchange=""></input>
+        <!-- <input type="number" id="inPersonTeamNumInput" class="inputInput" placeholder="Team #"
+          onchange=""></input> -->
 
         <br>
 
@@ -3442,7 +3284,6 @@
 <script src="../JS/Functions/navFunctions.js"></script>
 <script src="../JS/Functions/sheetsFunctions.js"></script>
 <script src="../JS/Functions/tbaFunctions.js"></script>
-<script src="../JS/Functions/pinDropFunctions.js"></script>
 <script src="../JS/Functions/globalDataFunctions.js"></script>
 <script src="../JS/Functions/buttonFunctions.js"></script>
 <script src="../JS/Pages/forms.js"></script>

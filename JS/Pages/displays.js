@@ -4,16 +4,11 @@ const dataTableWithMatchFormat = {
         "DIM": {
             "Length": "",
             "Width": "",
-            "Height": "",
-            "INFO": [[1, 1, 1], "NORMAL"]
-        },
-        "DB Info": {
-            "Type": "",
-            "Motor": "",
             "INFO": [[1, 1], "NORMAL"]
         },
+        "DB Type": "",
         "Auto-Gen": "",
-        "Autos": "",
+        "Bal Type": "",
         "Cones": {
             "Top": "",
             "Mid": "",
@@ -27,13 +22,6 @@ const dataTableWithMatchFormat = {
             "INFO": [[1, 1, 1], "HAVE"]
         },
         "Pref PS": "",
-        "Pref GP": "",
-        "Pref SS": "",
-        "Playstyles": {
-            "Offensive": "",
-            "Defensive": "",
-            "INFO": [[1, 1], "HAVE"]
-        },
         "Failure%": {
             "MF": "",
             "CF": "",
@@ -367,8 +355,7 @@ async function teamSearch() {
     orderNum = curOrderNum++;
     await getSheetData(config.matchGSID, tempName, orderNum);
     var matchForms = getOrder(orderNum);
-    
-    var noMatch = matchForms.filter(x => x[1] == team).length == 0;
+    var noMatch = matchForms.filter(x => x[0] == team).length == 0;
     var noPre = preForms.filter(x => x[0] == team).length == 0;
     
     var teamData;
@@ -979,57 +966,35 @@ function compileAllTeamData(team, match, pre) {
         var dims = JSON.parse(pre[1]);
         fillData(data["General"]["DIM"], "Length", dims[0], 0);
         fillData(data["General"]["DIM"], "Width", dims[1], 1);
-        fillData(data["General"]["DIM"], "Height", dims[2], 2);
         checkEmpty(data["General"], "DIM");
     
         //DB INFO
-        var dbInfo = JSON.parse(pre[2]);
-        fillData(data["General"]["DB Info"], "Type", dbInfo[0], 0);
-        fillData(data["General"]["DB Info"], "Motor", dbInfo[1], 0);
-        checkEmpty(data["General"], "DB Info");
+        fillData(data["General"], "DB Type", pre[2], null);
     
         //AUTO GENERATING AUTO
-        fillData(data["General"], "Auto-Gen", pre[4], null);
-    
-        //AUTOS
-        data["General"]["Autos"] = JSON.parse(pre[5]).length;
+        fillData(data["General"], "Auto-Gen", pre[5], null);
+
+        //BAL TYPE
+        fillData(data["General"], "Bal Type", pre[6], null);
     
         //CONES REACHES
-        var cones = JSON.parse(pre[7]);
+        var cones = JSON.parse(pre[8]);
         var coneHeaders = Object.keys(data["General"]["Cones"]);
         for (var i = 0; i < cones.length; i++) {
             data["General"]["Cones"][coneHeaders[i]] = cones[i];
         }
     
         //CUBES REACHES
-        var cubes = JSON.parse(pre[8]);
+        var cubes = JSON.parse(pre[9]);
         var cubeHeaders = Object.keys(data["General"]["Cubes"]);
         for (var i = 0; i < cubes.length; i++) {
             data["General"]["Cubes"][cubeHeaders[i]] = cubes[i];
         }
         
         //PREFERRED PLAYSTYLE
-        fillData(data["General"], "Pref PS", pre[9], null);
-        
-        //PREFERRED GP
-        fillData(data["General"], "Pref GP", pre[10], null);
-        
-        //PREFERRED STATION
-        fillData(data["General"], "Pref SS", pre[12], null);
-    
-        //PLAYSTYLES
-        var playstyles = JSON.parse(pre[11]);
-        Object.keys(data["General"]["Playstyles"]).forEach(key => {
-            if (key != "INFO") {
-                if (playstyles.includes(key)) {
-                    data["General"]["Playstyles"][key] = true;
-                } else {
-                    data["General"]["Playstyles"][key] = false;
-                }
-            }
-        });
+        fillData(data["General"], "Pref PS", pre[10], null);
     } else {
-        ["DIM", "DB Info", "Auto-Gen", "Autos", "Cones", "Cubes", "Pref PS", "Pref GP", "Pref SS", "Playstyles"].forEach(preData => {
+        ["DIM", "DB Type", "Auto-Gen", "Bal Type", "Cones", "Cubes", "Pref PS"].forEach(preData => {
             delete data["General"][preData];
         });
     }
@@ -1047,7 +1012,45 @@ function compileAllTeamData(team, match, pre) {
     
     ///////////////////////////AUTO
     //MOBILITY%
+    fillPercentData(data["Auto"], "Mobility%", match.map(x => x[2]).filter(x => x != ""), {
+        "TRUE": "Got",
+        "FALSE": "Not"
+    });
+
+    //CONES
+    fillScoreData(data["Auto"]["CONE Top Row"], match.map(x => JSON.parse(x[3])[0])); 
+    fillScoreData(data["Auto"]["CONE Mid Row"], match.map(x => JSON.parse(x[3])[1]));
+    fillScoreData(data["Auto"]["CONE Bot Row"], match.map(x => JSON.parse(x[3])[2]));
+
+    //CUBES
+    fillScoreData(data["Auto"]["CUBE Top Row"], match.map(x => JSON.parse(x[4])[0])); 
+    fillScoreData(data["Auto"]["CUBE Mid Row"], match.map(x => JSON.parse(x[4])[1]));
+    fillScoreData(data["Auto"]["CUBE Bot Row"], match.map(x => JSON.parse(x[4])[2]));
      
+    //DOCK
+    fillPercentData(data["Auto"], "Dock", match.map(x => x[5]).filter(x => x != ""), {
+        "Docked": "SCS",
+        "Failed Dock": "Fail"
+    });
+
+    //Engaged%
+    fillPercentData(data["Auto"], "Engaged%", match.map(x => x[6]).filter(x => x != ""), {
+        "TRUE": "ENG",
+        "False": "Not"
+    });
+
+    delete data["Auto"]["Score"]; //TODO: FINISH SCORE
+    
+    ///////////////////////////Teleop
+    //CONES
+    fillScoreData(data["Teleop"]["CONE Top Row"], match.map(x => JSON.parse(x[7])[0])); 
+    fillScoreData(data["Teleop"]["CONE Mid Row"], match.map(x => JSON.parse(x[7])[1]));
+    fillScoreData(data["Teleop"]["CONE Bot Row"], match.map(x => JSON.parse(x[7])[2]));
+
+    //CUBES
+    fillScoreData(data["Teleop"]["CUBE Top Row"], match.map(x => JSON.parse(x[8])[0])); 
+    fillScoreData(data["Teleop"]["CUBE Mid Row"], match.map(x => JSON.parse(x[8])[1]));
+    fillScoreData(data["Teleop"]["CUBE Bot Row"], match.map(x => JSON.parse(x[8])[2]));
 
     console.log(match)
     console.log(data)
@@ -1108,7 +1111,6 @@ function fillScoreData(data, match) {
 function fillPercentData(data, key, matches, equivObj) {
     if (matches.length != 0) {
         var occurencesObj = getOccurencesObj(matches, Object.keys(equivObj));
-       
         Object.keys(occurencesObj).forEach(x => {
             let percent = occurencesObj[x] / matches.length;
            
@@ -1473,6 +1475,8 @@ function fillMissingHeaders(objs) {
 }
 
 async function fillMatchDropdown() {
+    await waitGlobalData();
+
     var dropdown = document.getElementById("matchSearchMatchNumDropdown");
     var oN = curOrderNum++;
     await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
@@ -1493,7 +1497,7 @@ async function fillMatchDropdown() {
 }
 
 function test() {
-    document.getElementById("teamSearchInput").setAttribute("value", "1");
+    document.getElementById("teamSearchInput").setAttribute("value", "5472");
     eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 
     // document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
