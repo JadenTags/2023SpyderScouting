@@ -456,7 +456,6 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                     let ogLength = headerInfo["INFO"][0].length;
 
                     while (headerInfo["INFO"][0].length > 0) {
-                        console.log(parseInt(heightsObj[section][header].replace("px", "")), headerInfo);
                         let miniMiniTable = createNormalMiniTable(headerInfo, color, (parseInt(heightsObj[section][header].replace("px", ""))) / ogLength / 2 + "px");
 
                         if (headerInfo["INFO"][0].length == ogLength - 1) {
@@ -1412,7 +1411,7 @@ function checkEmpty(data, key) {
     }
 }
 
-async function allianceSearch(teams, divId) {
+async function allianceSearch(teams, divId, notifSelector) {
     if (!teams) {
         var teams = [];
     
@@ -1424,7 +1423,7 @@ async function allianceSearch(teams, divId) {
     var dataTableDiv = document.getElementById(divId);
 
     dataTableDiv.innerHTML = "";
-    hideElement("allianceSearchNotifDiv");
+    hideElement(notifSelector + "SearchNotifDiv");
     document.getElementById("allianceTeam1SearchInput").style.border = "1px solid #c5c7c5";
     document.getElementById("allianceTeam2SearchInput").style.border = "1px solid #c5c7c5";
     document.getElementById("allianceTeam3SearchInput").style.border = "1px solid #c5c7c5";
@@ -1531,15 +1530,16 @@ async function allianceSearch(teams, divId) {
     orderNum = curOrderNum++;
     await getSheetData(config.matchGSID, tempName, orderNum);
     var matchForms = getOrder(orderNum);
-
-    if (preForms.filter(x => teams.includes(x[0])) + matchForms.filter(x => teams.includes(x[0])) == "") {
-        for (var i = 1; i <= 3; i++) {
-            document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
+    if (matchForms.filter(x => teams.includes(x[0])) == "") {
+        if (notifSelector == "alliance") {
+            for (var i = 1; i <= 3; i++) {
+                document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
+            }
         }
 
         changeNotif("allianceSearchNotifText", "No Data!");
 
-        showElement("allianceSearchNotifDiv");
+        showElement(notifSelector + "SearchNotifDiv");
         return;
     }
     
@@ -1708,6 +1708,10 @@ async function fillMatchDropdown() {
     await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
     var teamMatches = getOrder(oN);
 
+    if (isFinals) {
+        teamMatches = teamMatches.filter(x => x.comp_level == "sf");
+    }
+
     var counter = 0;
     teamMatches.map(x => x.match_number).sort((x, y) => x - y).forEach(match => {
         let option = document.createElement("option");
@@ -1725,24 +1729,32 @@ async function fillMatchDropdown() {
 async function matchSearch() {
     await waitGlobalData();
 
-    var matchNum = document.getElementById("matchSearchMatchNumDropdown").value;
+    if (document.getElementById("matchSearchMatchNumDropdown").childNodes.length > 0) {
+        var matchNum = document.getElementById("matchSearchMatchNumDropdown").value;
+    
+        var oN = curOrderNum++;
+        await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
+        var match;
+        
+        if (isFinals) {
+            match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum) && x.comp_level == "sf")[0];
+        } else {
+            match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum))[0];
+        }
 
-    var oN = curOrderNum++;
-    await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
-    var match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum))[0];
-    var blue = match.alliances.blue.team_keys.map(x => x.replace("frc", ""));
-    var red = match.alliances.red.team_keys.map(x => x.replace("frc", ""));
-
-    if (blue.includes("1622")) {
-        allianceSearch(blue, "alliedDiv");
-        allianceSearch(red, "opposedDiv");
-    } else {
-        allianceSearch(red, "alliedDiv");
-        allianceSearch(blue, "opposedDiv");
+        var blue = match.alliances.blue.team_keys.map(x => x.replace("frc", ""));
+        var red = match.alliances.red.team_keys.map(x => x.replace("frc", ""));
+    
+        if (blue.includes("1622")) {
+            await allianceSearch(blue, "alliedDiv", "match");
+            await allianceSearch(red, "opposedDiv", "match");
+        } else {
+            await allianceSearch(red, "alliedDiv", "match");
+            await allianceSearch(blue, "opposedDiv", "match");
+        }
+    
+        //TODO: ADD OVERVIEW TAB
     }
-
-    console.log(red, blue)
-    // allianceSearch()
 }
 
 async function test() {
@@ -1758,5 +1770,5 @@ async function test() {
     // eval(document.getElementById("matchSearchSearchButton").getAttribute("onclick"));
 }
 
-test();
+// test();
 fillMatchDropdown();
