@@ -6,7 +6,7 @@ var sheetName = "ORLANDO";
 //COMP: USE THE KEYWORD THAT THE SHEETS USE (COMP NAME)
 //NOT COMP: LEAVE AS "TEST"
 
-var isFinals = false;
+var isFinals = true;
 //COMP: SET TO TRUE IF IN FINALS
 //NOT COMP: DO WHATEVER
 
