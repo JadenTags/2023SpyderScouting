@@ -97,12 +97,7 @@ const dataTableWithMatchFormat = {
             "Not": "",
             "INFO": [[2], "%"]
         },
-        "Score": {
-            "Max": "",
-            "Min": "",
-            "Avg": "",
-            "INFO": [[2, 1], "NORMAL"]
-        }
+        "AVG Score": ""
     },
     "Teleop": {
         "Cones": "SPACER",
@@ -370,7 +365,6 @@ async function teamSearch() {
         teamData = compilePrePitTeamData(team, preForms);
         clone = dataTableWithoutMatchFormat;
     } else {
-        console.log(matchForms, preForms)
         teamData = compileAllTeamData(team, matchForms, preForms);
         clone = dataTableWithMatchFormat;
     }
@@ -471,7 +465,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                 } else if (type == "HAVE") {
                     var height = Math.round(parseInt(heightsObj[section][header].replace("px", "")) / Object.values(headerInfo).filter(x => x && typeof x == "boolean").length);
                     var counter = 0;
-                    var headers = Object.keys(headerInfo).filter(x => x != "INFO");
+                    var headers = Object.keys(headerInfo).filter(x => x != "INFO" && headerInfo[x]);
                     headers.forEach(header => {
                         var miniInfoRow = document.createElement("tr");
                         let miniInfoData = document.createElement("td");
@@ -1001,7 +995,6 @@ function compileAllTeamData(team, match, pre) {
             data["General"]["Cubes"][cubeHeaders[i]] = cubes[i];
         }
 
-        console.log(Object.values(cubes).filter(x => x && typeof x == "boolean").length)
         if (Object.values(cubes).filter(x => x && typeof x == "boolean").length == 0) {
             delete data["General"]["Cubes"];
         }
@@ -1033,14 +1026,14 @@ function compileAllTeamData(team, match, pre) {
     });
 
     //CONES
-    fillScoreData(data["Auto"]["CONE Top Row"], match.map(x => JSON.parse(x[3])[0])); 
-    fillScoreData(data["Auto"]["CONE Mid Row"], match.map(x => JSON.parse(x[3])[1]));
-    fillScoreData(data["Auto"]["CONE Bot Row"], match.map(x => JSON.parse(x[3])[2]));
+    fillScoreData(data["Auto"]["CONE Top Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[3])[0])); 
+    fillScoreData(data["Auto"]["CONE Mid Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[3])[1]));
+    fillScoreData(data["Auto"]["CONE Bot Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[3])[2]));
 
     //CUBES
-    fillScoreData(data["Auto"]["CUBE Top Row"], match.map(x => JSON.parse(x[4])[0])); 
-    fillScoreData(data["Auto"]["CUBE Mid Row"], match.map(x => JSON.parse(x[4])[1]));
-    fillScoreData(data["Auto"]["CUBE Bot Row"], match.map(x => JSON.parse(x[4])[2]));
+    fillScoreData(data["Auto"]["CUBE Top Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[4])[0])); 
+    fillScoreData(data["Auto"]["CUBE Mid Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[4])[1]));
+    fillScoreData(data["Auto"]["CUBE Bot Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[4])[2]));
      
     //DOCK
     fillPercentData(data["Auto"], "Dock", match.map(x => x[5]).filter(x => x != ""), {
@@ -1054,25 +1047,53 @@ function compileAllTeamData(team, match, pre) {
         "FALSE": "Not"
     });
 
-    delete data["Auto"]["Score"]; //TODO: FINISH SCORE
+    //SCORE
+    var score = 0;
+    ["CONE", "CUBE"].forEach(type => {
+        ["Top", "Mid", "Bot"].forEach(row => {
+            let scored = data["Auto"][type + " " + row + " Row"];
+            if (!isNaN(scored["Always"])) {
+                scored = scored["Always"];
+            } else {
+                scored = scored["Avg"]
+            }
+
+            if (row == "Top") {
+                scored *= 6;
+            } else if (row == "Mid") {
+                scored *= 4;
+            } else {
+                scored *= 3;
+            }
+
+            score += scored;
+        });
+    });
+
+    if (data["Auto"]["Mobility%"]["Got"]) {
+        if (convertPercent(data["Auto"]["Mobility%"]["Got"]) >= 0.5) {
+            score += 3;
+        }
+    }
+    
+    data["Auto"]["AVG Score"] = Math.round(score * 10) / 10;
     
     ///////////////////////////Teleop
     //CONES
-    fillScoreData(data["Teleop"]["CONE Top Row"], match.map(x => JSON.parse(x[7])[0])); 
-    fillScoreData(data["Teleop"]["CONE Mid Row"], match.map(x => JSON.parse(x[7])[1]));
-    fillScoreData(data["Teleop"]["CONE Bot Row"], match.map(x => JSON.parse(x[7])[2]));
+    fillScoreData(data["Teleop"]["CONE Top Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[0])); 
+    fillScoreData(data["Teleop"]["CONE Mid Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[1]));
+    fillScoreData(data["Teleop"]["CONE Bot Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[2]));
 
     //CUBES
-    fillScoreData(data["Teleop"]["CUBE Top Row"], match.map(x => JSON.parse(x[8])[0])); 
-    fillScoreData(data["Teleop"]["CUBE Mid Row"], match.map(x => JSON.parse(x[8])[1]));
-    fillScoreData(data["Teleop"]["CUBE Bot Row"], match.map(x => JSON.parse(x[8])[2]));
+    fillScoreData(data["Teleop"]["CUBE Top Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[8])[0])); 
+    fillScoreData(data["Teleop"]["CUBE Mid Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[8])[1]));
+    fillScoreData(data["Teleop"]["CUBE Bot Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[8])[2]));
 
     //CARGO AVG
     var cAve = 0;
     ["CONE", "CUBE"].forEach(type => {
         ["Top", "Mid", "Bot"].forEach(row => {
             let scored = data["Teleop"][type + " " + row + " Row"];
-            console.log(scored)
             if (!isNaN(scored["Always"])) {
                 scored = scored["Always"];
             } else {
@@ -1082,13 +1103,14 @@ function compileAllTeamData(team, match, pre) {
         });
     });
     
-    data["Teleop"]["Cargo AVG"] = cAve;
+    data["Teleop"]["Cargo AVG"] = Math.round(cAve * 10) / 10;
 
     //ALMOST TIPPED
-    if (match.map(x => JSON.parse(x[9]).map(y => parseInt(y))).map(x => x[0]).length == 0) {
+    
+    if (match.filter(x => x[9] != "").map(x => JSON.parse(x[9]).map(y => parseInt(y))).map(x => x[0]).length == 0) {
         delete data["Teleop"]["Almost Tipped"];
     } else {
-        var tipData = match.map(x => JSON.parse(x[9]).map(y => parseInt(y)));
+        var tipData = match.filter(x => x[9] != "").map(x => JSON.parse(x[9]).map(y => parseInt(y)));
         var total = sum(tipData.map(x => x[0])) + sum(tipData.map(x => x[1]));
         data["Teleop"]["Almost Tipped"]["Type%"]["Not"] = Math.round(sum(tipData.map(x => x[0])) / total) + "%";
         if (isNaN(data["Teleop"]["Almost Tipped"]["Type%"]["Not"])) {
@@ -1148,10 +1170,89 @@ function compileAllTeamData(team, match, pre) {
     //REMOVE
     delete data["Teleop"]["Penalties"];
 
-    //ADD LATER
-    delete data["Teleop"]["Score"]; //TODO: ADD LATER
+    //SCORE
+    score = 0;
+    var minScore = 0;
+    var maxScore = 0;
+    ["CONE", "CUBE"].forEach(type => {
+        ["Top", "Mid", "Bot"].forEach(row => {
+            let scored = data["Teleop"][type + " " + row + " Row"];
+            let minScored;
+            let maxScored;
+            
+            if (scored["Always"] >= 0) {
+                minScored = scored["Always"];
+                maxScored = scored["Always"];
+                scored = scored["Always"];
+            } else {
+                minScored = scored["Min"];
+                maxScored = scored["Max"];
+                scored = scored["Avg"];
+            }
+            
+            if (row == "Top") {
+                scored *= 5;
+                minScored *= 5;
+                maxScored *= 5;
+            } else if (row == "Mid") {
+                scored *= 3;
+                minScored *= 3;
+                maxScored *= 3;
+            } else {
+                scored *= 2;
+                minScored *= 2;
+                maxScored *= 2;
+            }
 
+            score += scored;
+            minScore += minScored;
+            maxScore += maxScored;
+        });
+    });
+
+    var endgame = getMaxPercent(data["Teleop"]["Endgame"]["ATPT%"]);
+
+    if (endgame == "Docked") {
+        score += 6;
+
+        if (getMaxPercent(data["Teleop"]["Engaged%"]) == "ENG") {
+            score += 4;
+        }
+    } else if (endgame == "Parked") {
+        score += 2;
+    }
+
+    data["Teleop"]["Score"]["Avg"] = Math.round(score * 10) / 10;
+    
+    if (convertPercent(data["Teleop"]["Endgame"]["ATPT%"]["Docked"]) > 0) {
+        maxScore += 6;
+
+        if (convertPercent(data["Teleop"]["Engaged%"]["ENG"]) > 0) {
+            maxScore += 4;
+        }
+    } else if (convertPercent(data["Teleop"]["Endgame"]["ATPT%"]["Parked"]) > 0) {
+        score += 2;
+    }
+    
+    data["Teleop"]["Score"]["Max"] = Math.round(maxScore * 10) / 10;
+
+    if (data["Teleop"]["Endgame"]["ATPT%"]["Parked"] != "0%") {
+        minScore += 2;
+    } else if (data["Teleop"]["Endgame"]["ATPT%"]["Engaged"] != "0%") {
+        minScore += 6;
+
+        if (data["Teleop"]["Engaged%"]["ENG"] != "0%") {
+            minScore += 4;
+        }
+    }
+    
+    data["Teleop"]["Score"]["Min"] = Math.round(minScore * 10) / 10;
+    
     return data;
+}
+
+function getMaxPercent(obj) {
+    return Object.keys(obj).filter(x => x != "INFO").map(x => [x, convertPercent(obj[x])]).sort((x, y) => y[1] - x[1])[0][0];
 }
 
 //CHANGE YEARLY
@@ -1280,11 +1381,13 @@ function checkEmpty(data, key) {
     }
 }
 
-async function allianceSearch(divId) {
-    var teams = [];
-
-    for (var i = 1; i <= 3; i++) {
-        teams.push(document.getElementById("allianceTeam" + i + "SearchInput").value);
+async function allianceSearch(teams, divId) {
+    if (!teams) {
+        var teams = [];
+    
+        for (var i = 1; i <= 3; i++) {
+            teams.push(document.getElementById("allianceTeam" + i + "SearchInput").value);
+        }
     }
 
     var dataTableDiv = document.getElementById(divId);
@@ -1423,7 +1526,6 @@ async function allianceSearch(divId) {
         });
 
         if ((noMatch)) { //  && noPrePit || allNones TODO: FIX THE COMPILE PRE PIT
-            console.log("ball")
             teamData = {
                 "General": {},
                 "Auto": {},
@@ -1431,11 +1533,9 @@ async function allianceSearch(divId) {
             };
             clone = dataTableWithMatchFormat;
         } else if (noMatch) {
-            console.log(team)
             teamData = compilePrePitTeamData(team, preForms);
             clone = dataTableWithoutMatchFormat;
         } else {
-            console.log(team)
             teamData = compileAllTeamData(team, matchForms, preForms);
             clone = dataTableWithMatchFormat;
         }
@@ -1591,15 +1691,27 @@ async function fillMatchDropdown() {
     });
 }
 
+async function matchSearch() {
+    var matchNum = document.getElementById("matchSearchMatchNumDropdown").value;
+
+    var oN = curOrderNum++;
+    await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
+    var match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum))[0];
+    
+    console.log(match)
+    // allianceSearch()
+}
+
 function test() {
-    document.getElementById("teamSearchInput").setAttribute("value", "1622");
-    eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
+    // document.getElementById("teamSearchInput").setAttribute("value", "21");
+    // eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 
     // document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
     // document.getElementById("allianceTeam2SearchInput").setAttribute("value", "7130");
     // document.getElementById("allianceTeam3SearchInput").setAttribute("value", "8006");
-
     // eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
+
+    eval(document.getElementById("matchSearchSearchButton").getAttribute("onclick"));
 }
 
 test();
