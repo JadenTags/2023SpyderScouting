@@ -446,6 +446,8 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                 miniTable.appendChild(miniRow);
                 headerData.appendChild(miniTable);
             } else {
+                headerInfo["INFO"][0] = headerInfo["INFO"][0].filter(x => x != 0);
+
                 let type = headerInfo["INFO"][1];
                 let displayForm = headerInfo["INFO"][0];
 
@@ -454,6 +456,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                     let ogLength = headerInfo["INFO"][0].length;
 
                     while (headerInfo["INFO"][0].length > 0) {
+                        console.log(parseInt(heightsObj[section][header].replace("px", "")), headerInfo);
                         let miniMiniTable = createNormalMiniTable(headerInfo, color, (parseInt(heightsObj[section][header].replace("px", ""))) / ogLength / 2 + "px");
 
                         if (headerInfo["INFO"][0].length == ogLength - 1) {
@@ -885,7 +888,9 @@ function getHeightObj(data, clone) {
 }
 
 function convertPercent(percent) {
-    return parseInt(percent.replace("%", "")) / 100;
+    if (percent) {
+        return parseInt(percent.replace("%", "")) / 100;
+    }
 }
 
 function createNormalMiniTable(data, color, height) {
@@ -1070,13 +1075,18 @@ function compileAllTeamData(team, match, pre) {
         });
     });
 
-    if (data["Auto"]["Mobility%"]["Got"]) {
-        if (convertPercent(data["Auto"]["Mobility%"]["Got"]) >= 0.5) {
-            score += 3;
+    if (data["Auto"]["Mobility%"]) {
+        if (data["Auto"]["Mobility%"]["Got"]) {
+            if (convertPercent(data["Auto"]["Mobility%"]["Got"]) >= 0.5) {
+                score += 3;
+            }
         }
     }
     
     data["Auto"]["AVG Score"] = Math.round(score * 10) / 10;
+    if (isNaN(data["Auto"]["AVG Score"])) {
+        delete data["Auto"]["AVG Score"];
+    }
     
     ///////////////////////////Teleop
     //CONES
@@ -1104,6 +1114,9 @@ function compileAllTeamData(team, match, pre) {
     });
     
     data["Teleop"]["Cargo AVG"] = Math.round(cAve * 10) / 10;
+    if (isNaN(data["Teleop"]["Cargo AVG"])) {
+        delete data["Teleop"]["Cargo AVG"];
+    }
 
     //ALMOST TIPPED
     
@@ -1227,8 +1240,10 @@ function compileAllTeamData(team, match, pre) {
     if (convertPercent(data["Teleop"]["Endgame"]["ATPT%"]["Docked"]) > 0) {
         maxScore += 6;
 
-        if (convertPercent(data["Teleop"]["Engaged%"]["ENG"]) > 0) {
-            maxScore += 4;
+        if (data["Teleop"]["Engaged%"] && data["Teleop"]["Engaged%"]["ENG"]) {
+            if (convertPercent(data["Teleop"]["Engaged%"]["ENG"]) > 0) {
+                maxScore += 4;
+            }
         }
     } else if (convertPercent(data["Teleop"]["Endgame"]["ATPT%"]["Parked"]) > 0) {
         score += 2;
@@ -1247,16 +1262,32 @@ function compileAllTeamData(team, match, pre) {
     }
     
     data["Teleop"]["Score"]["Min"] = Math.round(minScore * 10) / 10;
+    if (isNaN(data["Teleop"]["Score"]["Min"])) {
+        delete data["Teleop"]["Score"];
+    }
     
     return data;
 }
 
 function getMaxPercent(obj) {
-    return Object.keys(obj).filter(x => x != "INFO").map(x => [x, convertPercent(obj[x])]).sort((x, y) => y[1] - x[1])[0][0];
+    if (obj) {
+        return Object.keys(obj).filter(x => x != "INFO").map(x => [x, convertPercent(obj[x])]).sort((x, y) => y[1] - x[1])[0][0];
+    }
 }
 
 //CHANGE YEARLY
 function fillScoreData(data, match) {
+    if (match.length == 0) {
+        Object.keys(data).filter(x => x != "INFO").forEach(x => {
+            delete data[x];
+        });
+
+        data["NO"] = "DATA";
+        data["INFO"] = [[1], "NORMAL"];
+
+        return;
+    }
+
     match = match.map(x => x.map(y => parseInt(y)));
 
     //MIN | MAX | RNG | AVG | ACC
@@ -1692,26 +1723,39 @@ async function fillMatchDropdown() {
 }
 
 async function matchSearch() {
+    await waitGlobalData();
+
     var matchNum = document.getElementById("matchSearchMatchNumDropdown").value;
 
     var oN = curOrderNum++;
     await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
     var match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum))[0];
-    
-    console.log(match)
+    var blue = match.alliances.blue.team_keys.map(x => x.replace("frc", ""));
+    var red = match.alliances.red.team_keys.map(x => x.replace("frc", ""));
+
+    if (blue.includes("1622")) {
+        allianceSearch(blue, "alliedDiv");
+        allianceSearch(red, "opposedDiv");
+    } else {
+        allianceSearch(red, "alliedDiv");
+        allianceSearch(blue, "opposedDiv");
+    }
+
+    console.log(red, blue)
     // allianceSearch()
 }
 
-function test() {
-    // document.getElementById("teamSearchInput").setAttribute("value", "21");
-    // eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
+async function test() {
+    document.getElementById("teamSearchInput").setAttribute("value", "5816");
+    eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 
     // document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
     // document.getElementById("allianceTeam2SearchInput").setAttribute("value", "7130");
     // document.getElementById("allianceTeam3SearchInput").setAttribute("value", "8006");
     // eval(document.getElementById("allianceSearchSearchButton").getAttribute("onclick"));
 
-    eval(document.getElementById("matchSearchSearchButton").getAttribute("onclick"));
+    
+    // eval(document.getElementById("matchSearchSearchButton").getAttribute("onclick"));
 }
 
 test();
