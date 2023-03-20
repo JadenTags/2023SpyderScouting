@@ -72,7 +72,7 @@
       <input id="allianceTeam2SearchInput" class="inputInput" placeholder="Team#"></input>
       <input id="allianceTeam3SearchInput" class="inputInput" placeholder="Team#"></input>
 
-      <p id="allianceSearchSearchButton" class="button spacedElem" onclick="allianceSearch(null, 'allianceSearchDataTableDiv', 'alliance');">Search</p>
+      <p id="allianceSearchSearchButton" class="button spacedElem" onclick="allianceSearch(null, 'allianceSearchDataTableDiv', 'alliance', blueDataTableColors, percentageBlueColorOrder);">Search</p>
 
       <div id="allianceSearchNotifDiv" style="display:none;">
         <br>
@@ -99,9 +99,10 @@
 
       <br>
 
-      <p id="alliedButton" class="matchSearchButton groupedButton startGroupedButton spacedElem" onclick="hideElement('opposedDiv');hideElement('overviewDiv');hideElement('matchSearchMainDiv');if (document.getElementById('alliedButton').getAttribute('class').includes('selectedButton')) {showElement('alliedDiv')} else {hideElement('alliedDiv');showElement('matchSearchMainDiv')}">Allied</p>
-      <p id="opposedButton" class="matchSearchButton groupedButton" onclick="hideElement('alliedDiv');hideElement('overviewDiv');hideElement('matchSearchMainDiv');if (document.getElementById('opposedButton').getAttribute('class').includes('selectedButton')) {showElement('opposedDiv')} else {hideElement('opposedDiv');showElement('matchSearchMainDiv')}">Opposed</p>
-      <p id="overviewButton" class="matchSearchButton groupedButton endGroupedButton" onclick="hideElement('opposedDiv');hideElement('alliedDiv');hideElement('matchSearchMainDiv');if (document.getElementById('overviewButton').getAttribute('class').includes('selectedButton')) {showElement('overviewDiv')} else {hideElement('overviewDiv');showElement('matchSearchMainDiv')}">Overview</p>
+      <p id="alliedButton" class="matchSearchButton groupedButton startGroupedButton spacedElem" onclick="hideElement('opposedDiv');hideElement('matchSearchMainDiv');if (document.getElementById('alliedButton').getAttribute('class').includes('selectedButton')) {showElement('alliedDiv')} else {hideElement('alliedDiv');showElement('matchSearchMainDiv')}">Allied</p>
+      <p id="opposedButton" class="matchSearchButton groupedButton endGroupedButton" onclick="hideElement('alliedDiv');hideElement('matchSearchMainDiv');if (document.getElementById('opposedButton').getAttribute('class').includes('selectedButton')) {showElement('opposedDiv')} else {hideElement('opposedDiv');showElement('matchSearchMainDiv')}">Opposed</p>
+
+      <br>
 
       <div id="matchSearchMainDiv">
         <p class="title">Pick a Match!</p>
@@ -110,8 +111,6 @@
       <div id="alliedDiv" style="display:none;"></div>
       
       <div id="opposedDiv" style="display:none;"></div>
-
-      <div id="overviewDiv" style="display:none;"></div>
     </div>
   </div>
   

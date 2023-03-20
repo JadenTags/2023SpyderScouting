@@ -1,6 +1,7 @@
 const dataTableWithMatchFormat = {
     "General": {
         "Team": "",
+        "Name": "",
         "DIM": {
             "Length": "",
             "Width": "",
@@ -256,15 +257,25 @@ const blueDataTableColors = {
     "sectionHeader": "#c4c4c4",
     "spacer": "#8590ed",
 };
+
+const redDataTableColors = {
+    "singleCellHeader": "#f6a2a2",
+    "singleCellData": "#fad2d2",
+    "singleCellDataAlt": "#ffe3e3",
+    "sectionHeader": "#c4c4c4",
+    "spacer": "#ed8585",
+};
 var lockedDivs = {
     "mainDiv": "locked",
     "teamSearchDiv": "unlocked",
 };
+var nameHeight = "45px";
 const marginTopSpacing = "2px";
 const cellHeight = 30;
 const tableWidth = 24;
 const displayTableWidth = 16;
-const percentageColorOrder = ["#7286D3", "#8EA7E9", "#E4EDF1", "#FF9F9F", "#FD8A8A"];
+const percentageBlueColorOrder = ["#7286D3", "#8EA7E9", "#E4EDF1", "#FF9F9F", "#FD8A8A"];
+const percentageRedColorOrder = ["#FD8A8A", "#FF9F9F", "#E4EDF1", "#8EA7E9", "#7286D3"];
 
 async function teamSearch() {
     var team = document.getElementById("teamSearchInput").value;
@@ -371,7 +382,7 @@ async function teamSearch() {
 
     var heightObj = getHeightObj(teamData, clone);
     var titleTable = buildHeaderTable(heightObj, blueDataTableColors);
-    var data = buildTeamTable(teamData, blueDataTableColors, heightObj, null);
+    var data = buildTeamTable(teamData, blueDataTableColors, heightObj, null, percentageBlueColorOrder);
     
     var tble = document.createElement("table");
     var row = document.createElement("tr");
@@ -388,7 +399,15 @@ async function teamSearch() {
     dataTableDiv.appendChild(tble);
 }
 
-function buildTeamTable(teamData, color, heightsObj, headerOrder) {
+async function fillTeamNameCell(teamNum) {
+    var orderNum = curOrderNum++;
+    await getTBAData("team/frc" + teamNum, orderNum);
+    var data = getOrder(orderNum);
+
+    document.getElementById("teamNameCell" + teamNum).innerHTML = data["nickname"];
+}
+
+function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) {
     var table = document.createElement("table");
     var outSideLecounterTwo = 0;
     var outSideLecounter = 0;
@@ -438,6 +457,13 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                     miniData.appendChild(document.createTextNode(headerInfo));
                     miniData.style.height = heightsObj[section][header];
                 }
+
+                if (header == "Name") {
+                    miniData.id = "teamNameCell" + teamData["General"]["Team"];
+                    miniData.style.fontSize = "2vw";
+                    miniData.style.height = nameHeight;
+                    fillTeamNameCell(teamData["General"]["Team"]);
+                }
                 
                 miniData.style.width = tableWidth + "vw";
                 miniTable.style.marginTop = marginTopSpacing;
@@ -446,14 +472,16 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                 miniTable.appendChild(miniRow);
                 headerData.appendChild(miniTable);
             } else {
-                headerInfo["INFO"][0] = headerInfo["INFO"][0].filter(x => x != 0);
+                if (headerInfo["INFO"] != "ND") {
+                    headerInfo["INFO"][0] = headerInfo["INFO"][0].filter(x => x != 0);
+                }
 
                 let type = headerInfo["INFO"][1];
-                let displayForm = headerInfo["INFO"][0];
 
                 let miniTable = document.createElement("table");
                 if (type == "NORMAL") {
                     let ogLength = headerInfo["INFO"][0].length;
+                    let copy = structuredClone(headerInfo);
 
                     while (headerInfo["INFO"][0].length > 0) {
                         let miniMiniTable = createNormalMiniTable(headerInfo, color, (parseInt(heightsObj[section][header].replace("px", ""))) / ogLength / 2 + "px");
@@ -464,6 +492,8 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
 
                         miniTable.appendChild(miniMiniTable);
                     }
+
+                    teamData[section][header] = copy;
                 } else if (type == "HAVE") {
                     var height = Math.round(parseInt(heightsObj[section][header].replace("px", "")) / Object.values(headerInfo).filter(x => x && typeof x == "boolean").length);
                     var counter = 0;
@@ -524,7 +554,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                         
                         miniInfoPercentage.setAttribute("class", "miniInfoPercent");
                         miniInfoPercentage.style.width = tableWidth / 2 + "vw";
-                        miniInfoPercentage.style.backgroundColor = percentageColorOrder[counter];
+                        miniInfoPercentage.style.backgroundColor = percentColor[counter];
 
                         percentageRow.appendChild(miniInfoPercentage)
 
@@ -532,7 +562,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                         
                         let miniBarPercentage = document.createElement("td");
                         miniBarPercentage.setAttribute("class", "miniInfoHeader");
-                        miniBarPercentage.style.backgroundColor = percentageColorOrder[counter];
+                        miniBarPercentage.style.backgroundColor = percentColor[counter];
                         miniBarPercentage.style.height = cellHeight + "px";
                         miniBarPercentage.style.width = widths[counter++] + "vw";
                         miniBarPercentage.style.borderTop = "1px solid black";
@@ -641,7 +671,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
                                 miniInfoPercentage.appendChild(document.createTextNode(headerInfo[innerHeader][innerInnerHeader]));
                                 miniInfoPercentage.setAttribute("class", "miniInfoPercent");
                                 miniInfoPercentage.style.width = tableWidth / 2 + "vw";
-                                miniInfoPercentage.style.backgroundColor = percentageColorOrder[counter];
+                                miniInfoPercentage.style.backgroundColor = percentColor[counter];
 
                                 if (!nd) {
                                     percentageRow.appendChild(miniInfoPercentage);
@@ -654,7 +684,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder) {
 
                                 if (!nd) {
                                     miniBarPercentage.setAttribute("class", "miniInfoHeader");
-                                    miniBarPercentage.style.backgroundColor = percentageColorOrder[counter];
+                                    miniBarPercentage.style.backgroundColor = percentColor[counter];
                                     miniBarPercentage.style.height = cellHeight + "px";
                                     miniBarPercentage.style.width = widths[counter++] + "vw";
                                     miniBarPercentage.style.borderTop = "1px solid black";
@@ -834,6 +864,8 @@ function getHeightObj(data, clone) {
     
                     if (headerInfo == "SPACER") {
                         heightsObj[section][header] += "SPACER";
+                    } if (header == "Name") {
+                        heightsObj[section][header] = nameHeight;
                     }
                 }
             } else {
@@ -1411,7 +1443,7 @@ function checkEmpty(data, key) {
     }
 }
 
-async function allianceSearch(teams, divId, notifSelector) {
+async function allianceSearch(teams, divId, notifSelector, colors, percentColor) {
     if (!teams) {
         var teams = [];
     
@@ -1586,13 +1618,13 @@ async function allianceSearch(teams, divId, notifSelector) {
     var table = document.createElement("table");
     var tr = document.createElement("tr");
     let headerTd = document.createElement("td");
-    headerTd.appendChild(buildHeaderTable(maxHeights, blueDataTableColors));
+    headerTd.appendChild(buildHeaderTable(maxHeights, colors));
     tr.appendChild(headerTd);
 
     teams.map(x => x[0]).forEach(team => {
         let td = document.createElement("td");
 
-        td.appendChild(buildTeamTable(team, blueDataTableColors, maxHeights, headerOrder));
+        td.appendChild(buildTeamTable(team, colors, maxHeights, headerOrder, percentColor));
         tr.appendChild(td);
     });
 
@@ -1710,6 +1742,8 @@ async function fillMatchDropdown() {
 
     if (isFinals) {
         teamMatches = teamMatches.filter(x => x.comp_level == "sf");
+    } else {
+        teamMatches = teamMatches.filter(x => x.comp_level != "sf");
     }
 
     var counter = 0;
@@ -1746,14 +1780,12 @@ async function matchSearch() {
         var red = match.alliances.red.team_keys.map(x => x.replace("frc", ""));
     
         if (blue.includes("1622")) {
-            await allianceSearch(blue, "alliedDiv", "match");
-            await allianceSearch(red, "opposedDiv", "match");
+            await allianceSearch(blue, "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
+            await allianceSearch(red, "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
         } else {
-            await allianceSearch(red, "alliedDiv", "match");
-            await allianceSearch(blue, "opposedDiv", "match");
+            await allianceSearch(red, "alliedDiv", "match", redDataTableColors, percentageRedColorOrder);
+            await allianceSearch(blue, "opposedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
         }
-    
-        //TODO: ADD OVERVIEW TAB
     }
 }
 
