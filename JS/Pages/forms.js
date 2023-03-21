@@ -13,7 +13,7 @@ var borderColor = "#c5c7c5";
 async function fillTeamDropdown(selector) {
     var dropdown = document.getElementById(selector + "TeamNumDropdown");
     var orderNum = curOrderNum++;
-    await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
+    await getSheetData(sheetID, "ASSIGNMENTS", orderNum);
     var teams = getOrder(orderNum);
 
     if (teams != "none") {
@@ -171,18 +171,22 @@ function submitForm(selector) {
         form.push(getGroupButtonValue("preferButton"));
 
         //ROBOT PIC
-        uploadFile(document.getElementById("robotPic").files[0]);
-        end = true;
+        if (!document.getElementById("robotPic").files[0]) {
+            document.getElementById("roboPicNotifDiv").style.display = "initial";
+            end = true;
+        } else {
+            uploadFile(document.getElementById("robotPic").files[0], form[0] + ".jpg", roboPicsFolderId);
+            document.getElementById("roboPicNotifDiv").style.display = "none";
+        }
 
         //EXTRA NOTES
         form.push(document.getElementById("preExtraNotes").value);
-        
-        
+
         if (end) {
             return true;
         }
-        
-        appendData(config.preGSID, sheetName, form);
+        console.log(form)
+        appendData(sheetID, "PRE", form);
         lockDiv(lockedDivs, curDiv, selector + "Div");
     } else if (selector == "matchInPerson") {
         //TEAM NUMBER
@@ -240,12 +244,6 @@ function submitForm(selector) {
         }  else {
             form.push("");
         }
-
-        var tempName = sheetName;
-        if (isFinals) {
-            tempName += "FINALS";
-        }
-
         
         //TELE SCORES
         cones = [];
@@ -312,7 +310,7 @@ function submitForm(selector) {
             return true;
         }
 
-        appendData(config.matchGSID, tempName, form);
+        appendData(sheetID, stage, form);
         lockDiv(lockedDivs, curDiv, "matchDiv");
     }
 }
@@ -348,23 +346,23 @@ async function secureSubmit(selector) {
         if (!submitForm(selector)) {
             if (selector == "pre") {
                 var orderNum = curOrderNum++;
-                await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
+                await getSheetData(sheetID, "ASSIGNMENTS", orderNum);
                 var team = document.getElementById(selector + "TeamNumDropdown").value;
                 var temp = getOrder(orderNum);
                 var teams = temp[0].filter(x => parseInt(x) != team && x != "");
                 var orderNum = curOrderNum++;
-                await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
-                await clearData(config.assignmentsGSID, selector + sheetName);
+                await getSheetData(sheetID, "ASSIGNMENTS", orderNum);
+                await clearData(sheetID, "ASSIGNMENTS");
                 var orderNum = curOrderNum++;
-                await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
+                await getSheetData(sheetID, "ASSIGNMENTS", orderNum);
 
                 while (getOrder(orderNum) != "none") {
                     await wait(500);
                     var orderNum = curOrderNum++;
-                    await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
+                    await getSheetData(sheetID, "ASSIGNMENTS", orderNum);
                 }
 
-                appendData(config.assignmentsGSID, selector + sheetName, teams);
+                appendData(sheetID, "ASSIGNMENTS", teams);
             } if (selector.includes("match")) {
                 document.getElementById("matchFormDiv").remove();
                 document.getElementById("matchRefreshDiv").style.display = "inline-block";
@@ -480,7 +478,7 @@ async function changeMatchAllianceButtons(selector) {
     await waitGlobalData();
 
     var compLvl = "qm";
-    if (isFinals) {
+    if (stage == "FINALS") {
         compLvl = document.getElementById("matchFormFinalDropdown").value;
     }
 
@@ -488,7 +486,7 @@ async function changeMatchAllianceButtons(selector) {
         await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
     var match = getOrder(orderNum).filter(x => x.comp_level == compLvl); //&& x.comp_level == null
 
-    if (isFinals) {
+    if (stage == "FINALS") {
         match = match.filter(x => x.set_number == parseInt(document.getElementById(selector + "MatchNumInput").value))[0];
     } else {
         match = match.filter(x => x.match_number == parseInt(document.getElementById(selector + "MatchNumInput").value))[0];
@@ -521,11 +519,7 @@ async function changeMatchAllianceButtons(selector) {
     var scoutedTeams = [];
     
     var orderNum = curOrderNum++;
-    var tempName = sheetName;
-    if (isFinals) {
-        tempName += "FINALS";
-    }
-    await getSheetData(config.matchGSID, tempName, orderNum);
+    await getSheetData(sheetID, stage, orderNum);
     getOrder(orderNum).forEach(form => {
         if (form[1] == document.getElementById(selector + "MatchNumInput").value) {
             scoutedTeams.push(form[0]);
@@ -572,17 +566,8 @@ async function storeForms() {
     };
 }
 
-//ONLY USE TO FILL ASSIGNMENTS BEFORE A COMP
-async function fillPreAssignments() {
-    await waitGlobalData();
-
-    var orderNum = curOrderNum++;
-    await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/teams", orderNum);
-    appendData(config.assignmentsGSID, "pre" + sheetName, getOrder(orderNum).map(x => x.key.replace("frc", "")));
-}
-
 function removeFinalsDropdown() {
-    if (!isFinals) {
+    if (stage != "FINALS") {
         document.getElementById("matchFormFinalDropdown").remove();
     }
 }

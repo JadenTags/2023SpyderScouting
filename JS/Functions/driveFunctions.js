@@ -4,6 +4,7 @@ var driveHeaders = new Headers({
 var driveAuthCodeLink = 'https://accounts.google.com/o/oauth2/token';
 var driveApiRoot = 'https://www.googleapis.com';
 var driveRefreshTokenBody = 'grant_type=refresh_token&client_id=' + config.clientId + '&client_secret=' + config.clientSecret + '&refresh_token=' + config.driveRefreshToken;
+const MAINFOLDERID = "12QsG1bR36RH8Zm6YWQhBrgOcyOx2B9NE";
 
 async function getGsKey(orderNum) {
     fetch(driveAuthCodeLink, {
@@ -26,21 +27,56 @@ async function getGsKey(orderNum) {
     }
 }
 
-async function uploadFile(media, mainOrderNum) {
-    var http = driveApiRoot + '/upload/drive/v3/files?uploadType=media';
+async function uploadFile(file, name, folderId, mainOrderNum) {
+  var http = driveApiRoot + '/upload/drive/v3/files?uploadType=multipart';
+  var orderNum = curOrderNum++;
+  await getGsKey(orderNum);
   
-    var orderNum = curOrderNum++;
-    await getGsKey(orderNum);
-    console.log(media)
+  var body = new FormData();
+  var metaData = {
+    name: name, 
+    parents: [folderId]
+  };
   
-    // fetch(http, {
-    //   method: 'POST',
-    //   headers: getOrder(orderNum),
-    //   body: media,
-    // }) 
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     console.log(data)
-    //   });
+  body.append("metadata", new Blob([JSON.stringify(metaData)], {type: "application/json",}));
+  body.append("file", file);
+
+  fetch(http, {
+    method: 'POST',
+    headers: getOrder(orderNum),
+    body: body
+  })
+  .then(response => response.json())
+  .then(data => orders[mainOrderNum] = data);
+
+  while (!orders[mainOrderNum]) {
+    await wait(100);
   }
+}
+
+async function createFile(name, mimeType, folderId, mainOrderNum) {
+  var http = driveApiRoot + '/upload/drive/v3/files?uploadType=multipart';
+  var orderNum = curOrderNum++;
+  await getGsKey(orderNum);
   
+  var body = new FormData();
+  var metaData = {
+    mimeType: "application/vnd.google-apps." + mimeType,
+    name: name, 
+    parents: [folderId]
+  };
+  
+  body.append("metadata", new Blob([JSON.stringify(metaData)], {type: "application/json",}));
+
+  fetch(http, {
+    method: 'POST',
+    headers: getOrder(orderNum),
+    body: body
+  })
+    .then(response => response.json())
+    .then(data => orders[mainOrderNum] = data);
+  
+  while (!orders[mainOrderNum]) {
+    await wait(100);
+  }
+}

@@ -350,16 +350,11 @@ async function teamSearch() {
     additionalInfo.style.display = "block";
 
     orderNum = curOrderNum++;
-    await getSheetData(config.preGSID, sheetName, orderNum);
+    await getSheetData(sheetID, "PRE", orderNum);
     var preForms = getOrder(orderNum);
 
-    var tempName = sheetName;
-    if (isFinals) {
-        tempName += "FINALS";
-    }
-
     orderNum = curOrderNum++;
-    await getSheetData(config.matchGSID, tempName, orderNum);
+    await getSheetData(sheetID, stage, orderNum);
     var matchForms = getOrder(orderNum);
     var noMatch = matchForms.filter(x => x[0] == team).length == 0;
     var noPre = preForms.filter(x => x[0] == team).length == 0;
@@ -1551,16 +1546,11 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     }
 
     var orderNum = curOrderNum++;
-    await getSheetData(config.preGSID, sheetName, orderNum);
+    await getSheetData(sheetID, "PRE", orderNum);
     var preForms = getOrder(orderNum);
 
-    var tempName = sheetName;
-    if (isFinals) {
-        tempName += "FINALS"
-    }
-
     orderNum = curOrderNum++;
-    await getSheetData(config.matchGSID, tempName, orderNum);
+    await getSheetData(sheetID, stage, orderNum);
     var matchForms = getOrder(orderNum);
     if (matchForms.filter(x => teams.includes(x[0])) == "") {
         if (notifSelector == "alliance") {
@@ -1740,7 +1730,7 @@ async function fillMatchDropdown() {
     await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
     var teamMatches = getOrder(oN);
 
-    if (isFinals) {
+    if (stage == "FINALS") {
         teamMatches = teamMatches.filter(x => x.comp_level == "sf");
     } else {
         teamMatches = teamMatches.filter(x => x.comp_level != "sf");
@@ -1770,7 +1760,7 @@ async function matchSearch() {
         await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
         var match;
         
-        if (isFinals) {
+        if (stage == "FINALS") {
             match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum) && x.comp_level == "sf")[0];
         } else {
             match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum))[0];

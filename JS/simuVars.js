@@ -1,20 +1,21 @@
-var testDate = new Date("3-17-23"); 
+var testDate = new Date(); 
 //COMP: TYPE FIRST DATE OF COMP IN MONTH-DAY-YEAR FORM
 //NOT COMP: TYPE TEST DATE IN MONTH-DAY-YEAR FORM
 
-var sheetName = "ORLANDO";
-//COMP: USE THE KEYWORD THAT THE SHEETS USE (COMP NAME)
-//NOT COMP: LEAVE AS "TEST"
+var sheetID = "1Nq_0IGn0NKx2Pwz0bsLGIA2g0u3WaXBuKM_i1H-LruU";
+//COMP: USE THE ID THAT THE SHEETS USE
+//NOT COMP: LEAVE AS "1DMp6Jx7XqcGW0Tcgm_qY97IgKhRxa7Us5-KsrKL_LUU"
 
-var isFinals = false;
-//COMP: SET TO TRUE IF IN FINALS
-//NOT COMP: DO WHATEVER
+var roboPicsFolderId = "1pzk6rKsE_6CCRATpvFESwJ1E85CEB4kL";
+//COMP: USE THE ID THAT THE SHEETS USE
+//NOT COMP: LEAVE AS "1pzk6rKsE_6CCRATpvFESwJ1E85CEB4kL"
 
-var matchNum;
-//COMP: LEAVE UNINITIALIZED
-//NOT COMP: DO WHATEVER
+var stage = ["WARMUPS", "QUALS", "FINALS"][0];
+//COMP: SET TO WHATEVER STAGE
+//NOT COMP: SET TO [1]
 
-// localStorage.clear()
-// localStorage.setItem("user", "Fart");
+
+localStorage.clear()
+localStorage.setItem("user", "Fart");
 //COMP: LEAVE COMMENTED
 //TESTNG: LEAVE UNCOMMNETED

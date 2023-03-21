@@ -67,6 +67,7 @@ async function appendData(gsId, sheet, data) {
   })
     .then(response => response.json())
     .then(data => {
+      console.log(data)
       
       if (!data.spreadsheetId) {
         console.log("GET NEW REFRESH KEY");
@@ -92,12 +93,47 @@ async function clearData(gsId, sheet) {
     });
 }
 
-async function testSheetData() {
+async function batchUpdate(gsId, requests) {
+  var http = gsApiRoot + "/v4/spreadsheets/" + gsId + ":batchUpdate";
+  
   var orderNum = curOrderNum++;
-  await getSheetData(config.preGSID, sheetName, orderNum);
-  var matchForms = getOrder(orderNum);
-
-  localStorage.setItem("pre", JSON.stringify(matchForms));
+  await getGsKey(orderNum);
+  
+  fetch(http, {
+    method: 'POST',
+    headers: getOrder(orderNum),
+    body: JSON.stringify({
+      "requests": requests
+    })
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (!data.spreadsheetId) {
+        console.log("GET NEW REFRESH KEY");
+      }
+    });
 }
 
-// testSheetData()
+async function getSheet(gsId, mainOrderNum) {
+  var http = gsApiRoot + '/v4/spreadsheets/' + gsId;
+
+  var orderNum = curOrderNum++;
+  await getGsKey(orderNum);
+
+  fetch(http, {
+    method: 'GET',
+    headers: getOrder(orderNum),
+  }) 
+    .then(response => response.json())
+    .then(data => {
+      if (!data.range) {
+        console.log("GET NEW REFRESH KEY");
+      }
+
+      orders[mainOrderNum] = data;
+    });
+
+    while (!orders[mainOrderNum]) {
+        await wait(100);
+    }
+}

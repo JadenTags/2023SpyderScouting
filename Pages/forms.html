@@ -145,7 +145,12 @@
 
       <br>
       <p class="formSubheader">Pic of Whole Robot</p>
-      <input id="robotPic" type="file" accept="image/*" style="margin-top:10px;" multiple>
+      <input id="robotPic" type="file" accept="image/*" style="margin-top:10px;">
+
+      <div id="roboPicNotifDiv" style="display: none;">
+        <br>
+        <p class="toggleNotifText">You Must Take a Picture!</p>
+      </div>
 
       <br>
 
@@ -163,124 +168,6 @@
         Form</p>
     </div>
   </div>
-
-  <!-- <div id="pitDiv" class="subNavDiv" style="display:none;">
-    <div>
-      <p id="needToPreNotifText" class="toggleNotifText" style="display: none;"></p>
-    </div>
-
-    <div id="pitNoTeamsDiv" class="innerDiv" style="display:none;">
-      <p id="pitNoTeamsText" class="title">There Are No More Teams To Pit-Scout!</p>
-    </div>
-
-    <div id="pitFormDiv" class="innerDiv">
-      <h1 id="pitTeamName" class="teamName"></h1>
-
-      <select id="pitTeamNumDropdown" class="teamNumDropdown" onchange="changeTeamName('pit');"></select>
-
-      <p class="sectionHeader">Any Subsystem Problems Or Changes?</p>
-      <hr>
-
-      <p id="dbProblemsButton" class="pushButton" onclick="toggleElement('dbProblemsNotes');">Drivebase</p>
-      <p id="gomProblemsButton" class="pushButton" onclick="toggleElement('gomProblemsDiv');">GOM</p>
-      <p id="otherProblemsButton" class="pushButton" onclick="toggleElement('otherProblemsNotes');">Other</p>
-
-      <br>
-
-      <textarea id="dbProblemsNotes" class="notesArea" placeholder="Drivebase Problems Notes"
-        style="display: none;"></textarea>
-
-      <div id="gomProblemsDiv" style="display: none;">
-        <p class="formSubheader">Cone Reach</p>
-        <br>
-        <img id="coneTopRowChange" class="cone" src="../Images/cone.png" style="opacity: 0%;">
-        <br>
-        <img id="coneMidRowChange" class="cone" src="../Images/cone.png" style="opacity: 0%;">
-        <br>
-        <img id="coneBotRowChange" class="cone" src="../Images/cone.png" style="opacity: 0%;">
-        <img id="coneGridChange" class="grid" src="../Images/coneGrid.PNG">
-        <p id="coneHighRowButtonChange" class="pushButton" onclick="toggleGamePiece('coneTopRowChange');">High</p>
-        <p id="coneMidRowButtonChange" class="pushButton" onclick="toggleGamePiece('coneMidRowChange');">Mid</p>
-        <p id="coneBotRowButtonChange" class="pushButton" onclick="toggleGamePiece('coneBotRowChange');">Bot</p>
-
-        <p class="formSubheader">Cube Reach</p>
-        <br>
-        <img id="cubeTopRowChange" class="cube" src="../Images/cube.png" style="opacity: 0%;">
-        <br>
-        <img id="cubeMidRowChange" class="cube" src="../Images/cube.png" style="opacity: 0%;">
-        <br>
-        <img id="cubeBotRowChange" class="cube" src="../Images/cube.png" style="opacity: 0%;">
-        <img class="grid" src="../Images/cubeGrid.PNG">
-        <p id="cubeHighRowButtonChange" class="pushButton" onclick="toggleGamePiece('cubeTopRowChange');">High</p>
-        <p id="cubeMidRowButtonChange" class="pushButton" onclick="toggleGamePiece('cubeMidRowChange');">Mid</p>
-        <p id="cubeBotRowButtonChange" class="pushButton" onclick="toggleGamePiece('cubeBotRowChange');">Bot</p>
-      </div>
-
-      <br>
-
-      <textarea id="otherProblemsNotes" class="notesArea" placeholder="Other Problems Notes"
-        style="display: none;"></textarea>
-
-      <p class="sectionHeader">Autonomous</p>
-      <hr>
-
-      <p id="autoChangesButton" class="pushButton" onclick="toggleElement('outerAutoChangesDiv');">Auto Changes</p>
-
-      <div id="outerAutoChangesDiv" style="display:none;">
-        <br>
-        <p id="noAutoChangesButton" class="pushButton" onclick="toggleElement('autoChangesDiv');">No Auto</p>
-
-        <br>
-
-        <div id="autoChangesDiv">
-          <textarea id="autoChangesNotes" class="notesArea" placeholder="Auto Changes Notes"></textarea>
-        </div>
-      </div>
-
-      <p class="sectionHeader">Teleop</p>
-      <hr>
-
-      <p class="formSubheader">Cargo Cycled</p>
-      <input id="cargoCycleInputChanges" placeholder="Seconds" type="num"></input>
-
-      <div id="pitCycleTimeNotifTextChanges" style="display: none;">
-        <br>
-        <p class="toggleNotifText">Cycle Time Should Be A Number!</p>
-      </div>
-
-      <p class="formSubheader">Able Playstyles</p>
-      <p id="ableOffButtonChanges" class="pushButton">Offensive</p>
-      <p id="ableDefButtonChanges" class="pushButton">Defensive</p>
-
-      <br>
-      <p id="canDockButtonTeleChanges" class="pushButton" onclick="toggleElement('teleDockDivChanges');">Can Dock</p>
-
-      <div id="teleDockDivChanges" style="display:none;">
-        <p class="formSubheader">Time To Balance</p>
-        <input id="balanceTimeInputChanges" placeholder="Seconds" type="number" min="0"></input>
-
-        <div id="balanceTimeNotifTextChanges" style="display: none;">
-          <br>
-          <p class="toggleNotifText">Balance Time Should Be A Number!</p>
-        </div>
-      </div>
-
-      <br>
-
-      <textarea id="pitExtraNotes" class="notesArea" placeholder="Notes"></textarea>
-
-      <br>
-
-      <p id="pitSubmitButton" class="submitButton" onclick="secureSubmit('pit');">Submit</p>
-      <p id="pitUndoSubmitButton" class="button" onclick="undoSubmit('pit');" style="display: none;">Undo</p>
-    </div>
-
-    <div id="pitRefreshDiv" class="innerDiv" style="display:none;">
-      <p class="title">Thank You For Submitting A Form!</p>
-      <p id="pitRefreshButton" class="button" onclick="refreshForm('pit');" style="margin-top: 10px;">Submit Another
-        Form</p>
-    </div>
-  </div> -->
 
   <div id="matchDiv" class="subNavDiv" style="display:none">
     <div id="matchFormDiv" class="innerDiv">
@@ -741,6 +628,7 @@
 <script src="../JS/Functions/tbaFunctions.js"></script>
 <script src="../JS/Functions/globalDataFunctions.js"></script>
 <script src="../JS/Functions/buttonFunctions.js"></script>
+<script src="../JS/Functions/regionalSetupFunctions.js"></script>
 <script src="../JS/Pages/forms.js"></script>
 <script>checkLogIn();</script>
 

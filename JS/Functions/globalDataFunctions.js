@@ -7,14 +7,6 @@ async function storeGlobalData() {
     } 
     
     globalDataStored = true;
-    
-    // if (!localStorage.getItem("closestCompMatches")) {
-    //     var orderNum = curOrderNum++;
-    //     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
-    //     localStorage.setItem("closestCompMatches", JSON.stringify(getOrder(orderNum)));
-    // }
-
-    // globalDataStored = true;
 }
 
 async function waitGlobalData() {
