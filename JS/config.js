@@ -3,6 +3,7 @@ var config = {
   clientId: '1084130048210-7fog59udh3li01r1f3pibrceli874mc1.apps.googleusercontent.com',
   clientSecret: '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',
   refreshToken: '1//04OxxefXbjVXfCgYIARAAGAQSNwF-L9IrFLgjfPlleL3X9GOB3M9MTjoEeJ1ISYc5vk72ZB4vuYrY5yJE-tU2UygYBigskrsSsQc',
+  driveRefreshToken: "1//04SVYOcaIDQABCgYIARAAGAQSNwF-L9IrtSD_XG0BoKR3lju6aUrd7C1dMJ24sOc2g4fraSgl-k6ssqpoP664BQGLlwJ5nEBtu0k",
   userDatabaseGSID: '1mzkuHHLonKO10spvtKyDiqLP9OBwvpH9kr--1rlDA2I',
   matchGSID: '19CKK8bL1509-dcX-taznBRLV4hHJyQIB0nzCMmETrSs',
   pitGSID: '10Wj38-hrNQFcSW0vvcub3uV83KpauFQDP714uLyiK4E',
@@ -15,3 +16,4 @@ var config = {
 }
 
 //GOOGLE SHEETS API SCOPE: https://www.googleapis.com/auth/spreadsheets
+//GOOGLE DRIVE API SCOPE: https://www.googleapis.com/auth/drive

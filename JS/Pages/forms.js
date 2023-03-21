@@ -3,13 +3,10 @@ const elementsCycle = ["either", "cube", "cone"];
 var lockedDivs = {
     "mainDiv": "locked",
     "preDiv": "unlocked",
-    "pitDiv": "unlocked",
     "matchDiv": "unlocked",
 };
 var submittedForms = {};
 var curDiv = "mainDiv";
-var onlineSelectedMatch;
-var cyclingOnline;
 var notifColor = "#eb776e";
 var borderColor = "#c5c7c5";
 
@@ -18,35 +15,9 @@ async function fillTeamDropdown(selector) {
     var orderNum = curOrderNum++;
     await getSheetData(config.assignmentsGSID, selector + sheetName, orderNum);
     var teams = getOrder(orderNum);
-    var preTeams;
 
     if (teams != "none") {
         teams = teams[0];
-    }
-
-    if (selector == "pit" && teams != "none") {
-        orderNum = curOrderNum++;
-        await getSheetData(config.preGSID, sheetName, orderNum);
-        var temp = getOrder(orderNum);
-        preTeams = teams.filter(x => !temp.map(z => z[0]).includes(x));
-        var needPreNotifText = document.getElementById("needToPreNotifText");
-
-        needPreNotifText.style.display = "initial";
-
-        if (preTeams.length == 1) {
-            needPreNotifText.innerHTML = "Team " + preTeams[0] + " Needs To Be Pre-Scouted!";
-        } else if (preTeams.length == 2) {
-            needPreNotifText.innerHTML = "Teams " + preTeams[0] + " and " + preTeams[1] + " Need To Be Pre-Scouted!";
-        } else if (preTeams.length > 2) {
-            var filling = "";
-            for (var i = 1; i < preTeams.length - 1; i++) {
-                filling += preTeams[i] + ", ";
-            }
-
-            needPreNotifText.innerHTML = "Teams " + preTeams[0] + ", " + filling + "and " + preTeams[preTeams.length - 1] + " Need To Be Pre-Scouted!";
-        } else {
-            needPreNotifText.style.display = "none";
-        }
     }
 
     if (teams != "none" && !dropdown && document.getElementById(selector + "NoTeamsDiv").style.display != "none") {
@@ -60,12 +31,10 @@ async function fillTeamDropdown(selector) {
         if (dropdown.childNodes.length == 0) {
             dropdown.innerHTML = "";
             await teams.forEach(team => {
-                if (selector != "pit" || !preTeams.includes(team)) {
-                    let option = document.createElement("option");
-                    option.value = team;
-                    option.innerHTML = "#" + team;
-                    dropdown.appendChild(option);
-                }
+                let option = document.createElement("option");
+                option.value = team;
+                option.innerHTML = "#" + team;
+                dropdown.appendChild(option);
             });
         } else {
             var childNodes = [];
@@ -74,7 +43,7 @@ async function fillTeamDropdown(selector) {
             dropdown.childNodes.forEach(option => {
                 let num = option.value.toString();
                 
-                if (!teams.includes(num) || (selector == "pit" && preTeams.includes(num))) {
+                if (!teams.includes(num)) {
                     toRemove.push(option);
                 } else {
                     childNodes.push(num);
@@ -84,7 +53,7 @@ async function fillTeamDropdown(selector) {
             toRemove.forEach(option => option.remove());
 
             teams.filter(x => !childNodes.includes(x) && x != "").forEach(team => {
-                if (selector != "pit" || !preTeams.includes(team)) {
+                if (!preTeams.includes(team)) {
                     let option = document.createElement("option");
                     option.value = team;
                     option.innerHTML = "#" + team;
@@ -104,31 +73,6 @@ async function fillTeamDropdown(selector) {
         lockDiv(lockedDivs, curDiv, selector + "Div");
         document.getElementById(selector + "FormDiv").remove();
         document.getElementById(selector + "NoTeamsDiv").style.display = "inline";
-    } if (document.getElementById(selector + "NoTeamsDiv").style.display != "none") {
-        if (selector == "pit") {
-            orderNum = curOrderNum++;
-            await getSheetData(config.assignmentsGSID, "pre" + sheetName, orderNum);
-            teams = getOrder(orderNum);
-            var textElem = document.getElementById("pitNoTeamsText");
-
-            if (teams == "none") {
-                textElem.innerHTML = "There Are No More Teams To Pit-Scout!";
-            } else {
-                textElem.innerHTML = "There Are Still More Teams To Pre-Scout!";
-            }
-        } else if (selector == "pre") {
-            orderNum = curOrderNum++;
-            // await getSheetData(config.assignmentsGSID, "pit" + sheetName, orderNum);
-            teams = getOrder(orderNum);
-
-            var textElem = document.getElementById("preNoTeamsText");
-
-            if (teams == "none") {
-                textElem.innerHTML = "There Are No More Teams To Pre-Scout!";
-            } else {
-                textElem.innerHTML = "There Are Still More Teams To Pit-Scout!";
-            }
-        }
     }
 }
 
@@ -226,30 +170,19 @@ function submitForm(selector) {
         //PREFERRED PLAYSTYLE
         form.push(getGroupButtonValue("preferButton"));
 
+        //ROBOT PIC
+        uploadFile(document.getElementById("robotPic").files[0]);
+        end = true;
+
         //EXTRA NOTES
         form.push(document.getElementById("preExtraNotes").value);
         
-        console.log(form)
         
         if (end) {
             return true;
         }
         
         appendData(config.preGSID, sheetName, form);
-        lockDiv(lockedDivs, curDiv, selector + "Div");
-    } else if (selector == "pit") {
-        end = true;
-        //TEAM NUM
-        form.push(document.getElementById("pitTeamNumDropdown").value);
-
-        //DB CHANGES
-
-
-        if (end) {
-            return true;
-        }
-
-        appendData(config.pitGSID, sheetName, form);
         lockDiv(lockedDivs, curDiv, selector + "Div");
     } else if (selector == "matchInPerson") {
         //TEAM NUMBER
@@ -261,10 +194,10 @@ function submitForm(selector) {
             } else {
                 changeNotif("inPersonTeamNumNotif", "You Did Not Select Team!");
             }
-            // end = true;
+            end = true;
         } else if (isNaN(parseInt(teamNum))) {
             changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
-            // end = true;
+            end = true;
         } else {
             changeNotif("inPersonTeamNumNotif", "");
         }
@@ -361,20 +294,6 @@ function submitForm(selector) {
         form.push(getGroupButtonValue("matchInPersonTagButton"));
         var failure = form[form.length - 1];
 
-        //PENALTIES
-        form.push(document.getElementById("penaltiesInput").value);
-
-        if (isNaN(parseInt(form[form.length - 1])) && form[form.length - 1] != "") {
-            dimensions.push("");
-
-            document.getElementById("penaltiesInput").style.border = "1px solid " + notifColor;
-            showElement("penaltiesNotifDiv");
-            end = true
-        } else {
-            document.getElementById("penaltiesInput").style.border = "1px solid " + borderColor;
-            hideElement("penaltiesNotifDiv");
-        }
-
         //EXTRA NOTES
         form.push(document.getElementById("matchInPersonExtraNotes").value);
 
@@ -389,15 +308,12 @@ function submitForm(selector) {
             });
         }
 
-        console.log(form, playstyle, failure)
-
         if (end) {
             return true;
         }
 
         appendData(config.matchGSID, tempName, form);
         lockDiv(lockedDivs, curDiv, "matchDiv");
-    } else if (selector.includes("matchonline")) {
     }
 }
 
@@ -484,9 +400,6 @@ function refreshForm(selector) { //TODO: REDO
     
     if (selector == "pre") {
         fillTeamDropdown(selector);
-    } else if (selector == "pit") {
-        // activatePin("fieldChanges", "fieldPinChanges");
-        // fillTeamDropdown(selector);
     }
 
     unlockDiv(lockedDivs, curDiv, selector + "Div");
@@ -629,8 +542,6 @@ async function changeMatchAllianceButtons(selector) {
             }
         }
     });
-
-    console.log(scoutedTeams)
 }
 
 function changeCounter(counterId, isAdding) {
@@ -649,7 +560,7 @@ async function storeForms() {
         await wait(100);
     }
 
-    var forms = ["pre",  "match"];//"pit",
+    var forms = ["pre",  "match"];
     for (var i = 0; i < forms.length; i++) {
         let form = forms[i];
 
@@ -659,138 +570,6 @@ async function storeForms() {
 
         formDivs[form] = document.getElementById(form + "FormDiv").cloneNode(true);
     };
-}
-
-async function fillOnlineMatchDropdown() {
-    await waitGlobalData();
-
-    var dropdown = document.getElementById("onlineMatchNumInput");
-
-    var orderNum = curOrderNum++;
-    await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
-    var matches = getOrder(orderNum).filter(x => x.comp_level == "qm");
-    
-    orderNum = curOrderNum++;
-    await getSheetData(config.onlineMatchScoutGSID, sheetName, orderNum);
-    var selectedMatches = getOrder(orderNum)[0];
-    matches = matches.filter(x => !selectedMatches.includes(x.match_number.toString()));
-
-    orderNum = curOrderNum++;
-    await getSheetData(config.matchGSID, sheetName, orderNum);
-    var forms = getOrder(orderNum).splice(1);
-    matches.forEach(match => {
-        submittedForms[match.match_number] = [];
-    });
-
-    forms.forEach(form => {
-        if (Object.keys(submittedForms).includes(form[0])) {
-            submittedForms[form[0]].push(form[1]);
-        }
-    });
-
-    if (dropdown.childNodes.length == 0) {
-        Object.keys(submittedForms).forEach(key => {
-            if (submittedForms[key].length < 6) {
-                let option = document.createElement("option");
-                option.value = key;
-                option.innerHTML = key;
-                dropdown.appendChild(option);
-            }
-        });
-    } else {
-        var removeCurMatch;
-        var curMatch = document.getElementById("onlineMatchNumInput").value;
-        var toRemove = [];
-
-        if (!Object.keys(submittedForms).includes(curMatch) || selectedMatches.includes(curMatch)) {
-            removeCurMatch = true;
-        }
-
-        dropdown.childNodes.forEach(node => {
-            if (submittedForms[node.innerHTML].length >= 6 || !Object.keys(submittedForms).includes(node.innerHTML) || (parseInt(node.innerHTML) == curMatch && removeCurMatch && curMatch != onlineSelectedMatch)) {
-                toRemove.push(node);
-            }
-        });
-
-        toRemove.forEach(node => {
-            node.remove();
-        })
-
-        Object.keys(submittedForms).forEach(key => {
-            if (submittedForms[key].length < 6 && !Array.from(dropdown.childNodes).map(x => x.innerHTML).includes(key) && !selectedMatches.includes(key)) {
-                insertOnlineMatch(key, dropdown);
-            }
-        });
-    }
-    
-    storeSelectedMatch();
-    changeMatchAllianceButtons('online');
-}
-
-async function cycleCheckOnlineMatchDropdown() {
-    timeOnline();
-    cyclingOnline = true;
-
-    while (true) {
-        if (!document.getElementById("onlineMatchFormButton").getAttribute("class").includes("selectedButton") || document.getElementById("matchDiv").style.display == "none") {
-            cyclingOnline = false;
-            document.getElementById("onlineMatchNumInput").innerHTML = "";
-            storeSelectedMatch();
-            break;
-        }
-
-        await fillOnlineMatchDropdown();
-        
-        await wait(10000);
-    }
-}
-
-async function timeOnline() {
-    await wait(1200000);
-
-    if (cyclingOnline) {
-        eval(document.getElementById("onlineMatchFormButton").getAttribute("onclick"));
-    }
-}
-
-function insertOnlineMatch(key, dropdown) {
-    let option = document.createElement("option");
-    option.value = key;
-    option.innerHTML = key;
-    
-    var foundNode;
-    dropdown.childNodes.forEach(node => {
-        if (parseInt(node.innerHTML) > parseInt(key) && !foundNode) {
-            foundNode = node;
-        }
-    });
-
-    if (!foundNode) {
-        dropdown.appendChild(option);
-    } else {
-        dropdown.insertBefore(option, foundNode);
-    }
-}
-
-async function storeSelectedMatch() {
-    var newlySelectedMatch = document.getElementById("onlineMatchNumInput").value;
-
-    var orderNum = curOrderNum++;
-    await getSheetData(config.onlineMatchScoutGSID, sheetName, orderNum);
-    var selectedMatches = getOrder(orderNum);
-
-    if (selectedMatches == "none") {
-        selectedMatches = [];
-    } else {
-        selectedMatches = selectedMatches[0];
-    }
-
-    selectedMatches = selectedMatches.filter(x => x != onlineSelectedMatch);
-    selectedMatches.push(newlySelectedMatch);
-    await clearData(config.onlineMatchScoutGSID, sheetName);
-    appendData(config.onlineMatchScoutGSID, sheetName, selectedMatches);
-
-    onlineSelectedMatch = newlySelectedMatch;
 }
 
 //ONLY USE TO FILL ASSIGNMENTS BEFORE A COMP
@@ -842,7 +621,5 @@ function displayAutoScoresDiv(selector) {
 }
 
 removeFinalsDropdown();
-// checkFinalsDropdown();
 storeForms();
 cycleCheckDropdown("pre");
-// cycleCheckDropdown("pit");

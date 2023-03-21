@@ -15,5 +15,6 @@ var matchNum;
 //NOT COMP: DO WHATEVER
 
 // localStorage.clear()
+// localStorage.setItem("user", "Fart");
 //COMP: LEAVE COMMENTED
 //TESTNG: LEAVE UNCOMMNETED

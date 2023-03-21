@@ -76,3 +76,11 @@ function unlockDiv(lockObj, curDiv, lockDiv) {
 
   lockObj[lockDiv] = "unlocked";
 }
+
+async function checkLogIn() {
+  await waitGlobalData();
+
+  if (!localStorage.getItem("user")) {
+    document.body.innerHTML = "";
+  }
+}
