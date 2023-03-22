@@ -44,6 +44,6 @@ async function getClosestCompData(teamNum) {
 
     var difference = Math.floor((new Date(closestComp.start_date).getTime() - testDate.getTime()) / (1000 * 60 * 60 * 24));
     localStorage.setItem("closestComp", JSON.stringify(closestComp));
-    // document.body.appendChild(document.createTextNode(JSON.stringify(closestComp)));
+    document.body.appendChild(document.createTextNode(JSON.stringify(closestComp)));
     localStorage.setItem("difference", difference);
 }
