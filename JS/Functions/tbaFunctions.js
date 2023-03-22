@@ -38,6 +38,7 @@ async function getClosestCompData(teamNum) {
     // var closestComp = getOrder(orderNum);
     // closestComp = closestComp[closestComp.length - 1]
     console.log(closestComp);
+    localStorage.setItem("gay", "yuna")
 
     if (!closestComp) {
         return [];
