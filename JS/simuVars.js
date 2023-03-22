@@ -1,4 +1,4 @@
-var testDate = new Date(); 
+var testDate = new Date("03-17-23"); 
 //COMP: TYPE FIRST DATE OF COMP IN MONTH-DAY-YEAR FORM
 //NOT COMP: TYPE TEST DATE IN MONTH-DAY-YEAR FORM
 
@@ -10,10 +10,14 @@ var roboPicsFolderId = "1pzk6rKsE_6CCRATpvFESwJ1E85CEB4kL";
 //COMP: USE THE ID THAT THE SHEETS USE
 //NOT COMP: LEAVE AS "1pzk6rKsE_6CCRATpvFESwJ1E85CEB4kL"
 
-var stage = ["WARMUPS", "QUALS", "FINALS"][0];
+var stage = ["WARMUPS", "QUALS", "FINALS"][1];
 //COMP: SET TO WHATEVER STAGE
 //NOT COMP: SET TO [1]
 
+var matchNum;
+
+var tbaNotWorking = false;
+//SET TO TRUE IF TBA IS WORKING ON MOBILE, ELSE, FALSE
 
 localStorage.clear()
 localStorage.setItem("user", "Fart");

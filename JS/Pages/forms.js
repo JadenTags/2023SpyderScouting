@@ -566,30 +566,6 @@ async function storeForms() {
     };
 }
 
-function removeFinalsDropdown() {
-    if (stage != "FINALS") {
-        document.getElementById("matchFormFinalDropdown").remove();
-    }
-}
-
-async function checkFinalsDropdown() {
-    var suffixes = [];
-
-    var orderNum = curOrderNum++;
-    await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
-    getOrder(orderNum).forEach(match => {
-        if (!suffixes.includes(match.comp_level)) {
-            suffixes.push(match.comp_level);
-        }
-    });
-
-    Array.from(document.getElementById("matchFormFinalDropdown").childNodes).forEach(node => {
-        if (!suffixes.includes(node.value)) {
-            node.remove();
-        }
-    });
-}
-
 function displayAutoScoresDiv(selector) {
     var selection = document.getElementById("autoScoresDropdown" + selector).value;
     var childNodes = document.getElementById("autoScoresDropdown" + selector).childNodes;
@@ -605,6 +581,35 @@ function displayAutoScoresDiv(selector) {
     }
 }
 
-removeFinalsDropdown();
+async function adjustStage() {
+    if (stage == "WARMUPS" || tbaNotWorking) {
+        document.getElementById("inPersonTeamNumInput").style.display = "initial";
+        document.getElementById("inPersonMatchInnerDiv").style.display = "none";
+    } 
+    
+    if (!tbaNotWorking) {
+        if (stage != "FINALS") {
+            document.getElementById("matchFormFinalDropdown").remove();
+        } else {
+            var suffixes = [];
+        
+            var orderNum = curOrderNum++;
+            await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", orderNum);
+            getOrder(orderNum).forEach(match => {
+                if (!suffixes.includes(match.comp_level)) {
+                    suffixes.push(match.comp_level);
+                }
+            });
+        
+            Array.from(document.getElementById("matchFormFinalDropdown").childNodes).forEach(node => {
+                if (!suffixes.includes(node.value)) {
+                    node.remove();
+                }
+            });
+        }
+    }
+}
+
+adjustStage();
 storeForms();
 cycleCheckDropdown("pre");

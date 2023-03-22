@@ -58,7 +58,7 @@ body {
     height: 25px;
 }
 
-.button, .submitButton, .pushButton, .groupedButton, .startGroupedButton, .endGroupedButton {
+.button, .submitButton, .pushButton, .groupedButton, .startGroupedButton, .endGroupedButton, .arrowButton {
     display: inline-block;
     background-color: #141414;
     color: white;
@@ -84,6 +84,15 @@ body {
   
 .selectedButton {
     background-color: #787878;
+}
+
+.counter {
+  font-size: 14vw;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: inline;
+  vertical-align: middle;
 }
 
 #sidebar {
@@ -151,6 +160,7 @@ body {
 
 .innerDiv, .subNavDiv {
     text-align: center;
+    margin: auto;
     width: 100%;
 }
 

@@ -276,6 +276,9 @@ const tableWidth = 24;
 const displayTableWidth = 16;
 const percentageBlueColorOrder = ["#7286D3", "#8EA7E9", "#E4EDF1", "#FF9F9F", "#FD8A8A"];
 const percentageRedColorOrder = ["#FD8A8A", "#FF9F9F", "#E4EDF1", "#8EA7E9", "#7286D3"];
+var formsDisplayMatchForms = [];
+var formsDisplayMatchIndex = 0;
+var matchFormHeight;
 
 async function teamSearch() {
     var team = document.getElementById("teamSearchInput").value;
@@ -377,7 +380,7 @@ async function teamSearch() {
 
     var heightObj = getHeightObj(teamData, clone);
     var titleTable = buildHeaderTable(heightObj, blueDataTableColors);
-    var data = buildTeamTable(teamData, blueDataTableColors, heightObj, null, percentageBlueColorOrder);
+    var data = buildTeamTable(teamData, blueDataTableColors, heightObj, null, percentageBlueColorOrder, tableWidth);
     
     var tble = document.createElement("table");
     var row = document.createElement("tr");
@@ -402,7 +405,7 @@ async function fillTeamNameCell(teamNum) {
     document.getElementById("teamNameCell" + teamNum).innerHTML = data["nickname"];
 }
 
-function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) {
+function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor, tabWidth) {
     var table = document.createElement("table");
     var outSideLecounterTwo = 0;
     var outSideLecounter = 0;
@@ -460,7 +463,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
                     fillTeamNameCell(teamData["General"]["Team"]);
                 }
                 
-                miniData.style.width = tableWidth + "vw";
+                miniData.style.width = tabWidth + "vw";
                 miniTable.style.marginTop = marginTopSpacing;
 
                 miniRow.appendChild(miniData);
@@ -479,7 +482,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
                     let copy = structuredClone(headerInfo);
 
                     while (headerInfo["INFO"][0].length > 0) {
-                        let miniMiniTable = createNormalMiniTable(headerInfo, color, (parseInt(heightsObj[section][header].replace("px", ""))) / ogLength / 2 + "px");
+                        let miniMiniTable = createNormalMiniTable(headerInfo, color, (parseInt(heightsObj[section][header].replace("px", ""))) / ogLength / 2 + "px", tabWidth);
 
                         if (headerInfo["INFO"][0].length == ogLength - 1) {
                             miniMiniTable.style.marginTop = marginTopSpacing;
@@ -499,7 +502,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
                 
                         miniInfoData.setAttribute("class", "miniInfoData");
                         miniInfoData.style.height = height + "px";
-                        miniInfoData.style.width = tableWidth + "vw";
+                        miniInfoData.style.width = tabWidth + "vw";
                 
                         if (counter++ % 2 == 0) {
                             miniInfoData.style.backgroundColor = color["singleCellData"];
@@ -517,8 +520,8 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
                     var counter = 0;
                     var headers = Object.keys(headerInfo).filter(x => x != "INFO" && headerInfo[x] != "0%");
 
-                    var widths = headers.map(x => Math.round(convertPercent(headerInfo[x]) * tableWidth));
-                    while (sum(widths) < tableWidth) {
+                    var widths = headers.map(x => Math.round(convertPercent(headerInfo[x]) * tabWidth));
+                    while (sum(widths) < tabWidth) {
                         widths[widths.indexOf(Math.max(...widths))]++;
                     }
 
@@ -540,7 +543,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
                         miniInfoHeader.setAttribute("class", "miniInfoHeader");
                         miniInfoHeader.style.backgroundColor = color["singleCellHeader"];
                         miniInfoHeader.style.height = (parseInt(heightsObj[section][header].replace("px", "")) - cellHeight - 1) / headers.length + "px";
-                        miniInfoHeader.style.width = tableWidth / 2 + "vw";
+                        miniInfoHeader.style.width = tabWidth / 2 + "vw";
 
                         percentageRow.appendChild(miniInfoHeader);
 
@@ -548,7 +551,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
                         miniInfoPercentage.appendChild(document.createTextNode(headerInfo[innerHeader]));
                         
                         miniInfoPercentage.setAttribute("class", "miniInfoPercent");
-                        miniInfoPercentage.style.width = tableWidth / 2 + "vw";
+                        miniInfoPercentage.style.width = tabWidth / 2 + "vw";
                         miniInfoPercentage.style.backgroundColor = percentColor[counter];
 
                         percentageRow.appendChild(miniInfoPercentage)
@@ -608,7 +611,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
                                 innerHeaderData.setAttribute("class", "miniInfoHeader");
                                 innerHeaderData.style.backgroundColor = color["spacer"];
                                 innerHeaderData.style.height = cellHeight + "px";
-                                innerHeaderData.style.width = tableWidth + "vw";
+                                innerHeaderData.style.width = tabWidth + "vw";
 
                                 innerHeaderRow.appendChild(innerHeaderData);
                             }
@@ -619,10 +622,10 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
                             innerHeaderOuterData.appendChild(innerHeaderTable);
                             miniTable.appendChild(innerHeaderOuterData);
         
-                            var widths = headers.map(x => Math.round(convertPercent(headerInfo[innerHeader][x]) * tableWidth));
+                            var widths = headers.map(x => Math.round(convertPercent(headerInfo[innerHeader][x]) * tabWidth));
                             
                             var widthsCounter = 0;
-                            while (sum(widths) < tableWidth) {
+                            while (sum(widths) < tabWidth) {
                                 widths[widthsCounter++]++;
                             }
         
@@ -649,11 +652,11 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
                                 }
 
                                 miniInfoHeader.style.height = height / headers.length + "px";
-                                miniInfoHeader.style.width = tableWidth / 2 + "vw";
+                                miniInfoHeader.style.width = tabWidth / 2 + "vw";
 
                                 if (nd) {
                                     miniInfoHeader.style.height = height + cellHeight * 2 + 1 + "px";
-                                    miniInfoHeader.style.width = tableWidth + "vw";
+                                    miniInfoHeader.style.width = tabWidth + "vw";
                                     miniInfoText = document.createTextNode('ND');
                                     miniInfoHeader.setAttribute("class", "miniInfoData");
                                     miniInfoHeader.style.backgroundColor = color["singleCellData"];
@@ -665,7 +668,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
                                 let miniInfoPercentage = document.createElement("td");
                                 miniInfoPercentage.appendChild(document.createTextNode(headerInfo[innerHeader][innerInnerHeader]));
                                 miniInfoPercentage.setAttribute("class", "miniInfoPercent");
-                                miniInfoPercentage.style.width = tableWidth / 2 + "vw";
+                                miniInfoPercentage.style.width = tabWidth / 2 + "vw";
                                 miniInfoPercentage.style.backgroundColor = percentColor[counter];
 
                                 if (!nd) {
@@ -722,7 +725,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
 
                     miniData.style.height = height + cellHeight * 2 + 3 - Object.keys(headerInfo).length + "px";
                     
-                    miniData.style.width = tableWidth + "vw";
+                    miniData.style.width = tabWidth + "vw";
                     miniTable.style.marginTop = marginTopSpacing;
     
                     miniRow.appendChild(miniData);
@@ -742,7 +745,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor) 
         table.appendChild(sectionRow);
     });
 
-    table.style.width = tableWidth + "vw";
+    table.style.width = tabWidth + "vw";
     table.style.backgroundColor = "black";
     table.style.border = marginTopSpacing + " solid black";
     table.style.borderTop = "0 solid black";
@@ -861,6 +864,8 @@ function getHeightObj(data, clone) {
                         heightsObj[section][header] += "SPACER";
                     } if (header == "Name") {
                         heightsObj[section][header] = nameHeight;
+                    } if (header == "EXTRA NOTES") {
+                        heightsObj[section][header] = "400px";
                     }
                 }
             } else {
@@ -919,7 +924,7 @@ function convertPercent(percent) {
     }
 }
 
-function createNormalMiniTable(data, color, height) {
+function createNormalMiniTable(data, color, height, tabWidth) {
     var miniTable = document.createElement("table");
 
     var headers = Object.keys(data).filter(x => x != "INFO").slice(0, data["INFO"][0].shift());
@@ -930,7 +935,7 @@ function createNormalMiniTable(data, color, height) {
         miniHeaderData.setAttribute("class", "miniInfoHeader");
         miniHeaderData.style.backgroundColor = color["singleCellHeader"];
         miniHeaderData.style.height = height;
-        miniHeaderData.style.width = tableWidth / headers.length + "vw";
+        miniHeaderData.style.width = tabWidth / headers.length + "vw";
 
         miniHeaderData.appendChild(document.createTextNode(header));
         miniHeaderRow.appendChild(miniHeaderData);
@@ -1614,7 +1619,7 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     teams.map(x => x[0]).forEach(team => {
         let td = document.createElement("td");
 
-        td.appendChild(buildTeamTable(team, colors, maxHeights, headerOrder, percentColor));
+        td.appendChild(buildTeamTable(team, colors, maxHeights, headerOrder, percentColor, tableWidth));
         tr.appendChild(td);
     });
 
@@ -1779,9 +1784,290 @@ async function matchSearch() {
     }
 }
 
+async function formsSearch() {
+    var team = document.getElementById("formsDisplayInput").value;
+    
+    document.getElementById("formsDisplayPreTableDiv").innerHTML = "<br>";
+    document.getElementById("formsDisplayMatchTableDiv").innerHTML = "<br>";
+    hideElement("formsDisplayMatchNotifDiv");
+    document.getElementById("matchFormCounter").innerHTML = 1;
+    hideElement("formsDisplayPreNotifDiv");  
+
+    if (team == "") {
+        showElement("formsDisplayNotifDiv");
+        changeNotif("formsDisplayNotifText", "No Team Entered!");
+        return;
+    } if (isNaN(parseInt(team))) {
+        showElement("formsDisplayNotifDiv");
+        changeNotif("formsDisplayNotifText", "Not a Number!");
+        return;
+    }
+    
+    var oN = curOrderNum++;
+    await getSheetData(sheetID, "PRE", oN);
+    var preForms = getOrder(oN).filter(x => x[0] == "TEAM NUM" || x[0] == team);
+    var oN = curOrderNum++;
+    await getSheetData(sheetID, stage, oN);
+    var matchForms = getOrder(oN).filter(x => x[0] == "TEAM NUM" || x[0] == team);
+
+    if (preForms.length == 1 && matchForms.length == 1) {
+        showElement("formsDisplayNotifDiv");
+        changeNotif("formsDisplayNotifText", "No Data!");
+        return;
+    }
+    
+    hideElement("formsDisplayNotifDiv");
+
+    if (preForms.length > 1) {
+        var preHeaders = preForms[0].slice(1).map(x => {
+            if (x == "DIMENSIONS") {
+                return "DIMS";
+            } else {
+                return x;
+            }
+        });
+
+        var preForms = preForms[preForms.length - 1].slice(1);
+        var preObj = {"PRE": {}};
+
+        while (preForms.length != preHeaders.length) {
+            preForms.push("");
+        }
+
+        document.getElementById("formsDisplayPreTableDiv").innerHTML = "<br>";
+
+        for (var i = 0; i < preHeaders.length; i++) {
+            if (i == 8) {
+                preObj["PRE"]["CONE"] = "SPACER";
+            } else if (i == 9) {
+                preObj["PRE"]["CUBE"] = "SPACER";
+            }
+
+            preObj["PRE"][preHeaders[i]] = preForms[i];
+        }
+
+        //DIMENSIONS
+        var dims = JSON.parse(preForms[0]);
+        preObj["PRE"]["DIMS"] = {
+            "Length": dims[0],
+            "Width": dims[1],
+            "INFO": [[1, 1], "NORMAL"]
+        }
+
+        //CONE REACHES
+        var cones = JSON.parse(preForms[7]);
+        preObj["PRE"]["CONE REACHES"] = {
+            "HIGH": cones[0],
+            "MID": cones[1],
+            "LOW": cones[2],
+            "INFO": [[1, 1, 1], "NORMAL"]
+        }
+
+        //CUBE REACHES
+        var cubes = JSON.parse(preForms[8]);
+        preObj["PRE"]["CUBE REACHES"] = {
+            "HIGH": cubes[0],
+            "MID": cubes[1],
+            "LOW": cubes[2],
+            "INFO": [[1, 1, 1], "NORMAL"]
+        }
+
+        var heightObj = getHeightObj(preObj, preObj);
+        var table = document.createElement("table");
+        var tr = document.createElement("tr");
+        var headerTable = document.createElement("td");
+        var dataTable = document.createElement("td");
+
+        table.style.margin = "auto";
+
+        headerTable.appendChild(buildHeaderTable(heightObj, blueDataTableColors));
+        dataTable.appendChild(buildTeamTable(preObj, blueDataTableColors, heightObj, null, percentageBlueColorOrder, 50));
+        tr.appendChild(headerTable);
+        tr.appendChild(dataTable);
+        table.appendChild(tr);
+        document.getElementById("formsDisplayPreTableDiv").appendChild(table);
+    } else {
+        showElement("formsDisplayPreNotifDiv"); 
+    }
+    
+    if (matchForms.length > 1) {
+        hideElement("formsDisplayMatchNotifDiv");
+
+        var matchHeaders = matchForms[0].map(x => {
+            if (x == "LEFT COMMUNITY") {
+                return "MOBILE";
+            } else {
+                return x;
+            }
+        });
+
+        var heights = [];
+        
+        matchForms.slice(1).forEach(form => {
+            var matchObj = {"MATCH": {}};
+    
+            while (form.length != matchHeaders.length) {
+                form.push("");
+            }
+    
+            for (var i = 0; i < matchHeaders.length; i++) {
+                if (matchHeaders[i] == "AUTO CONES") {
+                    matchObj["MATCH"]["CONE AUTO"] = "SPACER";
+                    matchObj["MATCH"]["AUTO CONE"] = form[i];
+                } else if (matchHeaders[i] == "AUTO CUBES") {
+                    matchObj["MATCH"]["CUBE AUTO"] = "SPACER";
+                    matchObj["MATCH"]["AUTO CUBE"] = form[i];
+                } else if (matchHeaders[i] == "TELE CONES") {
+                    matchObj["MATCH"]["CONE TELE"] = "SPACER";
+                    matchObj["MATCH"]["TELE CONE"] = form[i];
+                } else if (matchHeaders[i] == "TELE CUBES") {
+                    matchObj["MATCH"]["CUBE TELE"] = "SPACER";
+                    matchObj["MATCH"]["TELE CUBE"] = form[i];
+                } else {
+                    matchObj["MATCH"][matchHeaders[i]] = form[i];
+                }
+            }
+
+            //AUTO CONES
+            if (matchObj["MATCH"]["AUTO CONE"] != "") {
+                var autoCones = JSON.parse(form[3]);
+
+                matchObj["MATCH"]["AUTO CONE"] = {
+                    "High Made": autoCones[0][0],
+                    "High Miss": autoCones[0][1],
+                    "Mid Made": autoCones[1][0],
+                    "Mid Miss": autoCones[1][1],
+                    "Low Made": autoCones[2][0],
+                    "Low Miss": autoCones[2][1],
+                    "INFO": [[2, 2, 2], "NORMAL"]
+                }
+            }
+
+            //AUTO CUBES
+            if (matchObj["MATCH"]["AUTO CUBE"] != "") {
+                var autoCubes = JSON.parse(form[4]);
+
+                matchObj["MATCH"]["AUTO CUBE"] = {
+                    "High Made": autoCubes[0][0],
+                    "High Miss": autoCubes[0][1],
+                    "Mid Made": autoCubes[1][0],
+                    "Mid Miss": autoCubes[1][1],
+                    "Low Made": autoCubes[2][0],
+                    "Low Miss": autoCubes[2][1],
+                    "INFO": [[2, 2, 2], "NORMAL"]
+                }
+            }
+
+            //TELE CONES
+            if (matchObj["MATCH"]["TELE CONE"] != "") {
+                var teleCones = JSON.parse(form[7]);
+
+                matchObj["MATCH"]["TELE CONE"] = {
+                    "High Made": teleCones[0][0],
+                    "High Miss": teleCones[0][1],
+                    "Mid Made": teleCones[1][0],
+                    "Mid Miss": teleCones[1][1],
+                    "Low Made": teleCones[2][0],
+                    "Low Miss": teleCones[2][1],
+                    "INFO": [[2, 2, 2], "NORMAL"]
+                }
+            }
+
+            //TELE CUBES
+            if (matchObj["MATCH"]["TELE CUBE"] != "") {
+                var teleCones = JSON.parse(form[8]);
+
+                matchObj["MATCH"]["TELE CUBE"] = {
+                    "High Made": teleCones[0][0],
+                    "High Miss": teleCones[0][1],
+                    "Mid Made": teleCones[1][0],
+                    "Mid Miss": teleCones[1][1],
+                    "Low Made": teleCones[2][0],
+                    "Low Miss": teleCones[2][1],
+                    "INFO": [[2, 2, 2], "NORMAL"]
+                }
+            }
+
+            //TIP
+            if (matchObj["MATCH"]["TIP"] != "") {
+                var tipData = JSON.parse(form[9]);
+
+                matchObj["MATCH"]["TIP"] = {
+                    "CS": tipData[1],
+                    "NON-CS": tipData[0],
+                    "INFO": [[1, 1], "NORMAL"]
+                }
+            }
+
+            formsDisplayMatchForms.push(matchObj);
+            heights.push(getHeightObj(matchObj, matchObj));
+        });
+
+        formsDisplayMatchForms = formsDisplayMatchForms.sort((x, y) => parseInt(x["MATCH NUM"]) - parseInt(y["MATCH NUM"]));
+        matchFormHeight = compareHeights(heights);
+
+        ["TEAM NUM", "MATCH NUM"].forEach(thing => {
+            delete matchFormHeight["MATCH"][thing];
+        });
+
+        displayMatchForm(formsDisplayMatchForms[0]);
+    } else {
+        showElement("formsDisplayMatchNotifDiv");
+        document.getElementById("matchFormCounter").innerHTML = 1;  
+    }
+}
+
+function displayMatchForm(form) {
+    document.getElementById("matchFormCounter").innerHTML = form["MATCH"]["MATCH NUM"];
+
+    var copy = structuredClone(form);
+
+    ["TEAM NUM", "MATCH NUM"].forEach(thing => {
+        delete copy["MATCH"][thing];
+    });
+
+    if (!document.getElementById("formDisplaysMatchOuterTable")) {
+        var table = document.createElement("table");
+        var tr = document.createElement("tr");
+        var headerTable = document.createElement("td");
+        var dataTable = document.createElement("td");
+
+        table.id = "formDisplaysMatchOuterTable";
+        table.style.margin = "auto";
+        dataTable.id = "formDisplaysMatchTable";
+
+        headerTable.appendChild(buildHeaderTable(matchFormHeight, blueDataTableColors));
+        dataTable.appendChild(buildTeamTable(copy, blueDataTableColors, matchFormHeight, null, percentageBlueColorOrder, 50));
+        tr.appendChild(headerTable);
+        tr.appendChild(dataTable);
+        table.appendChild(tr);
+        document.getElementById("formsDisplayMatchTableDiv").appendChild(table);
+    } else {
+        var dataTable = document.createElement("td");
+        dataTable.appendChild(buildTeamTable(copy, blueDataTableColors, matchFormHeight, null, percentageBlueColorOrder, 50));
+
+        var momma = document.getElementById("formDisplaysMatchOuterTable").childNodes[0];
+        momma.replaceChild(dataTable, momma.childNodes[1]);
+    }
+}
+
+function changeMatchFormDisplay(isAdding) {
+    if (document.getElementById("formDisplaysMatchOuterTable")) {
+        if (isAdding) {
+            formsDisplayMatchIndex = (formsDisplayMatchIndex + 1) % formsDisplayMatchForms.length;
+        } else if (formsDisplayMatchIndex != 0) {
+            formsDisplayMatchIndex--;
+        } else {
+            formsDisplayMatchIndex = formsDisplayMatchForms.length - 1;
+        }
+
+        displayMatchForm(formsDisplayMatchForms[formsDisplayMatchIndex]);
+    }
+}
+
 async function test() {
-    document.getElementById("teamSearchInput").setAttribute("value", "5816");
-    eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
+    // document.getElementById("teamSearchInput").setAttribute("value", "5816");
+    // eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
 
     // document.getElementById("allianceTeam1SearchInput").setAttribute("value", "1622");
     // document.getElementById("allianceTeam2SearchInput").setAttribute("value", "7130");
@@ -1790,6 +2076,9 @@ async function test() {
 
     
     // eval(document.getElementById("matchSearchSearchButton").getAttribute("onclick"));
+    
+    // document.getElementById("formsDisplayInput").setAttribute("value", "599");
+    // eval(document.getElementById("formsDisplaySearchButton").getAttribute("onclick"));
 }
 
 // test();

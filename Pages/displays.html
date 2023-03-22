@@ -29,7 +29,7 @@
 </div>
 
 <div id="sidebar">
-  <p class="requiresCompElement sidebarButton">General Info</p>
+  <p class="sidebarButton">General Info</p>
   <p class="sidebarButton">Forms</p>
   <p class="sidebarButton selectedButton">Displays</p>
   <!-- <p class="sidebarButton">Recruiting</p> -->
@@ -118,7 +118,7 @@
     <div class="innerDiv">
       <input id="formsDisplayInput" class="inputInput" placeholder="Team#"></input>
 
-      <p id="formsDisplaySearchButton" class="button spacedElem" onclick="displayForms();">Search</p>
+      <p id="formsDisplaySearchButton" class="button spacedElem" onclick="formsSearch();">Search</p>
 
       <div id="formsDisplayNotifDiv" style="display:none;">
         <br>
@@ -127,13 +127,41 @@
 
       <br>
       <h1 id="formsDisplayTeamName" class="title">Enter A Team</h1>
-      <h1 id="formsDisplayTeamNum"></h1>`
+      <h1 id="formsDisplayTeamNum"></h1>
 
-      <p id="formsDisplayPreButton" class="formsDisplayTypeButton groupedButton startGroupedButton">Pre</p>
-      <p id="formsDisplayMatchButton" class="formsDisplayTypeButton groupedButton endGroupedButton">Match</p>
-      
+      <div id="formsDisplayNotifDiv" style="display: none;">
+        <p id="formsDisplayNotifText" class="toggleNotifText"></p>
+      </div>
 
-      <select id="pitTeamNumDropdown" class="formNumDropdown" onchange=""></select>
+      <p id="formsDisplayPreButton" class="formsDisplayTypeButton groupedButton startGroupedButton" onclick="hideElement('formsDisplayMatchDiv');toggleElement('formsDisplayPreDiv');">Pre</p>
+      <p id="formsDisplayMatchButton" class="formsDisplayTypeButton groupedButton endGroupedButton" onclick="hideElement('formsDisplayPreDiv');toggleElement('formsDisplayMatchDiv');">Match</p>
+
+      <div id="formsDisplayPreDiv"style="display: none;">
+        <br>
+
+        <div id="formsDisplayPreNotifDiv" style="display: none;">
+          <p class="toggleNotifText">No Pre Forms!</p>
+        </div>
+
+        <div id="formsDisplayPreTableDiv">
+          <br>
+        </div>
+      </div>
+
+      <div id="formsDisplayMatchDiv" style="display: none;">
+        <br>
+        <p id="matchFormDecButton" class="arrowButton" onclick="changeMatchFormDisplay(false);"><</p>
+        <p id="matchFormCounter" class="counter">1</p>
+        <p id="matchFormIncButton" class="arrowButton" onclick="changeMatchFormDisplay(true);">></p>
+
+        <div id="formsDisplayMatchNotifDiv" style="display: none;">
+          <p class="toggleNotifText">No Match Forms!</p>
+        </div>
+
+        <div id="formsDisplayMatchTableDiv">
+          <br>
+        </div>
+      </div>
     </div>
   </div>
 </body>
