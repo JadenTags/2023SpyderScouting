@@ -280,6 +280,7 @@ const displayTableWidth = 16;
 const percentageBlueColorOrder = ["#7286D3", "#8EA7E9", "#E4EDF1", "#FF9F9F", "#FD8A8A"];
 const percentageRedColorOrder = ["#FD8A8A", "#FF9F9F", "#E4EDF1", "#8EA7E9", "#7286D3"];
 var formsDisplayMatchForms = [];
+var matchNums = [];
 var formsDisplayMatchIndex = 0;
 var matchFormHeight;
 
@@ -987,13 +988,6 @@ function compileAllTeamData(team, match, pre) {
         }
     });
 
-    let counter = 0;
-        while (pre.length < 16) {
-            if (!pre[counter++]) {
-                pre.push("");
-            }
-        }
-
     var data = structuredClone(dataTableWithMatchFormat);
 
     ///////////////////////////GENERAL
@@ -1001,6 +995,13 @@ function compileAllTeamData(team, match, pre) {
     data["General"]["Team"] = team;
 
     if (pre) {
+        let counter = 0;
+        while (pre.length < 16) {
+            if (!pre[counter++]) {
+                pre.push("");
+            }
+        }
+
         //DIMENSIONS
         var dims = JSON.parse(pre[1]);
         fillData(data["General"]["DIM"], "Length", dims[0], 0);
@@ -1805,6 +1806,24 @@ async function formsSearch() {
         changeNotif("formsDisplayNotifText", "Not a Number!");
         return;
     }
+
+    var orderNum = curOrderNum++;
+    await getTBAData("team/frc" + team, orderNum);
+    var data = getOrder(orderNum);
+
+    if (data["Error"]) {
+        showElement("teamSearchNotifDiv");
+        document.getElementById("teamSearchInput").style.border = "1px solid #eb776e";
+        changeNotif("teamSearchNotifText", "That is Not a Valid Team!");
+
+        document.getElementById("teamSearchTeamName").innerHTML = "Enter A Team";
+        return;
+    }
+
+    //TEAM NAME
+    document.getElementById("formsDisplayTeamName").innerHTML = data.nickname;
+    //TEAM NUMBER
+    document.getElementById("formsDisplayTeamNum").innerHTML = "[" + team + "]";
     
     var oN = curOrderNum++;
     await getSheetData(sheetID, "PRE", oN);
@@ -2007,17 +2026,19 @@ async function formsSearch() {
             }
 
             formsDisplayMatchForms.push(matchObj);
+            matchNums.push(matchObj["MATCH"]["MATCH NUM"]);
+
+            delete matchObj["MATCH"]["TEAM NUM"];
+            delete matchObj["MATCH"]["MATCH NUM"];
+
             heights.push(getHeightObj(matchObj, matchObj));
         });
 
         formsDisplayMatchForms = formsDisplayMatchForms.sort((x, y) => parseInt(x["MATCH NUM"]) - parseInt(y["MATCH NUM"]));
         matchFormHeight = compareHeights(heights);
+        formsDisplayMatchForms = formsDisplayMatchForms.map(x => buildTeamTable(x, blueDataTableColors, matchFormHeight, null, percentageBlueColorOrder, 50));
 
-        ["TEAM NUM", "MATCH NUM"].forEach(thing => {
-            delete matchFormHeight["MATCH"][thing];
-        });
-
-        displayMatchForm(formsDisplayMatchForms[0]);
+        displayMatchForm(0);
     } else {
         showElement("formsDisplayMatchNotifDiv");
         document.getElementById("matchFormCounter").innerHTML = 1;  
@@ -2025,13 +2046,7 @@ async function formsSearch() {
 }
 
 function displayMatchForm(form) {
-    document.getElementById("matchFormCounter").innerHTML = form["MATCH"]["MATCH NUM"];
-
-    var copy = structuredClone(form);
-
-    ["TEAM NUM", "MATCH NUM"].forEach(thing => {
-        delete copy["MATCH"][thing];
-    });
+    document.getElementById("matchFormCounter").innerHTML = matchNums[form];
 
     if (!document.getElementById("formDisplaysMatchOuterTable")) {
         var table = document.createElement("table");
@@ -2044,14 +2059,14 @@ function displayMatchForm(form) {
         dataTable.id = "formDisplaysMatchTable";
 
         headerTable.appendChild(buildHeaderTable(matchFormHeight, blueDataTableColors));
-        dataTable.appendChild(buildTeamTable(copy, blueDataTableColors, matchFormHeight, null, percentageBlueColorOrder, 50));
+        dataTable.appendChild(formsDisplayMatchForms[form]);
         tr.appendChild(headerTable);
         tr.appendChild(dataTable);
         table.appendChild(tr);
         document.getElementById("formsDisplayMatchTableDiv").appendChild(table);
     } else {
         var dataTable = document.createElement("td");
-        dataTable.appendChild(buildTeamTable(copy, blueDataTableColors, matchFormHeight, null, percentageBlueColorOrder, 50));
+        dataTable.appendChild(formsDisplayMatchForms[form]);
 
         var momma = document.getElementById("formDisplaysMatchOuterTable").childNodes[0];
         momma.replaceChild(dataTable, momma.childNodes[1]);
@@ -2068,7 +2083,7 @@ function changeMatchFormDisplay(isAdding) {
             formsDisplayMatchIndex = formsDisplayMatchForms.length - 1;
         }
 
-        displayMatchForm(formsDisplayMatchForms[formsDisplayMatchIndex]);
+        displayMatchForm(formsDisplayMatchIndex);
     }
 }
 
