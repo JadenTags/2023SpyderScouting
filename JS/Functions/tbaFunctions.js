@@ -34,11 +34,11 @@ async function getTBAData(link, orderNum) {
 async function getClosestCompData(teamNum) {
     var orderNum = curOrderNum++;
     await getTBAData("team/frc" + teamNum + "/events", orderNum);
-    var closestComp = getOrder(orderNum).reverse().filter(comp => new Date(comp.end_date).getTime() > testDate.getTime()) //.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0]
+    var closestComp = getOrder(orderNum).reverse().sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
     // var closestComp = getOrder(orderNum);
     // closestComp = closestComp[closestComp.length - 1]
     console.log(closestComp);
-    localStorage.setItem("gay", "yuna")
+    localStorage.setItem("bae", "yuna")
 
     if (!closestComp) {
         return [];
