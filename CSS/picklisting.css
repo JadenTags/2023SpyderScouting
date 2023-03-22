@@ -78,7 +78,7 @@ hr {
 
 #filtersDiv {
     transition-duration: 500ms;
-    height: 320px;
+    height: 600px;
     width: 100%;
     background-color: #141414;
     overflow: hidden;
