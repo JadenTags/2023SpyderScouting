@@ -191,7 +191,7 @@ function submitForm(selector) {
     } else if (selector == "matchInPerson") {
         //TEAM NUMBER
         var teamNum = getGroupButtonValue("inPersonAllianceButton");
-
+        console.log(teamNum)
         if (!teamNum) {
             if (document.getElementById("inPersonTeamNumInput")) {
                 teamNum = document.getElementById("inPersonTeamNumInput").value;
