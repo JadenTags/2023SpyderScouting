@@ -34,11 +34,9 @@ async function getTBAData(link, orderNum) {
 async function getClosestCompData(teamNum) {
     var orderNum = curOrderNum++;
     await getTBAData("team/frc" + teamNum + "/events", orderNum);
-    var closestComp = getOrder(orderNum).reverse().sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
-    // var closestComp = getOrder(orderNum);
-    // closestComp = closestComp[closestComp.length - 1]
-    console.log(closestComp);
-    localStorage.setItem("bae", "yuna")
+
+    var curDate = new Date().getTime();
+    var closestComp = getOrder(orderNum).reverse().filter(x => new Date(x.end_date).getTime() <= curDate)[0];
 
     if (!closestComp) {
         return [];
@@ -46,6 +44,5 @@ async function getClosestCompData(teamNum) {
 
     var difference = Math.floor((new Date(closestComp.start_date).getTime() - testDate.getTime()) / (1000 * 60 * 60 * 24));
     localStorage.setItem("closestComp", JSON.stringify(closestComp));
-    document.body.appendChild(document.createTextNode(JSON.stringify(closestComp)));
     localStorage.setItem("difference", difference);
 }
