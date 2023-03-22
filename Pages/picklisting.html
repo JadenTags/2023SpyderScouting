@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Team Spyder Scouting</title>
+  <link href="../CSS/generalStyle.css" rel="stylesheet" type="text/css"/>
+  <link href="../CSS/picklisting.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<div id="nav">
+  <div id="innerNav">
+    <img id="menubars" src="../Images/menubars.png" onclick="toggleSidebar();">
+    <img id="x" src="../Images/x.png" onclick="toggleSidebar();">
+    <img id="spyderLogo" src="../Images/spyderLogo.png">
+    <p id="greetingText"></p>
+  </div>
+</div>
+
+<div id="subNav">
+  <p id="shopButton" class="subNavButton">Shop</p>
+  <!-- <p class="subNavDivider"></p> -->
+  <!-- <p id="compatibilityButton" class="subNavButton">Compatibility</p>
+  <p class="subNavDivider"></p>
+  <p id="searchButton" class="subNavButton" style="border:none;">Search</p> -->
+</div>
+
+
+<div id="sidebar">
+  <p class="sidebarButton">General Info</p>
+  <p class="sidebarButton">Forms</p>
+  <p class="sidebarButton">Displays</p>
+  <p class="sidebarButton selectedButton">Picklisting</p>
+</div>
+
+<body>
+  <div id="mainDiv" class="subNavDiv">
+    <h1 class="title">Picklisting</h1>
+
+    <p class="generalDivText">Tools to make a picklist.</p>
+  </div>
+  
+  <div id="compatibilityDiv" class="subNavDiv" style="display:none">
+    
+  </div>
+  
+  <div id="searchDiv" class="subNavDiv" style="display:none">
+  </div>
+  
+  <div id="shopDiv" class="subNavDiv" style="display:none">
+    <div id="toolsDiv">
+      <input id="shoppingSearchBar" laceholder="Search"></input>
+
+      <br>
+
+      <label id="sortByLabel">Sort By:</label>
+      <select id="sortingBasisDropdown" class="dropdown">
+        <option value="Num">#</option>
+        <option value="Auto">Auto</option>
+        <option value="Teleop">Teleop</option>
+        <option value="Cargo">Cargo</option>
+        <option value="OPR">OPR</option>
+        <option value="Rank">Rank</option>
+      </select>
+
+      <p id="filterButton" onclick="toggleFiltersDiv();">Filters</p>
+      <img id="filtersArrow" src="../Images/arrow.png" onclick="toggleFiltersDiv();">
+
+      <br>
+      <hr>
+    </div>
+
+    <div id="filtersDiv" style="bottom: -300px;">
+      <input id="drivebasesCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter">Drivebase</p>
+      <select id="drivesbasesDropdown"></select>
+
+      <br>
+
+      <input id="autoMinCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter">Auto Min</p>
+      <input id="autoMinInput" class="numberInput" type="number"></input>
+
+      <br>
+
+      <input id="teleMinCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter">Teleop Min</p>
+      <input id="teleopMinInput" class="numberInput" type="number"></input>
+
+      <br>
+
+      <input id="autoClimbCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter">Auto Climb</p>
+
+      <br>
+
+      <input id="climbTypeCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter">Climb Type</p>
+      <select id="climbTypesDropdown">
+        <option value="Auto Bal">Auto Bal</option>
+        <option value="Dead Reckoning">Dead Reckoning</option>
+      </select>
+
+      <br>
+
+      <input id="coneReachCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter">Cone Reach</p>
+
+      <p class="filter" style="margin: 0;">H</p>
+      <input id="coneReachHighCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter" style="margin: 0;">M</p>
+      <input id="coneReachMidCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter" style="margin: 0;">L</p>
+      <input id="coneReachLowCheckbox" type="checkbox" class="filterCheckbox"></input>
+
+      <br>
+
+      <input id="cubeReachCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter">Cube Reach</p>
+
+      <p class="filter" style="margin: 0;">H</p>
+      <input id="cubeReachHighCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter" style="margin: 0;">M</p>
+      <input id="cubeReachMidCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter" style="margin: 0;">L</p>
+      <input id="cubeReachLowCheckbox" type="checkbox" class="filterCheckbox"></input>
+
+      <br>
+
+      <input id="sideMaxCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter">Side Max</p>
+      <input id="sideMaxInput" class="numberInput" type="number"></input>
+    </div>
+  </div>
+</body>
+
+<script src="../JS/config.js"></script>
+<script src="../JS/simuVars.js"></script>
+<script src="../JS/Functions/generalFunctions.js"></script>
+<script src="../JS/Functions/navFunctions.js"></script>
+<script src="../JS/Functions/sheetsFunctions.js"></script>
+<script src="../JS/Functions/tbaFunctions.js"></script>
+<script src="../JS/Functions/globalDataFunctions.js"></script>
+<script src="../JS/Functions/buttonFunctions.js"></script>
+<script src="../JS/Pages/picklisting.js"></script>
+<script>checkLogIn();</script>
+
+</html>

@@ -1,0 +1,109 @@
+.dropdown, #sortByLabel {
+    -webkit-appearance: none;
+    border: none;
+    margin: 0 auto;
+    margin-top: 5px;
+    text-align: center;
+    font-size: 15px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: black;
+    float: left;
+}
+
+#drivebasesDropdown, #climbTypesDropdown {
+    vertical-align: middle;
+    -webkit-appearance: none;
+    border: none;
+    margin: 0 auto;
+    margin-top: 5px;
+    text-align: center;
+    font-size: 15px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: black;
+}
+
+#sortByLabel {
+    margin-left: 7vw;
+}
+
+#shoppingSearchBar {
+    background: url(../Images/magnifyingGlass.png) left no-repeat;
+    background-size: 15px;
+    padding-left: 20px;
+    height: 15px;
+    border-radius: 5px 5px 5px 5px;
+    width: 80%;
+    margin: auto;
+    border: 1px solid #c5c7c5;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+#toolsDiv {
+    margin-top: 90px;
+}
+
+#filterButton {
+    float: right;
+    display: inline-block;
+    /* border: 1px solid black; */
+    padding: 5px;
+    padding-left: 26px;
+    margin: 0vw;
+    font-size: 15px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: black;
+    border-radius: 5px;
+    margin-right: 5vw;
+}
+
+#filtersArrow {
+    transition-duration: 10ms;
+    width: 15px;
+    float: right;
+    vertical-align: middle;
+    margin-top: 10px;
+    margin-right: -22px;
+}
+
+.numberInput {
+    display: inline-block;
+    border-radius: 5px 5px 5px 5px;
+    width: 20%;
+    border: 1px solid #c5c7c5;
+}
+
+hr {
+    width: 100%;
+}
+
+#filtersDiv {
+    transition-duration: 500ms;
+    height: 300px;
+    width: 100%;
+    background-color: #141414;
+    overflow: hidden;
+    position: fixed;
+    z-index: 99;
+    border-radius: 5px 5px 0px 0px;
+    text-align: center;
+}
+
+.filter {
+    vertical-align: middle;
+    display: inline-block;
+    color: white;
+    margin: 10px;
+    padding: 0px;
+    font-size: 15px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.filterCheckbox {
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+}
+
+.flippedVertically {
+    transform: rotate(180deg);
+}

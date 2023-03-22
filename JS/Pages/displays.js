@@ -268,6 +268,9 @@ const redDataTableColors = {
 var lockedDivs = {
     "mainDiv": "locked",
     "teamSearchDiv": "unlocked",
+    "allianceSearchDiv": "unlocked",
+    "matchSearchDiv": "unlocked",
+    "formsDisplayDiv": "unlocked",
 };
 var nameHeight = "45px";
 const marginTopSpacing = "2px";
@@ -1896,6 +1899,10 @@ async function formsSearch() {
         var matchHeaders = matchForms[0].map(x => {
             if (x == "LEFT COMMUNITY") {
                 return "MOBILE";
+            } else if (x == "PLAYSTYLE") {
+                return "PS";
+            } else if (x == "ENDGAME") {
+                return "END";
             } else {
                 return x;
             }
