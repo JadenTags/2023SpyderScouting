@@ -1471,93 +1471,95 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     document.getElementById("allianceTeam3SearchInput").style.border = "1px solid #c5c7c5";
     changeNotif("allianceSearchNotifText", "");
 
+    if (divId == "alliance") {
     if (teams.includes("")) {
-        var counter = 0;
+            var counter = 0;
 
-        for (var i = 1; i <= 3; i++) {
-            if (teams[i - 1] == "") {
-                document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
-                counter++;
-            }
-        }
-
-        if (counter == 1) {
-            changeNotif("allianceSearchNotifText", "Please Enter a Team!");
-        } else {
-            changeNotif("allianceSearchNotifText", "Please Enter Teams!");
-        }
-
-        showElement("allianceSearchNotifDiv");
-        return;
-    }
-
-    var nonNumbers = teams.map(team => isNaN(parseInt(team)) && team != "");
-    if (nonNumbers.includes(true)) {
-        var counter = 0;
-
-        for (var i = 1; i <= 3; i++) {
-            if (nonNumbers[i - 1]) {
-                document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
-                counter++;
-            }
-        }
-
-        if (counter == 1) {
-            changeNotif("allianceSearchNotifText", "That is Not a Number!");
-        } else {
-            changeNotif("allianceSearchNotifText", "Those Aren't Numbers!");
-        }
-
-        showElement("allianceSearchNotifDiv");
-        return;
-    }
-
-    var passed = [];
-    var multiples = false;
-    var multiple;
-    teams.forEach(x => {
-        if (!passed.includes(x)) {
-            passed.push(x);
-        } else {
-            multiples = true;
-            multiple = x;
-        }
-    });
-    if (multiples) {
-        for (var i = 1; i <= 3; i++) {
-            if (teams[i - 1] == multiple) {
-                document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
-            }
-        }
-        
-        changeNotif("allianceSearchNotifText", "You Have Multiples!");
-        showElement("allianceSearchNotifDiv");
-        return;
-    }
-
-    var counter = 0
-    for (var i = 0; i < 3; i++) {
-        if (document.getElementById("allianceTeam" + (i + 1) + "SearchInput").style.border != "1px solid #eb776e") {
-            var orderNum = curOrderNum++;
-            await getTBAData("team/frc" + teams[i], orderNum);
-            var data = getOrder(orderNum);
-    
-            if (data["Error"]) {
-                if (counter >= 1) {
-                    changeNotif("allianceSearchNotifText", "Those Aren't Valid Teams!");
-                } else {
-                    changeNotif("allianceSearchNotifText", "That is Not a Valid Team!");
+            for (var i = 1; i <= 3; i++) {
+                if (teams[i - 1] == "") {
+                    document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
+                    counter++;
                 }
-    
-                showElement("allianceSearchNotifDiv");
-                document.getElementById("allianceTeam" + (i + 1) + "SearchInput").style.border = "1px solid #eb776e";
-                counter++;
+            }
+
+            if (counter == 1) {
+                changeNotif("allianceSearchNotifText", "Please Enter a Team!");
+            } else {
+                changeNotif("allianceSearchNotifText", "Please Enter Teams!");
+            }
+
+            showElement("allianceSearchNotifDiv");
+            return;
+        }
+
+        var nonNumbers = teams.map(team => isNaN(parseInt(team)) && team != "");
+        if (nonNumbers.includes(true)) {
+            var counter = 0;
+
+            for (var i = 1; i <= 3; i++) {
+                if (nonNumbers[i - 1]) {
+                    document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
+                    counter++;
+                }
+            }
+
+            if (counter == 1) {
+                changeNotif("allianceSearchNotifText", "That is Not a Number!");
+            } else {
+                changeNotif("allianceSearchNotifText", "Those Aren't Numbers!");
+            }
+
+            showElement("allianceSearchNotifDiv");
+            return;
+        }
+
+        var passed = [];
+        var multiples = false;
+        var multiple;
+        teams.forEach(x => {
+            if (!passed.includes(x)) {
+                passed.push(x);
+            } else {
+                multiples = true;
+                multiple = x;
+            }
+        });
+        if (multiples) {
+            for (var i = 1; i <= 3; i++) {
+                if (teams[i - 1] == multiple) {
+                    document.getElementById("allianceTeam" + i + "SearchInput").style.border = "1px solid #eb776e";
+                }
+            }
+            
+            changeNotif("allianceSearchNotifText", "You Have Multiples!");
+            showElement("allianceSearchNotifDiv");
+            return;
+        }
+
+        var counter = 0
+        for (var i = 0; i < 3; i++) {
+            if (document.getElementById("allianceTeam" + (i + 1) + "SearchInput").style.border != "1px solid #eb776e") {
+                var orderNum = curOrderNum++;
+                await getTBAData("team/frc" + teams[i], orderNum);
+                var data = getOrder(orderNum);
+        
+                if (data["Error"]) {
+                    if (counter >= 1) {
+                        changeNotif("allianceSearchNotifText", "Those Aren't Valid Teams!");
+                    } else {
+                        changeNotif("allianceSearchNotifText", "That is Not a Valid Team!");
+                    }
+        
+                    showElement("allianceSearchNotifDiv");
+                    document.getElementById("allianceTeam" + (i + 1) + "SearchInput").style.border = "1px solid #eb776e";
+                    counter++;
+                }
             }
         }
-    }
 
-    if (counter > 0) {
-        return;
+        if (counter > 0) {
+            return;
+        }
     }
 
     console.log("passed")
