@@ -1798,7 +1798,7 @@ async function matchSearch() {
             console.log(red);
         } else {
             console.log(blue, red)
-            allianceSearch(red, "alliedDiv", "match", redDataTableColors, percentageRedColorOrder);
+            allianceSearch(match.alliances.red.team_keys.map(x => x.replace("frc", "")), "alliedDiv", "match", redDataTableColors, percentageRedColorOrder);
             console.log(red);
             allianceSearch(blue, "opposedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
             console.log(blue);
