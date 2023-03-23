@@ -1792,12 +1792,12 @@ async function matchSearch() {
 
         if (blue.includes("1622")) {
             console.log(blue, red)
-            await allianceSearch(blue, "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
-            await allianceSearch(red, "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
+            allianceSearch(blue, "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
+            allianceSearch(red, "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
         } else {
             console.log(blue, red)
-            await allianceSearch(red, "alliedDiv", "match", redDataTableColors, percentageRedColorOrder);
-            await allianceSearch(blue, "opposedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
+            allianceSearch(red, "alliedDiv", "match", redDataTableColors, percentageRedColorOrder);
+            allianceSearch(blue, "opposedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
         }
     }
 }
