@@ -369,7 +369,7 @@ async function teamSearch() {
     
     var teamData;
     var clone;
-    if (noMatch) { // && noPre TODO: FINISH LASTER
+    if (noMatch) {
         showElement("teamSearchNotifDiv");
         document.getElementById("teamSearchInput").style.border = "1px solid #eb776e";
         changeNotif("teamSearchNotifText", "This Team Has No Data!");
@@ -447,7 +447,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor, 
                     headerInfo = headerInfo.replaceAll("\"", "").replaceAll(" x ", "|");
                 }
                 
-                if (headerInfo == "SPACER") {
+                if (heightsObj[section][header].includes("SPACER")) {
                     miniData.setAttribute("class", "spacer");
                     miniData.style.backgroundColor = color["spacer"];
                     
@@ -1781,8 +1781,8 @@ async function matchSearch() {
             match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum))[0];
         }
 
-        var blue = match.alliances.blue.team_keys.map(x => x.replace("frc", ""));
-        var red = match.alliances.red.team_keys.map(x => x.replace("frc", ""));
+        var blue = match.alliances.blue.team_keys.map(x => x.replace("frc", "")); //TODO: CHECK RED AND BLUE ON MOBILE
+        var red = match.alliances.red.team_keys.map(x => x.replace("frc", "")); //TODO: WHEN ALLIANCE INTO MATCH SEARCH, SAME TABLE
     
         if (blue.includes("1622")) {
             await allianceSearch(blue, "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
@@ -1919,6 +1919,9 @@ async function formsSearch() {
     }
     
     if (matchForms.length > 1) {
+        formsDisplayMatchForms = [];
+        matchNums = [];
+
         hideElement("formsDisplayMatchNotifDiv");
 
         var matchHeaders = matchForms[0].map(x => {
@@ -2051,7 +2054,7 @@ async function formsSearch() {
     }
 }
 
-function displayMatchForm(form) {
+function displayMatchForm(form) { //TODO: FIX MOBILE BUG
     document.getElementById("matchFormCounter").innerHTML = matchNums[form];
 
     if (!document.getElementById("formDisplaysMatchOuterTable")) {
