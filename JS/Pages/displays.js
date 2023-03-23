@@ -1460,6 +1460,7 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
             teams.push(document.getElementById("allianceTeam" + i + "SearchInput").value);
         }
     }
+    console.log(teams)
 
     var dataTableDiv = document.getElementById(divId);
 
@@ -1558,6 +1559,8 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     if (counter > 0) {
         return;
     }
+
+    console.log("passed")
 
     var orderNum = curOrderNum++;
     await getSheetData(sheetID, "PRE", orderNum);
@@ -1783,8 +1786,6 @@ async function matchSearch() {
 
         var blue = match.alliances.blue.team_keys.map(x => x.replace("frc", "")); //TODO: CHECK RED AND BLUE ON MOBILE
         var red = match.alliances.red.team_keys.map(x => x.replace("frc", "")); //TODO: WHEN ALLIANCE INTO MATCH SEARCH, SAME TABLE
-    
-        console.log(red, blue)
 
         if (blue.includes("1622")) {
             await allianceSearch(blue, "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
