@@ -1784,6 +1784,8 @@ async function matchSearch() {
         var blue = match.alliances.blue.team_keys.map(x => x.replace("frc", "")); //TODO: CHECK RED AND BLUE ON MOBILE
         var red = match.alliances.red.team_keys.map(x => x.replace("frc", "")); //TODO: WHEN ALLIANCE INTO MATCH SEARCH, SAME TABLE
     
+        console.log(red, blue)
+
         if (blue.includes("1622")) {
             await allianceSearch(blue, "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
             await allianceSearch(red, "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
