@@ -26,4 +26,4 @@ localStorage.setItem("user", "Fart");
 //COMP: LEAVE COMMENTED
 //TESTNG: LEAVE UNCOMMNETED
 
-localStorage.setItem("TEST", "CUNA");
+localStorage.setItem("TEST", "TUNA");
