@@ -106,7 +106,7 @@ async function checkLogIn() {
 
 function setDisplayData() {
   if (!localStorage.getItem("displayData")) {
-    localStorage.setItem("displayData", "WARMUPS");
+    localStorage.setItem("displayData", def);
   }
 }
 

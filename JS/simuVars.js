@@ -14,12 +14,14 @@ var stage = ["WARMUPS", "QUALS", "FINALS"][1];
 //COMP: SET TO WHATEVER STAGE
 //NOT COMP: SET TO [1]
 
+var def = ["WARMUPS", "QUALS", "FINALS"][1];
+
 var matchNum;
 
 var tbaNotWorking = false;
 //SET TO TRUE IF TBA IS WORKING ON MOBILE, ELSE, FALSE
 
-// localStorage.clear()
+localStorage.clear()
 localStorage.setItem("user", "Fart");
 //COMP: LEAVE COMMENTED
 //TESTNG: LEAVE UNCOMMNETED
