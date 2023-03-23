@@ -1676,12 +1676,12 @@ function compareHeights(heights) {
 }
 
 function fillMissingHeaders(objs) {
-    var allHeaders = {
-        "General": [],
-        "Auto": [],
-        "Teleop": [],
-    }
-    var groups = ["General", "Auto", "Teleop"];
+    var allHeaders = {};
+    var groups = Object.keys(objs[0]);
+
+    groups.forEach(group => {
+        allHeaders[group] = [];
+    });
 
     objs.forEach(obj => {
         let counter = 0;
@@ -1939,118 +1939,170 @@ async function formsSearch() {
         var heights = [];
         
         matchForms.slice(1).forEach(form => {
-            var matchObj = {"MATCH": {}};
+            var matchObj = {"AUTO": {}, "TELEOP": {}};
     
             while (form.length != matchHeaders.length) {
                 form.push("");
             }
-    
-            for (var i = 0; i < matchHeaders.length; i++) {
-                if (matchHeaders[i] == "AUTO CONES") {
-                    matchObj["MATCH"]["CONE AUTO"] = "SPACER";
-                    matchObj["MATCH"]["AUTO CONE"] = form[i];
-                } else if (matchHeaders[i] == "AUTO CUBES") {
-                    matchObj["MATCH"]["CUBE AUTO"] = "SPACER";
-                    matchObj["MATCH"]["AUTO CUBE"] = form[i];
-                } else if (matchHeaders[i] == "TELE CONES") {
-                    matchObj["MATCH"]["CONE TELE"] = "SPACER";
-                    matchObj["MATCH"]["TELE CONE"] = form[i];
-                } else if (matchHeaders[i] == "TELE CUBES") {
-                    matchObj["MATCH"]["CUBE TELE"] = "SPACER";
-                    matchObj["MATCH"]["TELE CUBE"] = form[i];
-                } else {
-                    matchObj["MATCH"][matchHeaders[i]] = form[i];
-                }
-            }
+
+            //MATCH NUMS
+            matchNums.push(form[1]);
+
+            //MOBILE
+            matchObj["AUTO"]["MOBILE"] = form[2];
 
             //AUTO CONES
-            if (matchObj["MATCH"]["AUTO CONE"] != "") {
+            matchObj["AUTO"]["CONES"] = "SPACER";
+            if (form[3] != "") {
                 var autoCones = JSON.parse(form[3]);
 
-                matchObj["MATCH"]["AUTO CONE"] = {
-                    "High Made": autoCones[0][0],
-                    "High Miss": autoCones[0][1],
-                    "Mid Made": autoCones[1][0],
-                    "Mid Miss": autoCones[1][1],
-                    "Low Made": autoCones[2][0],
-                    "Low Miss": autoCones[2][1],
-                    "INFO": [[2, 2, 2], "NORMAL"]
+                matchObj["AUTO"]["CONE TOP"] = {
+                    "Made": autoCones[0][0],
+                    "Miss": autoCones[0][1],
+                    "INFO": [[2], "NORMAL"]
+                }
+                
+                matchObj["AUTO"]["CONE MID"] = {
+                    "Made": autoCones[1][0],
+                    "Miss": autoCones[1][1],
+                    "INFO": [[2], "NORMAL"]
+                }
+                
+                matchObj["AUTO"]["CONE LOW"] = {
+                    "Made": autoCones[2][0],
+                    "Miss": autoCones[2][1],
+                    "INFO": [[2], "NORMAL"]
                 }
             }
 
             //AUTO CUBES
-            if (matchObj["MATCH"]["AUTO CUBE"] != "") {
+            matchObj["AUTO"]["CUBES"] = "SPACER";
+            if (form[4] != "") {
                 var autoCubes = JSON.parse(form[4]);
 
-                matchObj["MATCH"]["AUTO CUBE"] = {
-                    "High Made": autoCubes[0][0],
-                    "High Miss": autoCubes[0][1],
-                    "Mid Made": autoCubes[1][0],
-                    "Mid Miss": autoCubes[1][1],
-                    "Low Made": autoCubes[2][0],
-                    "Low Miss": autoCubes[2][1],
-                    "INFO": [[2, 2, 2], "NORMAL"]
+                matchObj["AUTO"]["CUBE TOP"] = {
+                    "Made": autoCubes[0][0],
+                    "Miss": autoCubes[0][1],
+                    "INFO": [[2], "NORMAL"]
+                }
+                
+                matchObj["AUTO"]["CUBE MID"] = {
+                    "Made": autoCubes[1][0],
+                    "Miss": autoCubes[1][1],
+                    "INFO": [[2], "NORMAL"]
+                }
+                
+                matchObj["AUTO"]["CUBE LOW"] = {
+                    "Made": autoCubes[2][0],
+                    "Miss": autoCubes[2][1],
+                    "INFO": [[2], "NORMAL"]
                 }
             }
 
-            //TELE CONES
-            if (matchObj["MATCH"]["TELE CONE"] != "") {
+            //DOCKED
+            matchObj["AUTO"]["DOCKED"] = form[5];
+
+            //ENG
+            matchObj["AUTO"]["ENGAGED"] = form[6];
+
+            //TELEOP CONES
+            matchObj["TELEOP"]["CONES"] = "SPACER";
+            if (form[7] != "") {
                 var teleCones = JSON.parse(form[7]);
 
-                matchObj["MATCH"]["TELE CONE"] = {
-                    "High Made": teleCones[0][0],
-                    "High Miss": teleCones[0][1],
-                    "Mid Made": teleCones[1][0],
-                    "Mid Miss": teleCones[1][1],
-                    "Low Made": teleCones[2][0],
-                    "Low Miss": teleCones[2][1],
-                    "INFO": [[2, 2, 2], "NORMAL"]
+                matchObj["TELEOP"]["CONE TOP"] = {
+                    "Made": teleCones[0][0],
+                    "Miss": teleCones[0][1],
+                    "INFO": [[2], "NORMAL"]
+                }
+                
+                matchObj["TELEOP"]["CONE MID"] = {
+                    "Made": teleCones[1][0],
+                    "Miss": teleCones[1][1],
+                    "INFO": [[2], "NORMAL"]
+                }
+                
+                matchObj["TELEOP"]["CONE LOW"] = {
+                    "Made": teleCones[2][0],
+                    "Miss": teleCones[2][1],
+                    "INFO": [[2], "NORMAL"]
                 }
             }
 
-            //TELE CUBES
-            if (matchObj["MATCH"]["TELE CUBE"] != "") {
-                var teleCones = JSON.parse(form[8]);
+            //TELEOP CONES
+            matchObj["TELEOP"]["CUBES"] = "SPACER";
+            if (form[8] != "") {
+                var teleCubes = JSON.parse(form[8]);
 
-                matchObj["MATCH"]["TELE CUBE"] = {
-                    "High Made": teleCones[0][0],
-                    "High Miss": teleCones[0][1],
-                    "Mid Made": teleCones[1][0],
-                    "Mid Miss": teleCones[1][1],
-                    "Low Made": teleCones[2][0],
-                    "Low Miss": teleCones[2][1],
-                    "INFO": [[2, 2, 2], "NORMAL"]
+                matchObj["TELEOP"]["CUBE TOP"] = {
+                    "Made": teleCubes[0][0],
+                    "Miss": teleCubes[0][1],
+                    "INFO": [[2], "NORMAL"]
+                }
+                
+                matchObj["TELEOP"]["CUBE MID"] = {
+                    "Made": teleCubes[1][0],
+                    "Miss": teleCubes[1][1],
+                    "INFO": [[2], "NORMAL"]
+                }
+                
+                matchObj["TELEOP"]["CUBE LOW"] = {
+                    "Made": teleCubes[2][0],
+                    "Miss": teleCubes[2][1],
+                    "INFO": [[2], "NORMAL"]
                 }
             }
 
             //TIP
-            if (matchObj["MATCH"]["TIP"] != "") {
+            if (form[9] != "") {
                 var tipData = JSON.parse(form[9]);
 
-                matchObj["MATCH"]["TIP"] = {
+                matchObj["TELEOP"]["TIP"] = {
                     "CS": tipData[1],
                     "NON-CS": tipData[0],
                     "INFO": [[1, 1], "NORMAL"]
                 }
             }
 
+            //PLAYSTYLE
+            matchObj["TELEOP"]["PLAYSTYLE"] = form[10];
+
+            //ENDGAME
+            matchObj["TELEOP"]["ENDGAME"] = form[11];
+
+            //TELEOP ENGAGED
+            matchObj["TELEOP"]["ENGAGED"] = form[12];
+
+            //FAILURES
+            matchObj["TELEOP"]["FAILURE"] = form[13];
+
+            //EXTRA NOTES
+            matchObj["TELEOP"]["EXTRA NOTES"] = form[14];
+
+            //USER
+            matchObj["TELEOP"]["USER"] = form[15];
+
             formsDisplayMatchForms.push(matchObj);
-            matchNums.push(matchObj["MATCH"]["MATCH NUM"]);
-
-            delete matchObj["MATCH"]["TEAM NUM"];
-            delete matchObj["MATCH"]["MATCH NUM"];
-
-            heights.push(getHeightObj(matchObj, matchObj));
         });
 
         formsDisplayMatchForms = formsDisplayMatchForms.sort((x, y) => parseInt(x["MATCH NUM"]) - parseInt(y["MATCH NUM"]));
-        matchFormHeight = compareHeights(heights);
-        formsDisplayMatchForms = formsDisplayMatchForms.map(x => buildTeamTable(x, blueDataTableColors, matchFormHeight, null, percentageBlueColorOrder, 50));
+        var order = fillMissingHeaders(formsDisplayMatchForms);
+        formsDisplayMatchForms.forEach(x => Object.keys(x).forEach(y => Object.keys(x[y]).forEach(z => x[y][z] = replaceND(x[y][z]))));
+        matchFormHeight = compareHeights(formsDisplayMatchForms.map(x => getHeightObj(x, order)));
+        formsDisplayMatchForms = formsDisplayMatchForms.map(x => buildTeamTable(x, blueDataTableColors, matchFormHeight, order, percentageBlueColorOrder, 50));
 
         displayMatchForm(0);
     } else {
         showElement("formsDisplayMatchNotifDiv");
         document.getElementById("matchFormCounter").innerHTML = 1;  
+    }
+}
+
+function replaceND(data) {
+    if (data == "ND") {
+        return "";
+    } else {
+        return data;
     }
 }
 
