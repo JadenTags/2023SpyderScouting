@@ -813,6 +813,7 @@ function buildHeaderTable(heightObj, color) {
                 innerData.style.backgroundColor = color["sectionHeader"];
                 innerData.style.width = displayTableWidth + "vw";
                 innerData.style.height = height;
+                
                 if (height.includes("SPACER")) {
                     innerData.style.height = height.replace("SPACER", "");
                     innerData.style.color = color["sectionHeader"];
@@ -1643,7 +1644,6 @@ function compareHeights(heights) {
 
         Object.keys(heights[0][section]).forEach(header => {
             var headerHeights = [...heights.map(x => x[section][header])].map(x => x.replaceAll("px", "").replace("SPACER", ""));
-
             if (headerHeights.map(x => x.includes("|")).includes(true)) {
                 var min = Math.max(...headerHeights.map(x => x.split("|").length));
                 var maxNestedHeights = [];
@@ -1661,10 +1661,13 @@ function compareHeights(heights) {
                 for (var i = 0; i < min; i++) {
                     maxNestedHeights.push(Math.max(...heightsArrays.map(x => x[i])));
                 }
-
                 maxHeights[section][header] = maxNestedHeights.join("px|") + "px";
             } else {
-                maxHeights[section][header] = Math.max(...headerHeights) + "px";
+                if (heights[0][section][header].includes("SPACER")) {
+                    maxHeights[section][header] = Math.max(...headerHeights) + "pxSPACER";
+                } else {
+                    maxHeights[section][header] = Math.max(...headerHeights) + "px";
+                }
             }
         });
     });
