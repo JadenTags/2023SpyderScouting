@@ -65,6 +65,18 @@ async function activateButtons() {
 
         button.setAttribute("onclick", "" + JSON.stringify(Array.from(document.getElementsByClassName(divId)).map(x => x.id)) + ".forEach(divButton => {if (divButton != '" + button.id + "' && document.getElementById(divButton).getAttribute('class').split(' ').includes('selectedButton')) {togglePushButton(divButton)}}); togglePushButton('" + button.id + "');" + button.getAttribute("onclick"));
     });
+    
+    buttons = Array.from(document.getElementsByClassName("onGroupedButton"));
+
+    buttons.forEach(button => {
+        let divId = button.getAttribute("class").split(" ")[0];
+
+        if (button.getAttribute("class").includes("requiresCompElement")) {
+            button.setAttribute("onclick", "(async () => {await waitRequiresCompElementsRemoved(); if (document.getElementById('" + button.id + "').getAttribute('onclick') != '') {" + button.getAttribute("onclick") + "}});");
+        }
+
+        button.setAttribute("onclick", "" + JSON.stringify(Array.from(document.getElementsByClassName(divId)).map(x => x.id)) + ".forEach(divButton => {if (divButton != '" + button.id + "' && document.getElementById(divButton).getAttribute('class').split(' ').includes('selectedButton')) {togglePushButton(divButton)}}); if (!document.getElementById('" + button.id + "').getAttribute('class').includes('selectedButton')) {togglePushButton('" + button.id + "')};" + button.getAttribute("onclick"));
+    });
 
     buttonsActivated = true;
 }
@@ -164,6 +176,12 @@ function togglePushButton(buttonId) {
     } else {
         button.value = true;
         button.setAttribute("class", "selectedButton " + button.getAttribute("class"));
+    }
+}
+
+async function waitButtons() {
+    while (!buttonsActivated) {
+        await wait(100);
     }
 }
 

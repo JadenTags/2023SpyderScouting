@@ -29,6 +29,25 @@ function wait(ms) {
   });
 }
 
+function getGroupButtonValue(groupClass, additionalDiv) {
+    var search = document;
+    if (additionalDiv) {
+        search = document.getElementById(additionalDiv);
+    }
+
+    var value;
+    Array.from(search.getElementsByClassName(groupClass)).forEach(elem => {
+        if (elem.value) {
+            value = elem.innerHTML;
+        }
+    });
+    if (!value) {
+        value = "";
+    }
+
+    return value;
+}
+
 function toggleElement(elementId) {
   var element = document.getElementById(elementId);
   

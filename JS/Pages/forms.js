@@ -170,6 +170,9 @@ function submitForm(selector) {
         //PREFERRED PLAYSTYLE
         form.push(getGroupButtonValue("preferButton"));
 
+        //PREFERRED GAME PIECE
+        form.push(getGroupButtonValue("preferGPButton"));
+
         //ROBOT PIC
         if (!document.getElementById("robotPic").files[0]) {
             document.getElementById("roboPicNotifDiv").style.display = "initial";
@@ -182,33 +185,62 @@ function submitForm(selector) {
         //EXTRA NOTES
         form.push(document.getElementById("preExtraNotes").value);
 
+        //USER
+        form.push(localStorage.getItem("user"));
+
         if (end) {
             return true;
         }
-        console.log(form)
         appendData(sheetID, "PRE", form);
         lockDiv(lockedDivs, curDiv, selector + "Div");
     } else if (selector == "matchInPerson") {
         //TEAM NUMBER
         var teamNum = getGroupButtonValue("inPersonAllianceButton");
-        console.log(teamNum)
-        if (!teamNum) {
-            if (document.getElementById("inPersonTeamNumInput")) {
-                teamNum = document.getElementById("inPersonTeamNumInput").value;
+        
+        if (stage != "WARMUPS") {
+            if (!teamNum) {
+                if (document.getElementById("inPersonTeamNumInput")) {
+                    teamNum = document.getElementById("inPersonTeamNumInput").value;
+                } else {
+                    changeNotif("inPersonTeamNumNotif", "You Did Not Select a Team!");
+                }
+                end = true;
+            } else if (isNaN(parseInt(teamNum))) {
+                changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
+                end = true;
             } else {
-                changeNotif("inPersonTeamNumNotif", "You Did Not Select Team!");
+                changeNotif("inPersonTeamNumNotif", "");
             }
-            end = true;
-        } else if (isNaN(parseInt(teamNum))) {
-            changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
-            end = true;
+            form.push(teamNum);
         } else {
-            changeNotif("inPersonTeamNumNotif", "");
+            teamNum = document.getElementById("inPersonTeamNumInput").value;
+
+            if (teamNum == "") {
+                changeNotif("inPersonTeamNumNotif", "You Did Not Input a Team!");
+                end = true;
+            } else if (isNaN(parseInt(teamNum))) {
+                changeNotif("inPersonTeamNumNotif", "You Did Not Input a Valid Team!");
+                end = true;
+            } else {
+                changeNotif("inPersonTeamNumNotif", "");
+            }
+            form.push(teamNum);
         }
-        form.push(teamNum);
 
         //MATCH NUMBER
         form.push(document.getElementById("inPersonMatchNumInput").value);
+
+        if (stage == "WARMUPS") {
+            if (form[form.length - 1] == "") {
+                changeNotif("inPersonMatchNotif", "You Did Not Input a Match!");
+                end = true;
+            } else if (isNaN(parseInt(form[form.length - 1]))) {
+                changeNotif("inPersonMatchNotif", "You Did Not Input a Valid Match!");
+                end = true;
+            } else {
+                changeNotif("inPersonMatchNotif", "");
+            }
+        }
 
         //LEFT COMMUNITY
         form.push(document.getElementById("inPersonLeftCommunityButton").value == true);
@@ -295,6 +327,9 @@ function submitForm(selector) {
         //EXTRA NOTES
         form.push(document.getElementById("matchInPersonExtraNotes").value);
 
+        //USER
+        form.push(localStorage.getItem("user"));
+
         if (failure != "" || playstyle == "Defensive") {
             let counter = 0;
             form = form.map(x => {
@@ -313,25 +348,6 @@ function submitForm(selector) {
         appendData(sheetID, stage, form);
         lockDiv(lockedDivs, curDiv, "matchDiv");
     }
-}
-
-function getGroupButtonValue(groupClass, additionalDiv) {
-    var search = document;
-    if (additionalDiv) {
-        search = document.getElementById(additionalDiv);
-    }
-
-    var value;
-    Array.from(search.getElementsByClassName(groupClass)).forEach(elem => {
-        if (elem.value) {
-            value = elem.innerHTML;
-        }
-    });
-    if (!value) {
-        value = "";
-    }
-
-    return value;
 }
 
 async function secureSubmit(selector) {
@@ -584,13 +600,20 @@ function displayAutoScoresDiv(selector) {
 async function adjustStage() {
     if (stage == "WARMUPS" || tbaNotWorking) {
         document.getElementById("inPersonTeamNumInput").style.display = "initial";
+
+        document.getElementById("inPersonMatchNumInput").setAttribute("onchange", "");
+
         document.getElementById("inPersonMatchInnerDiv").style.display = "none";
+
+        document.getElementById("matchUseInputButton").style.display = "none";
     } 
     
     if (!tbaNotWorking) {
-        if (stage != "FINALS") {
-            document.getElementById("matchFormFinalDropdown").remove();
-        } else {
+        if (stage != "FINALS" && document.getElementById("matchFormFinalDropdown")) {
+            document.getElementById("matchFormFinalDropdownDiv").remove();
+        } else if (document.getElementById("matchFormFinalDropdownDiv")) {
+            await waitGlobalData();
+
             var suffixes = [];
         
             var orderNum = curOrderNum++;

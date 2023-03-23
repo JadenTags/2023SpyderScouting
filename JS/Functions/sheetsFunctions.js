@@ -55,8 +55,8 @@ async function getSheetData(gsId, sheet, mainOrderNum) {
 }
 
 async function appendData(gsId, sheet, data) {
-  var http = gsApiRoot + "/v4/spreadsheets/" + gsId + "/values/" + sheet + "!A1:B2:append?valueInputOption=RAW";
-  
+  var http = gsApiRoot + "/v4/spreadsheets/" + gsId + "/values/" + sheet + "!A1:A2:append?valueInputOption=RAW";
+
   var orderNum = curOrderNum++;
   await getGsKey(orderNum);
   
@@ -67,8 +67,6 @@ async function appendData(gsId, sheet, data) {
   })
     .then(response => response.json())
     .then(data => {
-      console.log(data)
-      
       if (!data.spreadsheetId) {
         console.log("GET NEW REFRESH KEY");
       }

@@ -21,8 +21,6 @@
 <div id="subNav">
   <p id="preButton" class="subNavButton">Pre</p>
   <p class="subNavDivider"></p>
-  <!-- <p id="pitButton" class="subNavButton">Pit</p>
-  <p class="subNavDivider"></p> -->
   <p id="matchButton" class="subNavButton" style="border:none;">Match</p>
 </div>
 
@@ -143,6 +141,11 @@
       <p id="preferDefButton" class="preferButton groupedButton">Defensive</p>
       <p id="preferHybButton" class="preferButton endGroupedButton groupedButton">Hybrid</p>
 
+      
+      <p class="formSubheader">Preferred GP</p>
+      <p id="preferConeButton" class="preferGPButton startGroupedButton groupedButton">Cone</p>
+      <p id="preferCubeButton" class="preferGPButton endGroupedButton groupedButton">Cube</p>
+
       <br>
       <p class="formSubheader">Pic of Whole Robot</p>
       <input id="robotPic" type="file" accept="image/*" style="margin-top:10px;">
@@ -181,26 +184,33 @@
 
         <p id="inPersonMatchNotif" class="notifText"></p>
 
-        <select id="matchFormFinalDropdown" class="dropdown" onchange="changeMatchAllianceButtons('inPerson');">
-          <option value="ef">ef</option>
-          <option value="qf">qf</option>
-          <option value="sf">sf</option>
-          <option value="f">f</option>
-        </select>
+        <div id="matchFormButtonSelectionDiv">
+          <div id="matchFormFinalDropdownDiv">
+            <br>
 
-        <br>
+            <select id="matchFormFinalDropdown" onchange="changeMatchAllianceButtons('inPerson');">
+              <option value="ef">ef</option>
+              <option value="qf">qf</option>
+              <option value="sf">sf</option>
+              <option value="f">f</option>
+            </select>
 
-        <div id="inPersonMatchInnerDiv">
-          <P id="inPersonBlue1Button"
-            class="inPersonAllianceButton blueAllianceButton startGroupedButton groupedButton">One</P>
-          <P id="inPersonBlue2Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Two</P>
-          <P id="inPersonBlue3Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Three</P>
+            <br>
+          </div>
 
-          <P id="inPersonRed1Button" class="inPersonAllianceButton redAllianceButton groupedButton">One</P>
-          <P id="inPersonRed2Button" class="inPersonAllianceButton redAllianceButton groupedButton">Two</P>
-          <P id="inPersonRed3Button" class="inPersonAllianceButton redAllianceButton endGroupedButton groupedButton"
-            style="margin-top: 10px;">Three</P>
+          <div id="inPersonMatchInnerDiv">
+            <P id="inPersonBlue1Button"
+              class="inPersonAllianceButton blueAllianceButton startGroupedButton groupedButton">One</P>
+            <P id="inPersonBlue2Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Two</P>
+            <P id="inPersonBlue3Button" class="inPersonAllianceButton blueAllianceButton groupedButton">Three</P>
+
+            <P id="inPersonRed1Button" class="inPersonAllianceButton redAllianceButton groupedButton">One</P>
+            <P id="inPersonRed2Button" class="inPersonAllianceButton redAllianceButton groupedButton">Two</P>
+            <P id="inPersonRed3Button" class="inPersonAllianceButton redAllianceButton endGroupedButton groupedButton"
+              style="margin-top: 10px;">Three</P>
+          </div>
         </div>
+
         <br>
 
         <input type="number" id="inPersonTeamNumInput" class="inputInput" placeholder="Team #" style="display: none;"></input>
@@ -208,6 +218,8 @@
         <br>
 
         <p id="inPersonTeamNumNotif" class="notifText"></p>
+
+        <p id="matchUseInputButton" class="pushButton" onclick="toggleElement('matchFormButtonSelectionDiv');toggleElement('inPersonTeamNumInput');" style="margin-top: 10px;">Type Team</p>
 
         <p class="sectionHeader" style="padding-top: 0;">Autonomous</p>
         <hr class="sectionLine">
@@ -612,7 +624,7 @@
 
     <div id="matchRefreshDiv" class="innerDiv" style="display:none;">
       <p class="title">Thank You For Submitting A Form!</p>
-      <p id="matchRefreshButton" class="button" onclick="refreshForm('match');" style="margin-top: 10px;">Submit Another
+      <p id="matchRefreshButton" class="button" onclick="refreshForm('match');adjustStage();" style="margin-top: 10px;">Submit Another
         Form</p>
     </div>
   </div>

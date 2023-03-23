@@ -58,7 +58,7 @@ body {
     height: 25px;
 }
 
-.button, .submitButton, .pushButton, .groupedButton, .startGroupedButton, .endGroupedButton, .arrowButton {
+.button, .submitButton, .pushButton, .groupedButton, .startGroupedButton, .endGroupedButton, .arrowButton, .onGroupedButton {
     display: inline-block;
     background-color: #141414;
     color: white;
@@ -70,8 +70,12 @@ body {
     border-radius: 5px;
 }
 
-.groupedButton {
+.groupedButton, .onGroupedButton {
     border-radius: 0;
+}
+
+.onGroupedButton {
+    margin-top: 10px;
 }
 
 .startGroupedButton {
