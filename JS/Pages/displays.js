@@ -1453,6 +1453,7 @@ function checkEmpty(data, key) {
 }
 
 async function allianceSearch(teams, divId, notifSelector, colors, percentColor) {
+    console.log(teams)
     if (!teams) {
         var teams = [];
     
