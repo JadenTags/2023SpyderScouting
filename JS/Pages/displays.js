@@ -1793,11 +1793,15 @@ async function matchSearch() {
         if (blue.includes("1622")) {
             console.log(blue, red)
             allianceSearch(blue, "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
+            console.log(blue);
             allianceSearch(red, "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
+            console.log(red);
         } else {
             console.log(blue, red)
             allianceSearch(red, "alliedDiv", "match", redDataTableColors, percentageRedColorOrder);
+            console.log(red);
             allianceSearch(blue, "opposedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
+            console.log(blue);
         }
     }
 }
