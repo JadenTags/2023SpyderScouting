@@ -35,8 +35,8 @@ async function getClosestCompData(teamNum) {
     var orderNum = curOrderNum++;
     await getTBAData("team/frc" + teamNum + "/events", orderNum);
 
-    var curDate = new Date().getTime();
-    var closestComp = getOrder(orderNum).reverse().filter(x => new Date(x.end_date).getTime() <= curDate)[0];
+    var curDate = testDate.getTime();
+    var closestComp = getOrder(orderNum).reverse().sort((x, y) => new Date(y).getTime() - new Date(x).getTime()).filter(x => new Date(x.end_date).getTime() <= testDate.getTime())[0];
 
     if (!closestComp) {
         return [];

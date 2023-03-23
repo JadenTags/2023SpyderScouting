@@ -1,4 +1,4 @@
-var testDate = new Date("03-17-23"); 
+var testDate = new Date("2023-03-18"); 
 //COMP: TYPE FIRST DATE OF COMP IN MONTH-DAY-YEAR FORM
 //NOT COMP: TYPE TEST DATE IN MONTH-DAY-YEAR FORM
 
@@ -26,4 +26,4 @@ localStorage.setItem("user", "Fart");
 //COMP: LEAVE COMMENTED
 //TESTNG: LEAVE UNCOMMNETED
 
-localStorage.setItem("TEST", "YUNA");
+localStorage.setItem("TEST", "JUNA");
