@@ -56,7 +56,7 @@ async function getSheetData(gsId, sheet, mainOrderNum) {
 
 async function appendData(gsId, sheet, data) {
   var http = gsApiRoot + "/v4/spreadsheets/" + gsId + "/values/" + sheet + "!A1:A2:append?valueInputOption=RAW";
-
+  
   var orderNum = curOrderNum++;
   await getGsKey(orderNum);
   

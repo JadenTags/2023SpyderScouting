@@ -19,7 +19,7 @@ var matchNum;
 var tbaNotWorking = false;
 //SET TO TRUE IF TBA IS WORKING ON MOBILE, ELSE, FALSE
 
-localStorage.clear()
+// localStorage.clear()
 localStorage.setItem("user", "Fart");
 //COMP: LEAVE COMMENTED
 //TESTNG: LEAVE UNCOMMNETED

@@ -45,12 +45,6 @@
   
   <div id="teamSearchDiv" class="subNavDiv" style="display: none;">
     <div class="innerDiv">
-      <p id="teamSearchWarmupsDataButton" class="teamSearchDataButton startGroupedButton onGroupedButton">WARMUPS</p>
-      <p id="teamSearchQualsDataButton" class="teamSearchDataButton onGroupedButton">QUALS</p>
-      <p id="teamSearchFinalsDataButton" class="teamSearchDataButton endGroupedButton onGroupedButton">FINALS</p>
-
-      <br>
-
       <input id="teamSearchInput" class="inputInput" placeholder="Team#"></input>
 
       <p id="teamSearchSearchButton" class="button spacedElem" onclick="teamSearch();">Search</p>
@@ -74,12 +68,6 @@
   
   <div id="allianceSearchDisplayDiv" class="subNavDiv" style="display: none;">
     <div class="innerDiv">
-      <p id="allianceSearchWarmupsDataButton" class="allianceSearchDataButton startGroupedButton onGroupedButton">WARMUPS</p>
-      <p id="allianceSearchQualsDataButton" class="allianceSearchDataButton onGroupedButton">QUALS</p>
-      <p id="allianceSearchFinalsDataButton" class="allianceSearchDataButton endGroupedButton onGroupedButton">FINALS</p>
-
-      <br>
-
       <input id="allianceTeam1SearchInput" class="inputInput" placeholder="Team#"></input>
       <input id="allianceTeam2SearchInput" class="inputInput" placeholder="Team#"></input>
       <input id="allianceTeam3SearchInput" class="inputInput" placeholder="Team#"></input>
@@ -100,12 +88,6 @@
   
   <div id="matchSearchDisplayDiv" class="subNavDiv" style="display: none;">
     <div class="innerDiv">
-      <p id="matchSearchWarmupsDataButton" class="matchSearchDataButton startGroupedButton onGroupedButton">WARMUPS</p>
-      <p id="matchSearchQualsDataButton" class="matchSearchDataButton onGroupedButton">QUALS</p>
-      <p id="matchSearchFinalsDataButton" class="matchSearchDataButton endGroupedButton onGroupedButton">FINALS</p>
-
-      <br>
-
       <select id="matchSearchMatchNumDropdown" class="dropdown" onchange=""></select>
 
       <div id="matchSearchNotifDiv" style="display:none;">
@@ -122,9 +104,11 @@
 
       <br>
 
-      <div id="matchSearchMainDiv">
+      <div id="matchSearchMainDiv" style="margin-bottom: 10px;">
         <p class="title">Pick a Match!</p>
       </div>
+
+      <br>
 
       <div id="alliedDiv" style="display:none;"></div>
       
@@ -134,12 +118,6 @@
   
   <div id="formsDisplayDiv" class="subNavDiv" style="display: none;">
     <div class="innerDiv">
-      <p id="formsDisplayWarmupsDataButton" class="formsDisplayDataButton startGroupedButton onGroupedButton">WARMUPS</p>
-      <p id="formsDisplayQualsDataButton" class="formsDisplayDataButton onGroupedButton">QUALS</p>
-      <p id="formsDisplayFinalsDataButton" class="formsDisplayDataButton endGroupedButton onGroupedButton">FINALS</p>
-
-      <br>
-
       <input id="formsDisplayInput" class="inputInput" placeholder="Team#"></input>
 
       <p id="formsDisplaySearchButton" class="button spacedElem" onclick="formsSearch();">Search</p>
@@ -158,7 +136,7 @@
         <p id="formsDisplayNotifText" class="toggleNotifText"></p>
       </div>
 
-      <p id="formsDisplayPreButton" class="formsDisplayTypeButton groupedButton startGroupedButton" onclick="hideElement('formsDisplayMatchDiv');toggleElement('formsDisplayPreDiv');">Pre</p>
+      <p id="formsDisplayPreButton" class="formsDisplayTypeButton groupedButton startGroupedButton" onclick="hideElement('formsDisplayMatchDiv');toggleElement('formsDisplayPreDiv');" style="margin-top: 10px;">Pre</p>
       <p id="formsDisplayMatchButton" class="formsDisplayTypeButton groupedButton endGroupedButton" onclick="hideElement('formsDisplayPreDiv');toggleElement('formsDisplayMatchDiv');">Match</p>
 
       <div id="formsDisplayPreDiv"style="display: none;">

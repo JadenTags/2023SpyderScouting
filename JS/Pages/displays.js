@@ -362,7 +362,7 @@ async function teamSearch() {
     var preForms = getOrder(orderNum);
 
     orderNum = curOrderNum++;
-    await getSheetData(sheetID, getGroupButtonValue("teamSearchDataButton", null), orderNum);
+    await getSheetData(sheetID, localStorage.getItem("displayData"), orderNum);
     var matchForms = getOrder(orderNum);
     var noMatch = matchForms.filter(x => x[0] == team).length == 0;
     var noPre = preForms.filter(x => x[0] == team).length == 0;
@@ -463,7 +463,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor, 
 
                 if (header == "Name") {
                     miniData.id = "teamNameCell" + teamData["General"]["Team"];
-                    miniData.style.fontSize = "2vw";
+                    miniData.style.fontSize = "3vw";
                     miniData.style.height = nameHeight;
                     fillTeamNameCell(teamData["General"]["Team"]);
                 }
@@ -1451,7 +1451,7 @@ function checkEmpty(data, key) {
     }
 }
 
-async function allianceSearch(teams, divId, notifSelector, colors, percentColor, dataType) {
+async function allianceSearch(teams, divId, notifSelector, colors, percentColor) {
     if (!teams) {
         var teams = [];
     
@@ -1563,7 +1563,7 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor,
     var preForms = getOrder(orderNum);
 
     orderNum = curOrderNum++;
-    await getSheetData(sheetID, dataType, orderNum);
+    await getSheetData(sheetID, localStorage.getItem("displayData"), orderNum);
     var matchForms = getOrder(orderNum);
     if (matchForms.filter(x => teams.includes(x[0])) == "") {
         if (notifSelector == "alliance") {
@@ -1642,7 +1642,6 @@ function compareHeights(heights) {
         maxHeights[section] = {};
 
         Object.keys(heights[0][section]).forEach(header => {
-            console.log(heights, section, header)
             var headerHeights = [...heights.map(x => x[section][header])].map(x => x.replaceAll("px", "").replace("SPACER", ""));
 
             if (headerHeights.map(x => x.includes("|")).includes(true)) {
@@ -1783,11 +1782,11 @@ async function matchSearch() {
         var red = match.alliances.red.team_keys.map(x => x.replace("frc", ""));
     
         if (blue.includes("1622")) {
-            await allianceSearch(blue, "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder, getGroupButtonValue("matchSearchDataButton", null));
-            await allianceSearch(red, "opposedDiv", "match", redDataTableColors, percentageRedColorOrder, getGroupButtonValue("matchSearchDataButton", null));
+            await allianceSearch(blue, "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
+            await allianceSearch(red, "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
         } else {
-            await allianceSearch(red, "alliedDiv", "match", redDataTableColors, percentageRedColorOrder, getGroupButtonValue("matchSearchDataButton", null));
-            await allianceSearch(blue, "opposedDiv", "match", blueDataTableColors, percentageBlueColorOrder, getGroupButtonValue("matchSearchDataButton", null));
+            await allianceSearch(red, "alliedDiv", "match", redDataTableColors, percentageRedColorOrder);
+            await allianceSearch(blue, "opposedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
         }
     }
 }
@@ -1833,7 +1832,7 @@ async function formsSearch() {
     await getSheetData(sheetID, "PRE", oN);
     var preForms = getOrder(oN).filter(x => x[0] == "TEAM NUM" || x[0] == team);
     var oN = curOrderNum++;
-    await getSheetData(sheetID, getGroupButtonValue("formsDisplayDataButton", null), oN);
+    await getSheetData(sheetID,  localStorage.getItem("displayData"), oN);
     var matchForms = getOrder(oN).filter(x => x[0] == "TEAM NUM" || x[0] == team);
 
     if (preForms.length == 1 && matchForms.length == 1) {
@@ -2091,14 +2090,6 @@ function changeMatchFormDisplay(isAdding) {
     }
 }
 
-async function setDataTypeOptions() {
-    await waitButtons();
-
-    ["teamSearch", "allianceSearch", "matchSearch", "formsDisplay"].forEach(displayType => {
-        eval(document.getElementById(displayType + "WarmupsDataButton").getAttribute("onclick"));
-    });
-}
-
 async function test() {
     // document.getElementById("teamSearchInput").setAttribute("value", "5816");
     // eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
@@ -2117,4 +2108,3 @@ async function test() {
 
 // test();
 fillMatchDropdown();
-setDataTypeOptions();

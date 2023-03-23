@@ -89,11 +89,17 @@ fillTeamRankingsTable();
 function checkSidebar() {
     if (!localStorage.getItem("visitedHome")) {
         localStorage.setItem("visitedHome", true);
-        console.log("sd")
         document.getElementById("sidebar").style.marginLeft = "-200px";
         document.getElementById("menubars").style.opacity = "100";
         document.getElementById("x").style.opacity = "0";
     }
 }
 
+async function setDataTypeOptions() {
+    await waitButtons();
+    
+    eval(document.getElementById(localStorage.getItem("displayData") + "DataButton").getAttribute("onclick"));
+}
+
+setDataTypeOptions();
 checkSidebar();

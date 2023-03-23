@@ -22,6 +22,8 @@
   <p id="compMapButton" class="subNavButton">Comp Map</p>
   <p class="subNavDivider"></p>
   <p id="teamRankingsButton" class="subNavButton">Team Rankings</p>
+  <p class="subNavDivider"></p>
+  <p id="displaysButton" class="subNavButton">Displays</p>
 </div>
 
 <div id="sidebar">
@@ -45,6 +47,14 @@
   <div id="teamRankingsDiv" class="subNavDiv" style="display:none">
     <table id="teamRankingsTable">
     </table>
+  </div>
+  
+  <div id="displaysDiv" class="subNavDiv" style="display:none">
+    <div class="innerDiv">
+      <p id="WARMUPSDataButton" class="matchSearchDataButton startGroupedButton onGroupedButton" onclick="localStorage.setItem('displayData', 'WARMUPS');">WARMUPS</p>
+      <p id="QUALSDataButton" class="matchSearchDataButton onGroupedButton" onclick="localStorage.setItem('displayData', 'QUALS');">QUALS</p>
+      <p id="FINALSDataButton" class="matchSearchDataButton endGroupedButton onGroupedButton" onclick="localStorage.setItem('displayData', 'FINALS');">FINALS</p>
+    </div>
   </div>
 </body>
 

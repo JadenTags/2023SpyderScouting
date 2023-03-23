@@ -103,3 +103,11 @@ async function checkLogIn() {
     document.body.innerHTML = "";
   }
 }
+
+function setDisplayData() {
+  if (!localStorage.getItem("displayData")) {
+    localStorage.setItem("displayData", "WARMUPS");
+  }
+}
+
+setDisplayData();
