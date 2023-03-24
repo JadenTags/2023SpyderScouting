@@ -1751,6 +1751,17 @@ async function fillMatchDropdown() {
     await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
     var teamMatches = getOrder(oN);
 
+    if (teamMatches.length == 0) {
+        var matchSearchButton = document.getElementById("matchSearchDisplayButton");
+
+        if (matchSearchButton.getAttribute("class").includes("selectedButton")) {
+            eval(matchSearchButton.getAttribute("onclick"));
+        }
+
+        matchSearchButton.remove();
+        document.getElementById("matchSearchSubNavDivider").remove();
+    }
+
     if (stage == "FINALS") {
         teamMatches = teamMatches.filter(x => x.comp_level == "sf");
     } else {
