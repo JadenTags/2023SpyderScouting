@@ -1019,7 +1019,7 @@ function compileAllTeamData(team, match, pre) {
         fillData(data["General"], "Bal Type", pre[6], null);
     
         //CONES REACHES
-        var cones = JSON.parse(pre[8]);
+        var cones = JSON.parse(pre[7]);
         var coneHeaders = Object.keys(data["General"]["Cones"]);
         for (var i = 0; i < cones.length; i++) {
             data["General"]["Cones"][coneHeaders[i]] = cones[i];
@@ -1030,7 +1030,7 @@ function compileAllTeamData(team, match, pre) {
         }
     
         //CUBES REACHES
-        var cubes = JSON.parse(pre[9]);
+        var cubes = JSON.parse(pre[8]);
         var cubeHeaders = Object.keys(data["General"]["Cubes"]);
         for (var i = 0; i < cubes.length; i++) {
             data["General"]["Cubes"][cubeHeaders[i]] = cubes[i];
@@ -1041,10 +1041,10 @@ function compileAllTeamData(team, match, pre) {
         }
         
         //PREFERRED PLAYSTYLE
-        fillData(data["General"], "Pref PS", pre[10], null);
+        fillData(data["General"], "Pref PS", pre[9], null);
         
         //PREFERRED GP
-        fillData(data["General"], "Pref GP", pre[11], null);
+        fillData(data["General"], "Pref GP", pre[10], null);
     } else {
         ["DIM", "DB Type", "Auto-Gen", "Bal Type", "Cones", "Cubes", "Pref PS"].forEach(preData => {
             delete data["General"][preData];
