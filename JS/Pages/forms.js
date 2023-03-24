@@ -132,18 +132,6 @@ function submitForm(selector) {
             form.push("");
         }
 
-        //CARGO CYCLED
-        form.push(document.getElementById("cargoCycledInput").value);
-
-        if (isNaN(parseInt(form[form.length - 1])) && form[form.length - 1] != "") {
-            document.getElementById("cargoCycledInput").style.border = "1px solid " + notifColor;
-            showElement("cargoCycledNotifText");
-            end = true;
-        } else {
-            document.getElementById("cargoCycledInput").style.border = "1px solid " + borderColor;
-            hideElement("cargoCycledNotifText");
-        }
-
         //REACHES
         var cones = [];
         var cubes = [];
