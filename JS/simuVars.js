@@ -4,7 +4,7 @@ var testDate = new Date("2023-03-25");
 
 var sheetID = "1lQFSP7u7PIwLp_dZhNAbfgSY1MM3Cgn2OC46d7ksz9g";
 //COMP: USE THE ID THAT THE SHEETS USE
-//NOT COMP: LEAVE AS "1DMp6Jx7XqcGW0Tcgm_qY97IgKhRxa7Us5-KsrKL_LUU"
+//NOT COMP: LEAVE AS "1lydmTcdvkiqX3hrqJMzbgS5gNUQc97C-4zEcNFIbh_Y"
 //SD: 1lQFSP7u7PIwLp_dZhNAbfgSY1MM3Cgn2OC46d7ksz9g
 
 var roboPicsFolderId = "1t42FXVXn0JYmXJIZvOM9yk-6XZHpaNVj";

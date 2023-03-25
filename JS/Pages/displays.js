@@ -1800,15 +1800,12 @@ async function matchSearch() {
             match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum))[0];
         }
 
-        var blue = match.alliances.blue.team_keys.map(x => x.replace("frc", "")); //TODO: CHECK RED AND BLUE ON MOBILE
-        var red = match.alliances.red.team_keys.map(x => x.replace("frc", "")); //TODO: WHEN ALLIANCE INTO MATCH SEARCH, SAME TABLE
-
-        if (blue.includes("1622")) {
-            allianceSearch(blue, "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
-            allianceSearch(red, "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
+        if (match.alliances.blue.team_keys.map(x => x.replace("frc", "")).includes("1622")) {
+            await allianceSearch(match.alliances.blue.team_keys.map(x => x.replace("frc", "")), "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
+            await allianceSearch(match.alliances.red.team_keys.map(x => x.replace("frc", "")), "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
         } else {
-            allianceSearch(match.alliances.red.team_keys.map(x => x.replace("frc", "")), "alliedDiv", "match", redDataTableColors, percentageRedColorOrder);
-            allianceSearch(blue, "opposedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
+            await allianceSearch(match.alliances.red.team_keys.map(x => x.replace("frc", "")), "alliedDiv", "match", redDataTableColors, percentageRedColorOrder);
+            await allianceSearch(match.alliances.blue.team_keys.map(x => x.replace("frc", "")), "opposedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
         }
     }
 }
