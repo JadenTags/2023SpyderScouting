@@ -1800,6 +1800,10 @@ async function matchSearch() {
             match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum))[0];
         }
 
+        console.log(match);
+        console.log(match.alliances.blue.team_keys.map(x => x.replace("frc", "")));
+        console.log(match.alliances.red.team_keys.map(x => x.replace("frc", "")));
+
         if (match.alliances.blue.team_keys.map(x => x.replace("frc", "")).includes("1622")) {
             await allianceSearch(match.alliances.blue.team_keys.map(x => x.replace("frc", "")), "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
             await allianceSearch(match.alliances.red.team_keys.map(x => x.replace("frc", "")), "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
@@ -1899,7 +1903,7 @@ async function formsSearch() {
         }
 
         //CONE REACHES
-        var cones = JSON.parse(preForms[7]);
+        var cones = JSON.parse(preForms[6]);
         preObj["PRE"]["CONE REACHES"] = {
             "HIGH": cones[0],
             "MID": cones[1],
@@ -1908,7 +1912,7 @@ async function formsSearch() {
         }
 
         //CUBE REACHES
-        var cubes = JSON.parse(preForms[8]);
+        var cubes = JSON.parse(preForms[7]);
         preObj["PRE"]["CUBE REACHES"] = {
             "HIGH": cubes[0],
             "MID": cubes[1],
