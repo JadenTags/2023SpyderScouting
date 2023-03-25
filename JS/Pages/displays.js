@@ -383,7 +383,7 @@ async function teamSearch() {
     // }
 
     var heightObj = getHeightObj(teamData, teamData);
-    var titleTable = buildHeaderTable(heightObj, blueDataTableColors);
+    var titleTable = buildHeaderTable(heightObj, blueDataTableColors, null);
     var data = buildTeamTable(teamData, blueDataTableColors, heightObj, null, percentageBlueColorOrder, tableWidth);
     
     var tble = document.createElement("table");
@@ -758,10 +758,12 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor, 
     return table;
 }
 
-function buildHeaderTable(heightObj, color) {
+function buildHeaderTable(heightObj, color, headerOrder) {
     var headerTable = document.createElement("table");
+    var done = [];
 
     Object.keys(heightObj).forEach(section => {
+        var sectionCounter = 0;
         let sectionInfo = heightObj[section];
         let sectionRow = document.createElement("tr");
 
@@ -798,12 +800,33 @@ function buildHeaderTable(heightObj, color) {
         let miniHeaderData = document.createElement("td");
         let miniHeaderTable = document.createElement("table");
         Object.keys(sectionInfo).forEach(header => {
+            var height;
 
-            let height = sectionInfo[header];
+            if (headerOrder != undefined) {
+                header = headerOrder[section][sectionCounter++];
+                if (header.includes("|")) {
+                    header = header.split("|")[0];
+                    sectionCounter += headerOrder[section].filter(x => x.includes(header)).length - 1;
+                    
+                    height = sectionInfo[header].split("|").slice(0, headerOrder[section].filter(x => x.includes(header)).length).join("|");
+
+                    if (height == "") {
+                        sectionCounter--;
+                    }
+                }
+            }
+
+            
+
+            if (height == undefined || height == "") {
+                height = sectionInfo[header];
+            }
+
             let miniHeaderRow = document.createElement("tr");
             let headerData = document.createElement("td");
 
-            if (typeof height != "object") {
+            if (typeof height != "object" && done.indexOf(header) == -1 && height != undefined) {
+                done.push(done)
                 let innerTable = document.createElement("table");
                 let innerRow = document.createElement("tr");
                 let innerData = document.createElement("td");
@@ -812,7 +835,6 @@ function buildHeaderTable(heightObj, color) {
                 innerData.style.backgroundColor = color["sectionHeader"];
                 innerData.style.width = displayTableWidth + "vw";
                 innerData.style.height = height;
-                
                 if (height.includes("SPACER")) {
                     innerData.style.height = height.replace("SPACER", "");
                     innerData.style.color = color["sectionHeader"];
@@ -1620,7 +1642,7 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     var table = document.createElement("table");
     var tr = document.createElement("tr");
     let headerTd = document.createElement("td");
-    headerTd.appendChild(buildHeaderTable(maxHeights, colors));
+    headerTd.appendChild(buildHeaderTable(maxHeights, colors, headerOrder));
     tr.appendChild(headerTd);
 
     teams.map(x => x[0]).forEach(team => {
@@ -1738,10 +1760,23 @@ function fillMissingHeaders(objs) {
     });
 
     Object.keys(allHeaders).forEach(section => {
-        allHeaders[section] = allHeaders[section].filter(x => x.indexOf("INFO") == -1);
-    });
+        var supposedOrder = Object.keys(dataTableWithMatchFormat[section]);
 
-    console.log(allHeaders)
+        for (var i = 0; i < supposedOrder.length; i++) {
+            var x = supposedOrder[i]
+            
+            if (typeof dataTableWithMatchFormat[section][x] == "object" && dataTableWithMatchFormat[section][x]["INFO"][1] == "NESTED") {
+                var keys = Object.keys(dataTableWithMatchFormat[section][x]);
+
+                for (var l = keys.length - 1; l >= 0; l--) {
+                    supposedOrder.splice(i, 0, x + "|" + keys[l]);
+                }
+
+                i += keys.length;
+            }
+        }
+        allHeaders[section] = supposedOrder.filter(x => allHeaders[section].includes(x)).filter(x => x.indexOf("INFO") == -1);
+    });
 
     return allHeaders;
 }
@@ -1926,7 +1961,7 @@ async function formsSearch() {
 
         table.style.margin = "auto";
 
-        headerTable.appendChild(buildHeaderTable(heightObj, blueDataTableColors));
+        headerTable.appendChild(buildHeaderTable(heightObj, blueDataTableColors, null));
         dataTable.appendChild(buildTeamTable(preObj, blueDataTableColors, heightObj, null, percentageBlueColorOrder, 50));
         tr.appendChild(headerTable);
         tr.appendChild(dataTable);
@@ -2116,6 +2151,10 @@ async function formsSearch() {
     }
 }
 
+function buildClone(headerOrder) {
+
+}
+
 function replaceND(data) {
     if (data == "ND") {
         return "";
@@ -2137,7 +2176,7 @@ function displayMatchForm(form) { //TODO: FIX MOBILE BUG
         table.style.margin = "auto";
         dataTable.id = "formDisplaysMatchTable";
 
-        headerTable.appendChild(buildHeaderTable(matchFormHeight, blueDataTableColors));
+        headerTable.appendChild(buildHeaderTable(matchFormHeight, blueDataTableColors, null));
         dataTable.appendChild(formsDisplayMatchForms[form]);
         tr.appendChild(headerTable);
         tr.appendChild(dataTable);
