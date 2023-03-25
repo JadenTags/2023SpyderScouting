@@ -1046,7 +1046,7 @@ function compileAllTeamData(team, match, pre) {
         //PREFERRED GP
         fillData(data["General"], "Pref GP", pre[10], null);
     } else {
-        ["DIM", "DB Type", "Auto-Gen", "Bal Type", "Cones", "Cubes", "Pref PS"].forEach(preData => {
+        ["DIM", "DB Type", "Auto-Gen", "Bal Type", "Cones", "Cubes", "Pref PS", "Pref GP"].forEach(preData => {
             delete data["General"][preData];
         });
     } if (match.length != 0) {
@@ -1693,11 +1693,11 @@ function fillMissingHeaders(objs) {
                     Object.keys(obj[key][header]).forEach(x => {
                         let id = header + "|" + x;
                         
-                        if (!allHeaders[groups[counter]].includes(id)) {
+                        if (allHeaders[groups[counter]].indexOf(id) == -1) {
                             allHeaders[groups[counter]].push(id);
                         }
                     });
-                } else if (!allHeaders[groups[counter]].includes(header)) {
+                } else if (allHeaders[groups[counter]].indexOf(header) == -1) {
                     allHeaders[groups[counter]].push(header);
                 }
             });
@@ -1710,25 +1710,25 @@ function fillMissingHeaders(objs) {
         var counter = 0;
 
         groups.forEach(group => {
-            if (!obj[group]) {
+            if (obj[group] == undefined) {
                 obj[group] = {};
             }
         })
 
         Object.values(obj).forEach(section => {
             allHeaders[groups[counter]].forEach(header => {
-                if (header.includes("|")) {
+                if (header.indexOf("|") == -1) {
                     var mainHeader = header.split("|")[0];
                     var subHeader = header.split("|")[1];
 
-                    if (!section[mainHeader]) {
+                    if (section[mainHeader] == undefined) {
                         section[mainHeader] = [];
                     }
                     
-                    if (!section[mainHeader][subHeader]) {
+                    if (section[mainHeader][subHeader] == undefined) {
                         section[mainHeader][subHeader] = "ND";
                     }
-                } else if (!Object.keys(section).includes(header) || Object.keys(section[header]).length == 1) {
+                } else if (Object.keys(section).indexOf(header) == -1 || Object.keys(section[header]).length == 1) {
                     section[header] = "ND";
                 }
             });
@@ -1738,8 +1738,10 @@ function fillMissingHeaders(objs) {
     });
 
     Object.keys(allHeaders).forEach(section => {
-        allHeaders[section] = allHeaders[section].filter(x => !x.includes("INFO"));
+        allHeaders[section] = allHeaders[section].filter(x => x.indexOf("INFO") != -1);
     });
+
+    console.log(allHeaders)
 
     return allHeaders;
 }
