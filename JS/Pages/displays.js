@@ -1457,7 +1457,7 @@ function checkEmpty(data, key) {
 }
 
 async function allianceSearch(teams, divId, notifSelector, colors, percentColor) {
-    console.log(teams)
+    console.log(teams, divId)
     if (!teams) {
         var teams = [];
     
@@ -1574,6 +1574,7 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     orderNum = curOrderNum++;
     await getSheetData(sheetID, localStorage.getItem("displayData"), orderNum);
     var matchForms = getOrder(orderNum);
+    console.log(matchForms, preForms)
     if (matchForms.filter(x => teams.includes(x[0])) == "" && preForms.filter(x => teams.includes(x[0])) == "") {
         if (notifSelector == "alliance") {
             for (var i = 1; i <= 3; i++) {
