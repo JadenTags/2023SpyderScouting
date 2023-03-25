@@ -1457,7 +1457,7 @@ function checkEmpty(data, key) {
 }
 
 async function allianceSearch(teams, divId, notifSelector, colors, percentColor) {
-    console.log(teams, divId);
+    console.log(teams, divId, notifSelector, colors, percentColor);
     return;
     if (!teams) {
         var teams = [];
