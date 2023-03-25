@@ -1476,7 +1476,6 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     changeNotif("allianceSearchNotifText", "");
 
     if (divId == "alliance") {
-        console.log("ALLIANCE");
         if (teams.includes("")) {
             var counter = 0;
 
@@ -1802,13 +1801,8 @@ async function matchSearch() {
             match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum))[0];
         }
 
-        console.log(match);
-        console.log(match.alliances.blue.team_keys.map(x => x.replace("frc", "")));
-        console.log(match.alliances.red.team_keys.map(x => x.replace("frc", "")));
-
         if (match.alliances.blue.team_keys.map(x => x.replace("frc", "")).includes("1622")) {
-            console.log("jello");
-            allianceSearch(JSON.stringify(match.alliances.blue.team_keys.map(x => x.replace("frc", ""))), "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
+            await allianceSearch(match.alliances.blue.team_keys.map(x => x.replace("frc", "")), "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
             await allianceSearch(match.alliances.red.team_keys.map(x => x.replace("frc", "")), "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
         } else {
             await allianceSearch(match.alliances.red.team_keys.map(x => x.replace("frc", "")), "alliedDiv", "match", redDataTableColors, percentageRedColorOrder);
