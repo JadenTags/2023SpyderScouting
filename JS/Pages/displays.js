@@ -1717,7 +1717,7 @@ function fillMissingHeaders(objs) {
 
         Object.values(obj).forEach(section => {
             allHeaders[groups[counter]].forEach(header => {
-                if (header.indexOf("|") == -1) {
+                if (header.includes("|")) {
                     var mainHeader = header.split("|")[0];
                     var subHeader = header.split("|")[1];
 
@@ -1738,7 +1738,7 @@ function fillMissingHeaders(objs) {
     });
 
     Object.keys(allHeaders).forEach(section => {
-        allHeaders[section] = allHeaders[section].filter(x => x.indexOf("INFO") != -1);
+        allHeaders[section] = allHeaders[section].filter(x => x.indexOf("INFO") == -1);
     });
 
     console.log(allHeaders)
