@@ -1457,10 +1457,8 @@ function checkEmpty(data, key) {
 }
 
 async function allianceSearch(teams, divId, notifSelector, colors, percentColor) {
-    console.log(teams, divId, notifSelector, colors, percentColor);
-    return;
-    if (!teams) {
-        var teams = [];
+    if (teams == undefined) {
+        teams = [];
     
         for (var i = 1; i <= 3; i++) {
             teams.push(document.getElementById("allianceTeam" + i + "SearchInput").value);
