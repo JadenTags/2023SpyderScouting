@@ -39,6 +39,31 @@ const dataTableWithMatchFormat = {
             "Not": "",
             "INFO": [[2], "%"]
         },
+        "Cones": "SPACER",
+        "CONE Top Row": { //DISPLAY AS TOP
+            "Min": "",
+            "Max": "",
+            "Avg": "",
+            "Rng": "",
+            "ACC": "",
+            "INFO": [[3, 2], "NORMAL"]
+        },
+        "CONE Mid Row": {
+            "Min": "",
+            "Max": "",
+            "Avg": "",
+            "Rng": "",
+            "ACC": "",
+            "INFO": [[3, 2], "NORMAL"]
+        },
+        "CONE Bot Row": {
+            "Min": "",
+            "Max": "",
+            "Avg": "",
+            "Rng": "",
+            "ACC": "",
+            "INFO": [[3, 2], "NORMAL"]
+        },
         "Cubes": "SPACER",
         "CUBE Top Row": {
             "Min": "",
@@ -64,6 +89,19 @@ const dataTableWithMatchFormat = {
             "ACC": "",
             "INFO": [[3, 2], "NORMAL"]
         },
+        "Dock": {
+            "SCS": "",
+            "Fail": "",
+            "INFO": [[2], "%"]
+        },
+        "Engaged%": {
+            "ENG": "",
+            "Not": "",
+            "INFO": [[2], "%"]
+        },
+        "AVG Score": ""
+    },
+    "Teleop": {
         "Cones": "SPACER",
         "CONE Top Row": { //DISPLAY AS TOP
             "Min": "",
@@ -89,20 +127,7 @@ const dataTableWithMatchFormat = {
             "ACC": "",
             "INFO": [[3, 2], "NORMAL"]
         },
-        "Dock": {
-            "SCS": "",
-            "Fail": "",
-            "INFO": [[2], "%"]
-        },
-        "Engaged%": {
-            "ENG": "",
-            "Not": "",
-            "INFO": [[2], "%"]
-        },
-        "AVG Score": ""
-    },
-    "Teleop": {
-        "Cones": "SPACER",
+        "Cubes": "SPACER",
         "CUBE Top Row": { //DISPLAY AS TOP
             "Min": "",
             "Max": "",
@@ -120,31 +145,6 @@ const dataTableWithMatchFormat = {
             "INFO": [[3, 2], "NORMAL"]
         },
         "CUBE Bot Row": {
-            "Min": "",
-            "Max": "",
-            "Avg": "",
-            "Rng": "",
-            "ACC": "",
-            "INFO": [[3, 2], "NORMAL"]
-        },
-        "Cubes": "SPACER",
-        "CONE Top Row": { //DISPLAY AS TOP
-            "Min": "",
-            "Max": "",
-            "Avg": "",
-            "Rng": "",
-            "ACC": "",
-            "INFO": [[3, 2], "NORMAL"]
-        },
-        "CONE Mid Row": {
-            "Min": "",
-            "Max": "",
-            "Avg": "",
-            "Rng": "",
-            "ACC": "",
-            "INFO": [[3, 2], "NORMAL"]
-        },
-        "CONE Bot Row": {
             "Min": "",
             "Max": "",
             "Avg": "",
@@ -1091,14 +1091,14 @@ function compileAllTeamData(team, match, pre) {
         });
     
         //CONES
-        fillScoreData(data["Auto"]["CONE Top Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[3])[0])); 
-        fillScoreData(data["Auto"]["CONE Mid Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[3])[1]));
-        fillScoreData(data["Auto"]["CONE Bot Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[3])[2]));
+        fillScoreData(data["Auto"]["CONE Top Row"], match.filter(x => x[3] != "").map(x => JSON.parse(x[3])[0])); 
+        fillScoreData(data["Auto"]["CONE Mid Row"], match.filter(x => x[3] != "").map(x => JSON.parse(x[3])[1]));
+        fillScoreData(data["Auto"]["CONE Bot Row"], match.filter(x => x[3] != "").map(x => JSON.parse(x[3])[2]));
     
         //CUBES
-        fillScoreData(data["Auto"]["CUBE Top Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[4])[0])); 
-        fillScoreData(data["Auto"]["CUBE Mid Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[4])[1]));
-        fillScoreData(data["Auto"]["CUBE Bot Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[4])[2]));
+        fillScoreData(data["Auto"]["CUBE Top Row"], match.filter(x => x[4] != "").map(x => JSON.parse(x[4])[0])); 
+        fillScoreData(data["Auto"]["CUBE Mid Row"], match.filter(x => x[4] != "").map(x => JSON.parse(x[4])[1]));
+        fillScoreData(data["Auto"]["CUBE Bot Row"], match.filter(x => x[4] != "").map(x => JSON.parse(x[4])[2]));
          
         //DOCK
         fillPercentData(data["Auto"], "Dock", match.map(x => x[5]).filter(x => x != ""), {
@@ -1150,14 +1150,16 @@ function compileAllTeamData(team, match, pre) {
         
         ///////////////////////////Teleop
         //CONES
+        data["Teleop"]["Cones"] = "SPACER";
+        console.log(match.filter(x => x[7] != "").map(x => JSON.parse(x[7])))
         fillScoreData(data["Teleop"]["CONE Top Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[0])); 
         fillScoreData(data["Teleop"]["CONE Mid Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[1]));
         fillScoreData(data["Teleop"]["CONE Bot Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[2]));
     
         //CUBES
-        fillScoreData(data["Teleop"]["CUBE Top Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[8])[0])); 
-        fillScoreData(data["Teleop"]["CUBE Mid Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[8])[1]));
-        fillScoreData(data["Teleop"]["CUBE Bot Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[8])[2]));
+        fillScoreData(data["Teleop"]["CUBE Top Row"], match.filter(x => x[8] != "").map(x => JSON.parse(x[8])[0])); 
+        fillScoreData(data["Teleop"]["CUBE Mid Row"], match.filter(x => x[8] != "").map(x => JSON.parse(x[8])[1]));
+        fillScoreData(data["Teleop"]["CUBE Bot Row"], match.filter(x => x[8] != "").map(x => JSON.parse(x[8])[2]));
     
         //CARGO AVG
         var cAve = 0;
@@ -1631,7 +1633,7 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
         teams[teams.indexOf(team)] = [teamData, teamData];
     });
 
-    var headerOrder = fillMissingHeaders(teams.map(x => x[0]));
+    var headerOrder = fillMissingHeaders(teams.map(x => x[0]), dataTableWithMatchFormat);
     
     teams.forEach(team => {
         teams[teams.indexOf(team)][1] = getHeightObj(teams[teams.indexOf(team)][0], teams[teams.indexOf(team)][0]);
@@ -1695,7 +1697,7 @@ function compareHeights(heights) {
     return maxHeights;
 }
 
-function fillMissingHeaders(objs) {
+function fillMissingHeaders(objs, supposedOrderList) {
     var allHeaders = {};
 
     objs.forEach(obj => {
@@ -1759,24 +1761,27 @@ function fillMissingHeaders(objs) {
         });
     });
 
-    Object.keys(allHeaders).forEach(section => {
-        var supposedOrder = Object.keys(dataTableWithMatchFormat[section]);
+    if (supposedOrderList != undefined) {
+        Object.keys(allHeaders).forEach(section => {
+            console.log(dataTableWithMatchFormat[section], dataTableWithMatchFormat, section)
+            var supposedOrder = Object.keys(dataTableWithMatchFormat[section]);
 
-        for (var i = 0; i < supposedOrder.length; i++) {
-            var x = supposedOrder[i]
-            
-            if (typeof dataTableWithMatchFormat[section][x] == "object" && dataTableWithMatchFormat[section][x]["INFO"][1] == "NESTED") {
-                var keys = Object.keys(dataTableWithMatchFormat[section][x]);
+            for (var i = 0; i < supposedOrder.length; i++) {
+                var x = supposedOrder[i]
+                
+                if (typeof dataTableWithMatchFormat[section][x] == "object" && dataTableWithMatchFormat[section][x]["INFO"][1] == "NESTED") {
+                    var keys = Object.keys(dataTableWithMatchFormat[section][x]);
 
-                for (var l = keys.length - 1; l >= 0; l--) {
-                    supposedOrder.splice(i, 0, x + "|" + keys[l]);
+                    for (var l = keys.length - 1; l >= 0; l--) {
+                        supposedOrder.splice(i, 0, x + "|" + keys[l]);
+                    }
+
+                    i += keys.length;
                 }
-
-                i += keys.length;
             }
-        }
-        allHeaders[section] = supposedOrder.filter(x => allHeaders[section].includes(x)).filter(x => x.indexOf("INFO") == -1);
-    });
+            allHeaders[section] = supposedOrder.filter(x => allHeaders[section].includes(x)).filter(x => x.indexOf("INFO") == -1);
+        });
+    }
 
     return allHeaders;
 }
@@ -1887,6 +1892,7 @@ async function formsSearch() {
     var oN = curOrderNum++;
     await getSheetData(sheetID, "PRE", oN);
     var preForms = getOrder(oN).filter(x => x[0] == "TEAM NUM" || x[0] == team);
+
     var oN = curOrderNum++;
     await getSheetData(sheetID,  localStorage.getItem("displayData"), oN);
     var matchForms = getOrder(oN).filter(x => x[0] == "TEAM NUM" || x[0] == team);
@@ -2139,7 +2145,8 @@ async function formsSearch() {
         });
 
         formsDisplayMatchForms = formsDisplayMatchForms.sort((x, y) => parseInt(x["MATCH NUM"]) - parseInt(y["MATCH NUM"]));
-        var order = fillMissingHeaders(formsDisplayMatchForms);
+        console.log(formsDisplayMatchForms)
+        var order = fillMissingHeaders(formsDisplayMatchForms, null);
         formsDisplayMatchForms.forEach(x => Object.keys(x).forEach(y => Object.keys(x[y]).forEach(z => x[y][z] = replaceND(x[y][z]))));
         matchFormHeight = compareHeights(formsDisplayMatchForms.map(x => getHeightObj(x, order)));
         formsDisplayMatchForms = formsDisplayMatchForms.map(x => buildTeamTable(x, blueDataTableColors, matchFormHeight, order, percentageBlueColorOrder, 50));
