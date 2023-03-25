@@ -1464,7 +1464,6 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
             teams.push(document.getElementById("allianceTeam" + i + "SearchInput").value);
         }
     }
-    console.log(teams)
 
     var dataTableDiv = document.getElementById(divId);
 
