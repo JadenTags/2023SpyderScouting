@@ -1477,7 +1477,8 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     changeNotif("allianceSearchNotifText", "");
 
     if (divId == "alliance") {
-    if (teams.includes("")) {
+        console.log("ALLIANCE");
+        if (teams.includes("")) {
             var counter = 0;
 
             for (var i = 1; i <= 3; i++) {
@@ -1574,7 +1575,6 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     orderNum = curOrderNum++;
     await getSheetData(sheetID, localStorage.getItem("displayData"), orderNum);
     var matchForms = getOrder(orderNum);
-    console.log(matchForms, preForms)
     if (matchForms.filter(x => teams.includes(x[0])) == "" && preForms.filter(x => teams.includes(x[0])) == "") {
         if (notifSelector == "alliance") {
             for (var i = 1; i <= 3; i++) {
