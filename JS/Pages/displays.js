@@ -1808,6 +1808,7 @@ async function matchSearch() {
         console.log(match.alliances.red.team_keys.map(x => x.replace("frc", "")));
 
         if (match.alliances.blue.team_keys.map(x => x.replace("frc", "")).includes("1622")) {
+            console.log("ello");
             await allianceSearch(JSON.stringify(match.alliances.blue.team_keys.map(x => x.replace("frc", ""))), "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
             await allianceSearch(match.alliances.red.team_keys.map(x => x.replace("frc", "")), "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
         } else {
