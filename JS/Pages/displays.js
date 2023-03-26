@@ -196,12 +196,7 @@ const dataTableWithMatchFormat = {
             "Avg": "",
             "INFO": [[2], "NORMAL"]
         },
-        "Score": {
-            "Max": "",
-            "Min": "",
-            "Avg": "",
-            "INFO": [[2, 1], "NORMAL"]
-        }
+        "Score": ""
     }
 };
 const dataTableWithoutMatchFormat = {
@@ -1151,7 +1146,6 @@ function compileAllTeamData(team, match, pre) {
         ///////////////////////////Teleop
         //CONES
         data["Teleop"]["Cones"] = "SPACER";
-        console.log(match.filter(x => x[7] != "").map(x => JSON.parse(x[7])))
         fillScoreData(data["Teleop"]["CONE Top Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[0])); 
         fillScoreData(data["Teleop"]["CONE Mid Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[1]));
         fillScoreData(data["Teleop"]["CONE Bot Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[2]));
@@ -1247,86 +1241,29 @@ function compileAllTeamData(team, match, pre) {
     
         //SCORE
         score = 0;
-        var minScore = 0;
-        var maxScore = 0;
         ["CONE", "CUBE"].forEach(type => {
             ["Top", "Mid", "Bot"].forEach(row => {
                 let scored = data["Teleop"][type + " " + row + " Row"];
-                let minScored;
-                let maxScored;
                 
                 if (scored["Always"] >= 0) {
-                    minScored = scored["Always"];
-                    maxScored = scored["Always"];
                     scored = scored["Always"];
                 } else {
-                    minScored = scored["Min"];
-                    maxScored = scored["Max"];
                     scored = scored["Avg"];
                 }
                 
                 if (row == "Top") {
                     scored *= 5;
-                    minScored *= 5;
-                    maxScored *= 5;
                 } else if (row == "Mid") {
                     scored *= 3;
-                    minScored *= 3;
-                    maxScored *= 3;
                 } else {
                     scored *= 2;
-                    minScored *= 2;
-                    maxScored *= 2;
                 }
     
                 score += scored;
-                minScore += minScored;
-                maxScore += maxScored;
             });
         });
     
-        var endgame = getMaxPercent(data["Teleop"]["Endgame"]["ATPT%"]);
-    
-        if (endgame == "Docked") {
-            score += 6;
-    
-            if (getMaxPercent(data["Teleop"]["Engaged%"]) == "ENG") {
-                score += 4;
-            }
-        } else if (endgame == "Parked") {
-            score += 2;
-        }
-    
-        data["Teleop"]["Score"]["Avg"] = Math.round(score * 10) / 10;
-        
-        if (convertPercent(data["Teleop"]["Endgame"]["ATPT%"]["Docked"]) > 0) {
-            maxScore += 6;
-    
-            if (data["Teleop"]["Engaged%"] && data["Teleop"]["Engaged%"]["ENG"]) {
-                if (convertPercent(data["Teleop"]["Engaged%"]["ENG"]) > 0) {
-                    maxScore += 4;
-                }
-            }
-        } else if (convertPercent(data["Teleop"]["Endgame"]["ATPT%"]["Parked"]) > 0) {
-            score += 2;
-        }
-        
-        data["Teleop"]["Score"]["Max"] = Math.round(maxScore * 10) / 10;
-    
-        if (data["Teleop"]["Endgame"]["ATPT%"]["Parked"] != "0%") {
-            minScore += 2;
-        } else if (data["Teleop"]["Endgame"]["ATPT%"]["Engaged"] != "0%") {
-            minScore += 6;
-    
-            if (data["Teleop"]["Engaged%"]["ENG"] != "0%") {
-                minScore += 4;
-            }
-        }
-        
-        data["Teleop"]["Score"]["Min"] = Math.round(minScore * 10) / 10;
-        if (isNaN(data["Teleop"]["Score"]["Min"])) {
-            delete data["Teleop"]["Score"];
-        }
+        data["Teleop"]["Score"] = Math.round(score * 10) / 10;
     } else {
         delete data["Auto"];
         delete data["Teleop"];
@@ -1763,7 +1700,6 @@ function fillMissingHeaders(objs, supposedOrderList) {
 
     if (supposedOrderList != undefined) {
         Object.keys(allHeaders).forEach(section => {
-            console.log(dataTableWithMatchFormat[section], dataTableWithMatchFormat, section)
             var supposedOrder = Object.keys(dataTableWithMatchFormat[section]);
 
             for (var i = 0; i < supposedOrder.length; i++) {
@@ -2145,7 +2081,6 @@ async function formsSearch() {
         });
 
         formsDisplayMatchForms = formsDisplayMatchForms.sort((x, y) => parseInt(x["MATCH NUM"]) - parseInt(y["MATCH NUM"]));
-        console.log(formsDisplayMatchForms)
         var order = fillMissingHeaders(formsDisplayMatchForms, null);
         formsDisplayMatchForms.forEach(x => Object.keys(x).forEach(y => Object.keys(x[y]).forEach(z => x[y][z] = replaceND(x[y][z]))));
         matchFormHeight = compareHeights(formsDisplayMatchForms.map(x => getHeightObj(x, order)));
@@ -2158,9 +2093,9 @@ async function formsSearch() {
     }
 }
 
-function buildClone(headerOrder) {
+// function buildClone(headerOrder) {
 
-}
+// }
 
 function replaceND(data) {
     if (data == "ND") {
@@ -2212,6 +2147,24 @@ function changeMatchFormDisplay(isAdding) {
     }
 }
 
+async function sort() {
+    var oN = curOrderNum++;
+    await getSheetData(sheetID, "PRE", oN);
+    var preData = getOrder(oN);
+
+    oN = curOrderNum++;
+    await getSheetData(sheetID, "QUALS", oN);
+    var matchData = getOrder(oN);
+
+    oN = curOrderNum++;
+    await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/teams", oN);
+    var teams = getOrder(oN).map(x => compileAllTeamData(x.key.replace("frc", ""), matchData, preData)).map(x => [x["General"]["Team"], x]);
+    console.log(teams)
+
+    console.log("TOTAL CARGO SCORE----------------")
+    console.log(teams.filter(x => x[1]["Teleop"]["Score"]).sort((x, y) => (y[1]["Teleop"]["Score"]["Avg"] + y[1]["Auto"]["AVG Score"]) - (x[1]["Teleop"]["Score"]["Avg"] + x[1]["Auto"]["AVG Score"])).map(x => [x[0], x[1]["Teleop"]["Score"]["Avg"] + x[1]["Auto"]["AVG Score"], x[1]["General"]["DB Type"]]))
+}
+
 async function test() {
     // document.getElementById("teamSearchInput").setAttribute("value", "5816");
     // eval(document.getElementById("teamSearchSearchButton").getAttribute("onclick"));
@@ -2230,3 +2183,5 @@ async function test() {
 
 // test();
 fillMatchDropdown();
+
+sort();

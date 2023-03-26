@@ -12,11 +12,11 @@ var roboPicsFolderId = "1t42FXVXn0JYmXJIZvOM9yk-6XZHpaNVj";
 //NOT COMP: LEAVE AS "1pzk6rKsE_6CCRATpvFESwJ1E85CEB4kL"
 //SD: 1t42FXVXn0JYmXJIZvOM9yk-6XZHpaNVj
 
-var stage = ["WARMUPS", "QUALS", "FINALS"][1];
+var stage = ["WARMUPS", "QUALS", "FINALS"][2];
 //COMP: SET TO WHATEVER STAGE
 //NOT COMP: SET TO [1]
 
-var def = ["WARMUPS", "QUALS", "FINALS"][1];
+var def = ["WARMUPS", "QUALS", "FINALS"][2];
 
 var matchNum;
 
