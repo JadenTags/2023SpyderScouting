@@ -79,7 +79,7 @@ const dataTableWithMatchFormat = {
             "ACC": "",
             "INFO": [[2, 1], "NORMAL"]
         },
-        "GEN Cargo": {
+        "Cargo": {
             "Max": "",
             "Avg": "",
             "INFO": [[1, 1], "NORMAL"]
@@ -134,7 +134,7 @@ const dataTableWithMatchFormat = {
             "ACC": "",
             "INFO": [[2, 1], "NORMAL"]
         },
-        "GEN Cargo": {
+        "Cargo": {
             "Max": "",
             "Avg": "",
             "INFO": [[1, 1], "NORMAL"]
@@ -165,7 +165,7 @@ const dataTableWithMatchFormat = {
         },
     },
     "Overall": {
-        "GEN Cargo": {
+        "Cargo": {
             "Max": "",
             "Avg": "",
             "INFO": [[1, 1], "NORMAL"],
@@ -1087,12 +1087,12 @@ function compileAllTeamData(team, match, pre) {
         
         //GENERAL CARGO
         var cargo = match.map(x => sum(JSON.parse(x[3]).map(y => sum(y.map(z => parseInt(z))))) + sum(JSON.parse(x[4]).map(y => sum(y.map(z => parseInt(z))))));
-        data["Auto"]["GEN Cargo"]["Max"] = Math.max(...cargo);
-        data["Auto"]["GEN Cargo"]["Avg"] = Math.round(sum(cargo) / cargo.length * 10) / 10;
+        data["Auto"]["Cargo"]["Max"] = Math.max(...cargo);
+        data["Auto"]["Cargo"]["Avg"] = Math.round(sum(cargo) / cargo.length * 10) / 10;
 
-        if (data["Auto"]["GEN Cargo"]["Max"] == data["Auto"]["GEN Cargo"]["Avg"]) {
-            data["Auto"]["GEN Cargo"] = {
-                "Always": data["Auto"]["GEN Cargo"]["Max"],
+        if (data["Auto"]["Cargo"]["Max"] == data["Auto"]["Cargo"]["Avg"]) {
+            data["Auto"]["Cargo"] = {
+                "Always": data["Auto"]["Cargo"]["Max"],
                 "INFO": [[1], "NORMAL"]
             }
         }
@@ -1129,17 +1129,17 @@ function compileAllTeamData(team, match, pre) {
         //CARGO AVG
         var teleCargo = match.filter(x => x[7] != "" && x[8] != "").map(x => sum(JSON.parse(x[7]).map(y => sum(y.map(z => parseInt(z))))) + sum(JSON.parse(x[8]).map(y => sum(y.map(z => parseInt(z))))));
         if (teleCargo.length != 0) {
-            data["Teleop"]["GEN Cargo"]["Max"] = Math.max(...teleCargo);
-            data["Teleop"]["GEN Cargo"]["Avg"] = Math.round(sum(teleCargo) / teleCargo.length * 10) / 10;
+            data["Teleop"]["Cargo"]["Max"] = Math.max(...teleCargo);
+            data["Teleop"]["Cargo"]["Avg"] = Math.round(sum(teleCargo) / teleCargo.length * 10) / 10;
     
-            if (data["Teleop"]["GEN Cargo"]["Max"] == data["Teleop"]["GEN Cargo"]["Avg"]) {
-                data["Teleop"]["GEN Cargo"] = {
-                    "Always": data["Teleop"]["GEN Cargo"]["Max"],
+            if (data["Teleop"]["Cargo"]["Max"] == data["Teleop"]["Cargo"]["Avg"]) {
+                data["Teleop"]["Cargo"] = {
+                    "Always": data["Teleop"]["Cargo"]["Max"],
                     "INFO": [[1], "NORMAL"]
                 }
             }
         } else {
-            data["Teleop"]["GEN Cargo"] = 0;
+            data["Teleop"]["Cargo"] = 0;
         }
     
         //ALMOST TIPPED
@@ -1197,26 +1197,26 @@ function compileAllTeamData(team, match, pre) {
         var cargoMax = 0;
         var cargoAvg = 0;
 
-        if (data["Auto"]["GEN Cargo"]["Always"]) {
-            cargoMax += data["Auto"]["GEN Cargo"]["Always"];
-            cargoAvg += data["Auto"]["GEN Cargo"]["Always"];
+        if (data["Auto"]["Cargo"]["Always"]) {
+            cargoMax += data["Auto"]["Cargo"]["Always"];
+            cargoAvg += data["Auto"]["Cargo"]["Always"];
         } else {
-            cargoMax += data["Auto"]["GEN Cargo"]["Max"];
-            cargoAvg += data["Auto"]["GEN Cargo"]["Avg"];
-        } if (data["Teleop"]["GEN Cargo"]["Always"]) {
-            cargoMax += data["Teleop"]["GEN Cargo"]["Always"];
-            cargoAvg += data["Teleop"]["GEN Cargo"]["Always"];
+            cargoMax += data["Auto"]["Cargo"]["Max"];
+            cargoAvg += data["Auto"]["Cargo"]["Avg"];
+        } if (data["Teleop"]["Cargo"]["Always"]) {
+            cargoMax += data["Teleop"]["Cargo"]["Always"];
+            cargoAvg += data["Teleop"]["Cargo"]["Always"];
         } else {
-            cargoMax += data["Teleop"]["GEN Cargo"]["Max"];
-            cargoAvg += data["Teleop"]["GEN Cargo"]["Avg"];
+            cargoMax += data["Teleop"]["Cargo"]["Max"];
+            cargoAvg += data["Teleop"]["Cargo"]["Avg"];
         } if (cargoAvg == cargoMax) {
-            data["Overall"]["GEN Cargo"] = {
+            data["Overall"]["Cargo"] = {
                 "Always": cargoMax,
                 "INFO": [[1], "NORMAL"]
             }
         } else {
-            data["Overall"]["GEN Cargo"]["Max"] = cargoMax;
-            data["Overall"]["GEN Cargo"]["Avg"] = Math.round(cargoAvg * 10) / 10;
+            data["Overall"]["Cargo"]["Max"] = cargoMax;
+            data["Overall"]["Cargo"]["Avg"] = Math.round(cargoAvg * 10) / 10;
         }
         
         var scoreMax = 0;

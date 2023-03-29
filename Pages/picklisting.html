@@ -49,10 +49,14 @@
       <input id="compareTeam1SearchInput" class="inputInput" placeholder="Team#"></input>
       <input id="compareTeam2SearchInput" class="inputInput" placeholder="Team#"></input>
 
-      <p id="compareButton" class="button spacedElem" onclick="compareSearch();" style="margin-top: 10px;">Compare</p>
+      <p id="compareButton" class="button spacedElem" onclick="compareSearch();" style="margin-top: 10px;margin-bottom: 10px;">Compare</p>
+
+      <div id="compareSearchNotifDiv" style="display: none;">
+        <p class="toggleNotifText">That is Not a Team in the Comp!</p>
+      </div>
     </div>
 
-    <div id="compareSearchTablesDiv"></div>
+    <div id="compareSearchTablesDiv" style="display: none;"></div>
   </div>
   
   <div id="searchDiv" class="subNavDiv" style="display:none">

@@ -3,8 +3,6 @@ var lockedDivs = {
     "shophDiv": "unlocked",
 };
 var teamTables = {};
-var heightObj;
-var teamOrder;
 
 async function compileTeamSlotData() {
     await waitGlobalData();
@@ -32,40 +30,23 @@ async function compareSearch() {
         await wait(100);
     }
 
-    //TODO: ADD CHECKS
     var teams = [document.getElementById("compareTeam1SearchInput").value, document.getElementById("compareTeam2SearchInput").value];
     var tr = document.getElementById("compareSearchTableRow");
 
+    if (teamTables[teams[0]] == undefined || teamTables[teams[1]] == undefined) {
+        showElement("compareSearchNotifDiv");
+        hideElement("compareSearchTablesDiv");
+        return;
+    } else {
+        hideElement("compareSearchNotifDiv");
+        showElement("compareSearchTablesDiv");
+    }
+
     tr.childNodes[1].innerHTML = "";
     tr.childNodes[2].innerHTML = "";
-    tr.childNodes[3].innerHTML = "";
-    console.log(tr.childNodes)
     
     tr.childNodes[1].appendChild(teamTables[teams[0]][0]);
     tr.childNodes[2].appendChild(teamTables[teams[1]][0]);
-    tr.childNodes[3].appendChild(createComparativeTable(teams));
-}
-
-function createComparativeTable(teams) {
-    var teamOneData = teamTables[teams[0]][1];
-    var teamTwoData = teamTables[teams[1]][1];
-    var compareTable = structuredClone(teamOneData);
-
-    console.log(compareTable)
-    //TEAM
-    compareTable["General"]["Team"] = "";
-
-    //SMALLER SIDE
-    var teamOneSide = Math.min(...Object.values(teamOneData["General"]["DIM"]).filter(x => typeof x != "object").map(x => parseInt(x)));
-    var teamTwoSide = Math.min(...Object.values(teamTwoData["General"]["DIM"]).filter(x => typeof x != "object").map(x => parseInt(x)));
-
-    if (teamOneSide < teamTwoSide) {
-        
-    }
-
-    compareTable["General"]["DIM"] = teamOneData["General"]["DIM"]["Length"];
-
-    return buildTeamTable(compareTable, blueDataTableColors, heightObj, teamOrder, percentageBlueColorOrder, tableWidth);
 }
 
 async function createCompareTables() {
@@ -84,13 +65,13 @@ async function createCompareTables() {
     var matchForms = getOrder(oN);
 
     teams = teams.map(x => compileAllTeamData(x.key.replace("frc", ""), matchForms, preForms));
-    teamOrder = fillMissingHeaders(teams, dataTableWithMatchFormat);
+    var teamOrder = fillMissingHeaders(teams, dataTableWithMatchFormat);
     
     while (!teams[0]["Teleop"]["Almost Tipped"]) {
         await wait(100);
     }
 
-    heightObj = compareHeights(teams.map(x => getHeightObj(x, dataTableWithMatchFormat)));
+    var heightObj = compareHeights(teams.map(x => getHeightObj(x, dataTableWithMatchFormat)));
     
     teams.forEach(team => {
         teamTables[team["General"]["Team"]] = [buildTeamTable(team, blueDataTableColors, heightObj, teamOrder, percentageBlueColorOrder, tableWidth), team];
@@ -106,7 +87,6 @@ async function createCompareTables() {
     tr.appendChild(header);
     tr.appendChild(team1);
     tr.appendChild(team2);
-    tr.appendChild(document.createElement("td"));
     table.appendChild(tr);
 
     team1.id = "teamCompareTeam1Cell";
@@ -130,11 +110,11 @@ function toggleFiltersDiv() {
 }
 
 function test() {
-    document.getElementById("compareTeam1SearchInput").setAttribute("value", "4160");
-    document.getElementById("compareTeam2SearchInput").setAttribute("value", "4141");
-    compareSearch();
+    // document.getElementById("compareTeam1SearchInput").setAttribute("value", "4160");
+    // document.getElementById("compareTeam2SearchInput").setAttribute("value", "4919");
+    // compareSearch();
 }
 
-test();
+// test();
 // compileTeamSlotData();
 createCompareTables();
