@@ -85,6 +85,7 @@ function submitForm(selector) {
         form.push(document.getElementById("preTeamNumDropdown").value);
 
         //DIMENSIONS
+        var unit = document.getElementById("dimensionsUnitDropdown").value;
         var dimensions = [];
         ["length", "width"].forEach(dimension => {
             let element = document.getElementById(dimension + "Input");
@@ -97,7 +98,13 @@ function submitForm(selector) {
                 end = true
             } else {
                 element.style.border = "1px solid " + borderColor;
-                dimensions.push(element.value);
+                var value = parseInt(element.value);
+
+                if (unit == "Centimeters") {
+                    value = value / 2.54;
+                }
+                
+                dimensions.push(Math.round(value * 10) / 10);
             }
         });
 
@@ -108,10 +115,15 @@ function submitForm(selector) {
         form.push(JSON.stringify(dimensions));
 
         //DB TYPE
-        form.push(document.getElementById("dbTypeInput").value);
-
-        //HAS GOM
-        form.push(document.getElementById("hasGOMButton").value == true);
+        var dbType = document.getElementById("drivebaseDropdown").value;
+        if (dbType != "Other") {
+            form.push(dbType);
+        } else {
+            form.push(document.getElementById("drivebaseTypeInput").value);
+        }
+        
+        //DB NOTES
+        form.push(document.getElementById("drivebaseNotes").value);
         
         //NO AUTO
         form.push(document.getElementById("noAutoButton").value == true);
@@ -155,11 +167,14 @@ function submitForm(selector) {
         form.push(JSON.stringify(cones));
         form.push(JSON.stringify(cubes));
 
-        //PREFERRED PLAYSTYLE
-        form.push(getGroupButtonValue("preferButton"));
-
         //PREFERRED GAME PIECE
         form.push(getGroupButtonValue("preferGPButton"));
+
+        //CAN PICKUP TIPPED CONES
+        form.push(document.getElementById("canPickupTippedConesButton").value == true);
+
+        //PREFERRED PLAYSTYLE
+        form.push(getGroupButtonValue("preferButton"));
 
         //ROBOT PIC
         if (!document.getElementById("robotPic").files[0]) {
@@ -184,19 +199,17 @@ function submitForm(selector) {
     } else if (selector == "matchInPerson") {
         //TEAM NUMBER
         var teamNum = getGroupButtonValue("inPersonAllianceButton");
-        
-        if (stage != "WARMUPS") {
+        if (document.getElementById("matchFormButtonSelectionDiv").style.display != "none") {
             if (!teamNum) {
-                if (document.getElementById("inPersonTeamNumInput")) {
-                    teamNum = document.getElementById("inPersonTeamNumInput").value;
-                } else {
-                    changeNotif("inPersonTeamNumNotif", "You Did Not Select a Team!");
-                }
+                showElement("inPersonTeamNumNotifDiv");
+                changeNotif("inPersonTeamNumNotif", "You Did Not Select a Team!");
                 end = true;
             } else if (isNaN(parseInt(teamNum))) {
+                showElement("inPersonTeamNumNotifDiv");
                 changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
                 end = true;
             } else {
+                hideElement("inPersonTeamNumNotifDiv");
                 changeNotif("inPersonTeamNumNotif", "");
             }
             form.push(teamNum);
@@ -204,12 +217,15 @@ function submitForm(selector) {
             teamNum = document.getElementById("inPersonTeamNumInput").value;
 
             if (teamNum == "") {
+                showElement("inPersonTeamNumNotifDiv");
                 changeNotif("inPersonTeamNumNotif", "You Did Not Input a Team!");
                 end = true;
             } else if (isNaN(parseInt(teamNum))) {
+                showElement("inPersonTeamNumNotifDiv");
                 changeNotif("inPersonTeamNumNotif", "You Did Not Input a Valid Team!");
                 end = true;
             } else {
+                hideElement("inPersonTeamNumNotifDiv");
                 changeNotif("inPersonTeamNumNotif", "");
             }
             form.push(teamNum);
@@ -218,16 +234,14 @@ function submitForm(selector) {
         //MATCH NUMBER
         form.push(document.getElementById("inPersonMatchNumInput").value);
 
-        if (stage == "WARMUPS") {
-            if (form[form.length - 1] == "") {
-                changeNotif("inPersonMatchNotif", "You Did Not Input a Match!");
-                end = true;
-            } else if (isNaN(parseInt(form[form.length - 1]))) {
-                changeNotif("inPersonMatchNotif", "You Did Not Input a Valid Match!");
-                end = true;
-            } else {
-                changeNotif("inPersonMatchNotif", "");
-            }
+        if (form[form.length - 1] == "") {
+            changeNotif("inPersonMatchNotif", "You Did Not Input a Match!");
+            end = true;
+        } else if (isNaN(parseInt(form[form.length - 1]))) {
+            changeNotif("inPersonMatchNotif", "You Did Not Input a Valid Match!");
+            end = true;
+        } else {
+            changeNotif("inPersonMatchNotif", "");
         }
 
         //LEFT COMMUNITY
@@ -256,10 +270,10 @@ function submitForm(selector) {
         form.push(JSON.stringify(cubes));
 
        //ENDING
-        form.push(getGroupButtonValue("inPersonAutoEndgameButton"));
+        form.push(document.getElementById("inPersonAutoDockedButton").value == true);
 
         //ENGAGED
-        if (form[form.length - 1] == "Docked") {
+        if (form[form.length - 1]) {
             form.push(document.getElementById("inPersonAutoEngagedButton").value == true);
         }  else {
             form.push("");
@@ -298,16 +312,6 @@ function submitForm(selector) {
         form.push(getGroupButtonValue("inPersonTelePlaystyleButton"));
         var playstyle = form[form.length - 1];
 
-        //ENDGAME
-        form.push(getGroupButtonValue("inPersonTeleEndgameButton"));
-
-        //ENGAGED
-        if (form[form.length - 1] == "Docked") {
-            form.push(document.getElementById("inPersonTeleEngagedButton").value == true);
-        } else {
-            form.push("");
-        }
-
         //FAILURES
         form.push(getGroupButtonValue("matchInPersonTagButton"));
         var failure = form[form.length - 1];
@@ -321,7 +325,7 @@ function submitForm(selector) {
         if (failure != "" || playstyle == "Defensive") {
             let counter = 0;
             form = form.map(x => {
-                if (![0, 1, 2, 3, 4, 5, 6, 10, 13, 15].includes(counter++)) {
+                if (![0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13].includes(counter++)) {
                     return "";
                 } else {
                     return x;
@@ -618,6 +622,14 @@ async function adjustStage() {
                 }
             });
         }
+    }
+}
+
+function checkDisplayDrivebaseInput() {
+    if (document.getElementById("drivebaseDropdown").value == "Other") {
+        showElement("drivebaseTypeInput");
+    } else {
+        hideElement("drivebaseTypeInput");
     }
 }
 

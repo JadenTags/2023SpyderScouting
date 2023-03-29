@@ -56,6 +56,14 @@
     margin-right: 5vw;
 }
 
+.inputInput{
+  display: inline-block;
+  border-radius: 5px 5px 5px 5px;
+  width: 20%;
+  border: 1px solid #c5c7c5;
+  text-align: center;
+}
+
 #filtersArrow {
     transition-duration: 10ms;
     width: 15px;

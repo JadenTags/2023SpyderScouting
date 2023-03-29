@@ -28,7 +28,7 @@
   <p class="sidebarButton">General Info</p>
   <p class="sidebarButton selectedButton">Forms</p>
   <p class="sidebarButton">Displays</p>
-  <!-- <p class="sidebarButton">Picklisting</p> -->
+  <p class="sidebarButton">Picklisting</p>
 </div>
 
 <body style="overflow: auto;">
@@ -58,12 +58,17 @@
       <p class="sectionHeader">General Info</p>
       <hr class="sectionLine">
 
-      <p class="formSubheader">Dimensions</p>
-      <input id="lengthInput" class="measurementInput" placeholder="L" type="number" max="999"></input>
-      <label class="measurementText">" x</label>
+      <p class="formSubheader">Dimensions (With Bumpers)</p>
+      <input id="lengthInput" class="measurementInput" placeholder="Front" type="number" max="999"></input>
+      <label class="measurementText"> x</label>
+      <input id="widthInput" class="measurementInput" placeholder="Side" type="number" max="999"></input>
 
-      <input id="widthInput" class="measurementInput" placeholder="W" type="number" max="999"></input>
-      <label class="measurementText">"</label>
+      <br>
+
+      <select id="dimensionsUnitDropdown" style="margin-top: 10px;">
+        <option>Inches</option>
+        <option>Centimeters</option>
+      </select>
 
       <div id="dimensionsNotifText" style="display: none;">
         <br>
@@ -73,11 +78,17 @@
       <br>
 
       <p class="formSubheader">Drivebase Information</p>
-      <input id="dbTypeInput" placeholder="Type" type="text"></input>
+      <select id="drivebaseDropdown" style="margin-top: 10px;" onchange="checkDisplayDrivebaseInput();">
+        <option>Swerve</option>
+        <option>Mechanum</option>
+        <option>Tank</option>
+        <option>Other</option>
+      </select>
 
+      <input id="drivebaseTypeInput" placeholder="DB Type"style="display: none;"></input>
+      
       <br>
-
-      <p id="hasGOMButton" class="pushButton">Has Object Manipulator</p>
+      <textarea id="drivebaseNotes" class="notesArea" placeholder="Drivebase Notes"></textarea>
 
       <br>
 
@@ -86,17 +97,16 @@
 
       <p id="noAutoButton" class="pushButton" onclick="toggleElement('autoDiv');">No Auto</p>
 
-      <br>
-
-      <div id="autoDiv" style="margin-top:10px">
-        <p id="autoGenButton" class="pushButton">Auto-Generating Auto</p>
+      <div id="autoDiv" style="display: initial;">
+        <br>
+        <p id="autoGenButton" class="pushButton" style="margin-top:10px">Auto-Generating Auto</p>
 
         <br>
 
         <p id="autoClimbButton" class="pushButton" onclick="toggleElement('autoClimbTypeDiv')" style="margin-top: 10px;">Climb</p>
 
         <div id="autoClimbTypeDiv" style="display: none;">
-          <p id="autoClimbTypeDeadReckoning" class="autoClimbTypeButton groupedButton startGroupedButton">Dead Reckoning</p>
+          <p id="autoClimbTypeDeadReckoning" class="autoClimbTypeButton groupedButton startGroupedButton">Dead Rec</p>
           <p id="autoClimbTypeDeadAutoBal" class="autoClimbTypeButton groupedButton endGroupedButton">Auto</p>
         </div>
       </div>
@@ -127,17 +137,19 @@
       <p id="cubeHighRowButton" class="pushButton" onclick="toggleGamePiece('cubeTopRow');">High</p>
       <p id="cubeMidRowButton" class="pushButton" onclick="toggleGamePiece('cubeMidRow');">Mid</p>
       <p id="cubeBotRowButton" class="pushButton" onclick="toggleGamePiece('cubeBotRow');">Bot</p>
-
-      <p class="formSubheader">Preferred Playstyle</p>
-      <p id="preferOffButton" class="preferButton startGroupedButton groupedButton">Offensive</p>
-      <p id="preferDefButton" class="preferButton groupedButton">Defensive</p>
-      <p id="preferHybButton" class="preferButton endGroupedButton groupedButton">Hybrid</p>
-
       
       <p class="formSubheader">Preferred GP</p>
       <p id="preferConeButton" class="preferGPButton startGroupedButton groupedButton">Cone</p>
       <p id="preferCubeButton" class="preferGPButton groupedButton">Cube</p>
       <p id="preferNoneButton" class="preferGPButton endGroupedButton groupedButton">None</p>
+
+      <br>
+      <p id="canPickupTippedConesButton" class="pushButton" style="margin-top: 10px;">Can Pickup Tipped Cones</p>
+
+      <p class="formSubheader">Preferred Playstyle</p>
+      <p id="preferOffButton" class="preferButton startGroupedButton groupedButton">Offensive</p>
+      <p id="preferDefButton" class="preferButton groupedButton">Defensive</p>
+      <p id="preferHybButton" class="preferButton endGroupedButton groupedButton">Hybrid</p>
 
       <br>
       <p class="formSubheader">Pic of Whole Robot</p>
@@ -204,15 +216,19 @@
           </div>
         </div>
 
-        <br>
+        <div id="inPersonTeamNumInputDiv" style="display: none;">
+          <br>
+          <input type="number" id="inPersonTeamNumInput" class="inputInput" placeholder="Team #"></input>
+          <br>
+        </div>
 
-        <input type="number" id="inPersonTeamNumInput" class="inputInput" placeholder="Team #" style="display: none;"></input>
+        <div id="inPersonTeamNumNotifDiv" style="display: none;">
+          <br>
+          <p id="inPersonTeamNumNotif" class="notifText" style="margin: 0;"></p>
+          <br>
+        </div>
 
-        <br>
-
-        <p id="inPersonTeamNumNotif" class="notifText"></p>
-
-        <p id="matchUseInputButton" class="pushButton" onclick="toggleElement('matchFormButtonSelectionDiv');toggleElement('inPersonTeamNumInput');" style="margin-top: 10px;">Type Team</p>
+        <p id="matchUseInputButton" class="pushButton" onclick="toggleElement('matchFormButtonSelectionDiv');toggleElement('inPersonTeamNumInputDiv');" style="margin-top: 10px;">Type Team</p>
 
         <p class="sectionHeader" style="padding-top: 0;">Autonomous</p>
         <hr class="sectionLine">
@@ -381,11 +397,7 @@
           </tr>
         </table>
 
-        <p class="formSubheader" style="margin-top: 10px;">Ending</p>
-        <p id="inPersonAutoDockFailButton" class="inPersonAutoEndgameButton startGroupedButton groupedButton"
-          onclick="hideElement('inPersonAutoEngagedButton');">Failed Dock</p>
-        <p id="inPersonAutoDockedButton" class="inPersonAutoEndgameButton endGroupedButton groupedButton"
-          onclick="toggleElement('inPersonAutoEngagedButton');">Docked</p>
+        <p id="inPersonAutoDockedButton" class="pushButton"onclick="toggleElement('inPersonAutoEngagedButton');">Docked</p>
 
         <p id="inPersonAutoEngagedButton" class="pushButton" style="display: none;">Engaged</p>
 
@@ -582,24 +594,13 @@
         <p id="inPersonTeleHybDockedButton" class="inPersonTelePlaystyleButton groupedButton">Hybrid</p>
         <p id="inPersonTeleDefButton" class="inPersonTelePlaystyleButton endGroupedButton groupedButton">Defensive</p>
 
-        <br>
-
-        <p class="formSubheader" style="margin-top: 10px;">Endgame</p>
-        <p id="inPersonTeleParkedButton" class="inPersonTeleEndgameButton startGroupedButton groupedButton"
-          onclick="hideElement('inPersonTeleEngagedButton');">Parked</p>
-        <p id="inPersonTeleFailedDockButton" class="inPersonTeleEndgameButton groupedButton"
-          onclick="hideElement('inPersonTeleEngagedButton');">Failed Dock</p>
-        <p id="inPersonTeleDockedButton" class="inPersonTeleEndgameButton endGroupedButton groupedButton"
-          onclick="toggleElement('inPersonTeleEngagedButton');">Docked</p>
-
-        <p id="inPersonTeleEngagedButton" class="pushButton" style="display: none;">Engaged</p>
-
         <p class="sectionHeader">Other Notes</p>
         <hr class="sectionLine">
 
         <p class="formSubheader" style="margin-top:10px;">Failures</p>
         <p id="inPersonMechFailButton" class="matchInPersonTagButton groupedButton startGroupedButton">Mech Fail</p>
         <p id="inPersonCommFailButton" class="matchInPersonTagButton groupedButton">Comm Fail</p>
+        <p id="inPersonTippedButton" class="matchInPersonTagButton groupedButton">Tipped</p>
         <p id="inPersonNoShowButton" class="matchInPersonTagButton groupedButton endGroupedButton">No Show</p>
 
         <br>

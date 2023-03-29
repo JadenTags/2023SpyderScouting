@@ -1,20 +1,20 @@
 .teamName {
-    margin: 0;
-    text-align: center;
-    width: 100%;
-    font-weight: bolder;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  margin: 0;
+  text-align: center;
+  width: 100%;
+  font-weight: bolder;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-.inputInput, .measurementInput, #dbTypeInput, #dbMotorInput, #cycleTimeInput, #cycleTimeInputChanges, #balanceTimeInput {
-    display: inline-block;
-    border-radius: 5px 5px 5px 5px;
-    width: 20%;
-    border: 1px solid #c5c7c5;
+input {
+  display: inline-block;
+  border-radius: 5px 5px 5px 5px;
+  width: 20%;
+  border: 1px solid #c5c7c5;
 }
 
 .measurementInput {
-    width: 25px;
+    width: 20vw;
     margin-top: 5px;
 }
 
@@ -55,11 +55,6 @@
 
 .wrapperDiv {
   height: 100%;
-}
-
-#autoDiv {
-  margin: 0;
-  padding: 0;
 }
 
 .submitButton {
@@ -251,7 +246,7 @@
   display: inline-block;
 }
 
-.autoScoreRowDropdown {  
+.autoScoreRowDropdown, #dimensionsUnitDropdown, #drivebaseDropdown {  
   -webkit-appearance: none;
   display: inline;
   outline: none;

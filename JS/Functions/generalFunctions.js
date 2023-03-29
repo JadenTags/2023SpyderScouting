@@ -106,7 +106,7 @@ async function checkLogIn() {
 
 function setDisplayData() {
   if (!localStorage.getItem("displayData")) {
-    localStorage.setItem("displayData", def);
+    localStorage.setItem("displayData", stage);
   }
 }
 

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width">
   <title>Team Spyder Scouting</title>
   <link href="../CSS/generalStyle.css" rel="stylesheet" type="text/css"/>
+  <link href="../CSS/displays.css" rel="stylesheet" type="text/css"/>
   <link href="../CSS/picklisting.css" rel="stylesheet" type="text/css"/>
 </head>
 
@@ -19,6 +20,8 @@
 </div>
 
 <div id="subNav">
+  <p id="compareButton" class="subNavButton">Compare</p>
+  <p class="subNavDivider"></p>
   <p id="shopButton" class="subNavButton">Shop</p>
   <!-- <p class="subNavDivider"></p> -->
   <!-- <p id="compatibilityButton" class="subNavButton">Compatibility</p>
@@ -41,8 +44,15 @@
     <p class="generalDivText">Tools to make a picklist.</p>
   </div>
   
-  <div id="compatibilityDiv" class="subNavDiv" style="display:none">
-    
+  <div id="compareDiv" class="subNavDiv" style="display:none">
+    <div class="innerDiv">
+      <input id="compareTeam1SearchInput" class="inputInput" placeholder="Team#"></input>
+      <input id="compareTeam2SearchInput" class="inputInput" placeholder="Team#"></input>
+
+      <p id="compareButton" class="button spacedElem" onclick="compareSearch();" style="margin-top: 10px;">Compare</p>
+    </div>
+
+    <div id="compareSearchTablesDiv"></div>
   </div>
   
   <div id="searchDiv" class="subNavDiv" style="display:none">
@@ -74,7 +84,12 @@
     <div id="filtersDiv" style="bottom: -600px;">
       <input id="drivebasesCheckbox" type="checkbox" class="filterCheckbox"></input>
       <p class="filter">Drivebase</p>
-      <select id="drivesbasesDropdown"></select>
+      <select id="drivesbasesDropdown">
+        <option>Swerve</option>
+        <option>Mechanum</option>
+        <option>Tank</option>
+        <option>Other</option>
+      </select>
 
       <br>
 
@@ -84,9 +99,21 @@
 
       <br>
 
+      <input id="autoCargoMinCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter">Auto Cargo Min</p>
+      <input id="autoCargoMinInput" class="numberInput" type="number"></input>
+
+      <br>
+
       <input id="teleMinCheckbox" type="checkbox" class="filterCheckbox"></input>
       <p class="filter">Teleop Min</p>
       <input id="teleopMinInput" class="numberInput" type="number"></input>
+
+      <br>
+
+      <input id="teleCargoMinCheckbox" type="checkbox" class="filterCheckbox"></input>
+      <p class="filter">Tele Cargo Min</p>
+      <input id="teleCargoMinInput" class="numberInput" type="number"></input>
 
       <br>
 
@@ -143,6 +170,7 @@
 <script src="../JS/Functions/tbaFunctions.js"></script>
 <script src="../JS/Functions/globalDataFunctions.js"></script>
 <script src="../JS/Functions/buttonFunctions.js"></script>
+<script src="../JS/Pages/displays.js"></script>
 <script src="../JS/Pages/picklisting.js"></script>
 <script>checkLogIn();</script>
 
