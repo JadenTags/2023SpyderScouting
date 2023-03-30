@@ -80,3 +80,20 @@ async function createFile(name, mimeType, folderId, mainOrderNum) {
     await wait(100);
   }
 }
+
+async function getFiles(folderId, mainOrderNum) {
+  var http = driveApiRoot + "/drive/v2/files?q='" + folderId + "'+in+parents";
+  var orderNum = curOrderNum++;
+  await getGsKey(orderNum);
+  
+  fetch(http, {
+    method: 'GET',
+    headers: getOrder(orderNum)
+  })
+    .then(response => response.json())
+    .then(data => orders[mainOrderNum] = data);
+  
+  while (!orders[mainOrderNum]) {
+    await wait(100);
+  }
+}

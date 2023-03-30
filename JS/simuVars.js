@@ -1,16 +1,18 @@
-var testDate = new Date("2023-03-25"); 
+var testDate = new Date("2023-03-31"); 
 //COMP: TYPE FIRST DATE OF COMP IN YEAR MONTH DAY FORM
 //NOT COMP: TYPE TEST DATE IN YEAR MONTH DAY FORM
 
-var sheetID = "1lydmTcdvkiqX3hrqJMzbgS5gNUQc97C-4zEcNFIbh_Y";
+var sheetID = "13upH6WD6_GKrwX00GqesO2RQtAKAhO-psJSHr2LJMm8";
 //COMP: USE THE ID THAT THE SHEETS USE
 //NOT COMP: LEAVE AS "1lydmTcdvkiqX3hrqJMzbgS5gNUQc97C-4zEcNFIbh_Y"
+//BAYOU: 13upH6WD6_GKrwX00GqesO2RQtAKAhO-psJSHr2LJMm8
 
-var roboPicsFolderId = "1pzk6rKsE_6CCRATpvFESwJ1E85CEB4kL";
+var roboPicsFolderId = "15gtjdXvbqQQBifq9lvD6v4iYi67EShsd";
 //COMP: USE THE ID THAT THE SHEETS USE
 //NOT COMP: LEAVE AS "1pzk6rKsE_6CCRATpvFESwJ1E85CEB4kL"
+//BAYOU: 15gtjdXvbqQQBifq9lvD6v4iYi67EShsd
 
-var stage = ["WARMUPS", "QUALS", "FINALS"][1];
+var stage = ["WARMUPS", "QUALS", "FINALS"][0];
 //COMP: SET TO WHATEVER STAGE
 //NOT COMP: SET TO [1]
 
@@ -19,8 +21,8 @@ var matchNum;
 var tbaNotWorking = false;
 //SET TO TRUE IF TBA IS WORKING ON MOBILE, ELSE, FALSE
 
-localStorage.clear()
-localStorage.setItem("user", "Fart");
+// localStorage.clear()
+// localStorage.setItem("user", "Fart");
 //COMP: LEAVE COMMENTED
 //TESTNG: LEAVE UNCOMMNETED
 

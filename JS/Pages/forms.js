@@ -592,6 +592,8 @@ function displayAutoScoresDiv(selector) {
 async function adjustStage() {
     if (stage == "WARMUPS" || tbaNotWorking) {
         document.getElementById("inPersonTeamNumInput").style.display = "initial";
+        
+        document.getElementById("inPersonTeamNumInputDiv").style.display = "initial";
 
         document.getElementById("inPersonMatchNumInput").setAttribute("onchange", "");
 

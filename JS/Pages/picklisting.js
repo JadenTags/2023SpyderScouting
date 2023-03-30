@@ -3,15 +3,12 @@ var lockedDivs = {
     "shophDiv": "unlocked",
 };
 var teamTables = {};
+var robotImageWidth = 40;
 
-async function compileTeamSlotData() {
+async function createTeamItems() {
     await waitGlobalData();
 
     var oN = curOrderNum++;
-    await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/teams", oN);
-    var teams = getOrder(oN);
-
-    oN = curOrderNum++;
     await getSheetData(sheetID, "PRE", oN);
     var preForms = getOrder(oN);
 
@@ -19,10 +16,56 @@ async function compileTeamSlotData() {
     await getSheetData(sheetID, "QUALS", oN);
     var matchForms = getOrder(oN);
 
-    console.log(teams)
-    console.log(teams.map(x => compileAllTeamData(x.key.replace("frc", ""), matchForms, preForms)))
+    oN = curOrderNum++;
+    await getFiles(roboPicsFolderId, oN);
+    var pics = {};
+    getOrder(oN).items.forEach(pic => {
+        pics[pic.title.replace(".jpg", "")] = pic;
+    });
 
-    //TEAM NAME | TEAM NUM | DIMENSIONS | DB INFO | DB NOTES | AUTO GEN | CLIMB TYPE | REACHES | PREF GP | TIPPED CONES | 
+    oN = curOrderNum++;
+    await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/teams", oN);
+    var teams = getOrder(oN).map(x => compileAllTeamData(x.key.replace("frc", ""), matchForms, preForms));
+
+    teams.forEach(team => {
+        console.log(team)
+        var slot = document.createElement("table");
+        var slotRow = document.createElement("tr");
+        var imgData = document.createElement("td");
+        var infoData = document.createElement("td");
+        
+        //PICTURE
+        if (pics[team["General"]["Team"]]) {
+            imgData.appendChild(getRobotImageElement(pics[team["General"]["Team"]]));
+        } else {
+            var textNode = document.createTextNode("NO IMG");
+
+            imgData.appendChild(textNode);
+        }
+        slotRow.appendChild(imgData);
+
+        //INFO DATA
+        // var infoTable = document.createElement(info)
+
+        //TEAM NAME
+
+        
+        slot.appendChild(slotRow);
+        document.body.appendChild(slot);
+    });
+
+    //TEAM NAME | TEAM NUM | DIMENSIONS | DB INFO | AUTO GEN | CLIMB TYPE | PREF GP | TIPPED CONES | 
+}
+
+function getRobotImageElement(picInfo) {
+    var dimRatio = picInfo.imageMediaMetadata.width / picInfo.imageMediaMetadata.height;
+    var img = document.createElement("iframe");
+    img.setAttribute("src", picInfo.embedLink);
+
+    img.style.height = robotImageWidth * dimRatio + "vw";
+    img.style.width = robotImageWidth + "vw";
+    
+    return img
 }
 
 async function compareSearch() {
@@ -30,10 +73,19 @@ async function compareSearch() {
         await wait(100);
     }
 
-    var teams = [document.getElementById("compareTeam1SearchInput").value, document.getElementById("compareTeam2SearchInput").value];
+    var teams = [document.getElementById("compareTeam1SearchInput").value, document.getElementById("compareTeam2SearchInput").value].map(x => teamTables[x]);
     var tr = document.getElementById("compareSearchTableRow");
 
-    if (teamTables[teams[0]] == undefined || teamTables[teams[1]] == undefined) {
+    document.getElementById("compareTeam1SearchInput").style.border = "1px solid #c5c7c5";
+    document.getElementById("compareTeam2SearchInput").style.border = "1px solid #c5c7c5";
+
+    if (teams[0] == undefined || teams[1] == undefined) {
+        if (teams[0] == undefined){
+            document.getElementById("compareTeam1SearchInput").style.border = "1px solid #eb776e";
+        }  if (teams[1] == undefined) {
+            document.getElementById("compareTeam2SearchInput").style.border = "1px solid #eb776e";
+        }
+
         showElement("compareSearchNotifDiv");
         hideElement("compareSearchTablesDiv");
         return;
@@ -45,8 +97,8 @@ async function compareSearch() {
     tr.childNodes[1].innerHTML = "";
     tr.childNodes[2].innerHTML = "";
     
-    tr.childNodes[1].appendChild(teamTables[teams[0]][0]);
-    tr.childNodes[2].appendChild(teamTables[teams[1]][0]);
+    tr.childNodes[1].appendChild(teams[0][0]);
+    tr.childNodes[2].appendChild(teams[1][0]);
 }
 
 async function createCompareTables() {
@@ -115,6 +167,14 @@ function test() {
     // compareSearch();
 }
 
+document.onkeydown = function (e) {
+    if (e.key == "Enter") {
+        if (document.getElementById("compareButton").style.backgroundColor == "rgb(87, 86, 83)") {
+            eval(document.getElementById("comparesButton").getAttribute("onclick"));
+        }
+    }
+}
+
 // test();
-// compileTeamSlotData();
+createTeamItems();
 createCompareTables();
