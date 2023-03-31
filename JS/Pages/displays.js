@@ -682,6 +682,12 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor, 
 function buildHeaderTable(heightObj, color, headerOrder) {
     var headerTable = document.createElement("table");
     var done = [];
+    var noHeader = false;
+
+    if (headerOrder == undefined) {
+        noHeader = true;
+        headerOrder = heightObj;
+    }
 
     Object.keys(heightObj).filter(x => Object.keys(headerOrder).includes(x)).forEach(section => {
         var sectionCounter = 0;
@@ -723,7 +729,7 @@ function buildHeaderTable(heightObj, color, headerOrder) {
         Object.keys(sectionInfo).forEach(header => {
             var height;
 
-            if (headerOrder != undefined) {
+            if (!noHeader) {
                 header = headerOrder[section][sectionCounter++];
                 if (header.includes("|")) {
                     header = header.split("|")[0];
