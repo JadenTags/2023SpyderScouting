@@ -683,7 +683,7 @@ function buildHeaderTable(heightObj, color, headerOrder) {
     var headerTable = document.createElement("table");
     var done = [];
 
-    Object.keys(heightObj).forEach(section => {
+    Object.keys(heightObj).filter(x => Object.keys(headerOrder).includes(x)).forEach(section => {
         var sectionCounter = 0;
         let sectionInfo = heightObj[section];
         let sectionRow = document.createElement("tr");

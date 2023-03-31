@@ -15,7 +15,9 @@ var roboPicsFolderId = "15gtjdXvbqQQBifq9lvD6v4iYi67EShsd";
 //BAYOU: 15gtjdXvbqQQBifq9lvD6v4iYi67EShsd
 
 var stage = ["WARMUPS", "QUALS", "FINALS"][1];
-localStorage.setItem("displayData", stage);
+if (localStorage.getItem("displayData") == undefined) {
+    localStorage.setItem("displayData", stage);
+}
 //COMP: SET TO WHATEVER STAGE
 //NOT COMP: SET TO [1]
 
