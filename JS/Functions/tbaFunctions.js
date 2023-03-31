@@ -39,9 +39,9 @@ async function getClosestCompData(teamNum) {
 
     if (!closestComp) {
         return [];
+    } if (JSON.stringify(closestComp) != localStorage.getItem("closestComp")) {
+        var difference = Math.floor((new Date(closestComp.start_date).getTime() - testDate.getTime()) / (1000 * 60 * 60 * 24));
+        localStorage.setItem("closestComp", JSON.stringify(closestComp));
+        localStorage.setItem("difference", difference);
     }
-
-    var difference = Math.floor((new Date(closestComp.start_date).getTime() - testDate.getTime()) / (1000 * 60 * 60 * 24));
-    localStorage.setItem("closestComp", JSON.stringify(closestComp));
-    localStorage.setItem("difference", difference);
 }
