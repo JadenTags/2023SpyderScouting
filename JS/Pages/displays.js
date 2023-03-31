@@ -1086,7 +1086,7 @@ function compileAllTeamData(team, match, pre) {
         fillScoreData(data["Auto"]["CUBE Bot Row"], match.filter(x => x[4] != "").map(x => JSON.parse(x[4])[2]));
         
         //GENERAL CARGO
-        var cargo = match.map(x => sum(JSON.parse(x[3]).map(y => sum(y.map(z => parseInt(z))))) + sum(JSON.parse(x[4]).map(y => sum(y.map(z => parseInt(z))))));
+        var cargo = match.map(x => sum(JSON.parse(x[3]).map(y =>  parseInt(y[0]))) + sum(JSON.parse(x[4]).map(y => parseInt(y[0]))));
         data["Auto"]["Cargo"]["Max"] = Math.max(...cargo);
         data["Auto"]["Cargo"]["Avg"] = Math.round(sum(cargo) / cargo.length * 10) / 10;
 
@@ -1127,7 +1127,7 @@ function compileAllTeamData(team, match, pre) {
         fillScoreData(data["Teleop"]["CUBE Bot Row"], match.filter(x => x[8] != "").map(x => JSON.parse(x[8])[2]));
     
         //CARGO AVG
-        var teleCargo = match.filter(x => x[7] != "" && x[8] != "").map(x => sum(JSON.parse(x[7]).map(y => sum(y.map(z => parseInt(z))))) + sum(JSON.parse(x[8]).map(y => sum(y.map(z => parseInt(z))))));
+        var teleCargo = match.filter(x => x[7] != "" && x[8] != "").map(x => sum(JSON.parse(x[7]).map(y =>  parseInt(y[0]))) + sum(JSON.parse(x[8]).map(y => parseInt(y[0]))));
         if (teleCargo.length != 0) {
             data["Teleop"]["Cargo"]["Max"] = Math.max(...teleCargo);
             data["Teleop"]["Cargo"]["Avg"] = Math.round(sum(teleCargo) / teleCargo.length * 10) / 10;
@@ -1139,7 +1139,10 @@ function compileAllTeamData(team, match, pre) {
                 }
             }
         } else {
-            data["Teleop"]["Cargo"] = 0;
+            data["Teleop"]["Cargo"] = {
+            "Always": 0,
+            "INFO": [[1], "NORMAL"]
+        }
         }
     
         //ALMOST TIPPED
@@ -1190,20 +1193,23 @@ function compileAllTeamData(team, match, pre) {
                 }
             }
         } else {
-            data["Teleop"]["Score"] = 0;
+            data["Teleop"]["Score"] = {
+                "Always": 0,
+                "INFO": [[1], "NORMAL"]
+            }
         }
 
         ///////////////////////////OVERALL
         var cargoMax = 0;
         var cargoAvg = 0;
 
-        if (data["Auto"]["Cargo"]["Always"]) {
+        if (data["Auto"]["Cargo"]["Always"] != undefined) {
             cargoMax += data["Auto"]["Cargo"]["Always"];
             cargoAvg += data["Auto"]["Cargo"]["Always"];
         } else {
             cargoMax += data["Auto"]["Cargo"]["Max"];
             cargoAvg += data["Auto"]["Cargo"]["Avg"];
-        } if (data["Teleop"]["Cargo"]["Always"]) {
+        } if (data["Teleop"]["Cargo"]["Always"] != undefined) {
             cargoMax += data["Teleop"]["Cargo"]["Always"];
             cargoAvg += data["Teleop"]["Cargo"]["Always"];
         } else {
@@ -1222,13 +1228,13 @@ function compileAllTeamData(team, match, pre) {
         var scoreMax = 0;
         var scoreAvg = 0;
 
-        if (data["Auto"]["Score"]["Always"]) {
+        if (data["Auto"]["Score"]["Always"] != undefined) {
             scoreMax += data["Auto"]["Score"]["Always"];
             scoreAvg += data["Auto"]["Score"]["Always"];
         } else {
             scoreMax += data["Auto"]["Score"]["Max"];
             scoreAvg += data["Auto"]["Score"]["Avg"];
-        } if (data["Teleop"]["Score"]["Always"]) {
+        } if (data["Teleop"]["Score"]["Always"] != undefined) {
             scoreMax += data["Teleop"]["Score"]["Always"];
             scoreAvg += data["Teleop"]["Score"]["Always"];
         } else {
@@ -1539,7 +1545,7 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     var headerOrder = fillMissingHeaders(teams.map(x => x[0]), dataTableWithMatchFormat);
     
     teams.forEach(team => {
-        teams[teams.indexOf(team)][1] = getHeightObj(teams[teams.indexOf(team)][0], teams[teams.indexOf(team)][0]);
+        teams[teams.indexOf(team)][1] = getHeightObj(teams[teams.indexOf(team)][0], dataTableWithMatchFormat);
     });
 
     var maxHeights = compareHeights(teams.map(x => x[1]));
