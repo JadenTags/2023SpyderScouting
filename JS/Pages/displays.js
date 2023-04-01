@@ -928,15 +928,17 @@ function calcAuto(form) {
     
     //CONES AND CUBES
     [3, 4].forEach(type => {
-        type = JSON.parse(form[type]).map(x => parseInt(x[0]));
-        
-        for (var i = 0; i < 3; i++) {
-            if (i == 0) {
-                score += type[i] * 6;
-            } else if (i == 1) {
-                score += type[i] * 4;
-            } else if (i == 2) {
-                score += type[i] * 3;
+        if (form[type] != "") {
+            type = JSON.parse(form[type]).map(x => parseInt(x[0]));
+            
+            for (var i = 0; i < 3; i++) {
+                if (i == 0) {
+                    score += type[i] * 6;
+                } else if (i == 1) {
+                    score += type[i] * 4;
+                } else if (i == 2) {
+                    score += type[i] * 3;
+                }
             }
         }
     });
@@ -1092,7 +1094,7 @@ function compileAllTeamData(team, match, pre) {
         fillScoreData(data["Auto"]["CUBE Bot Row"], match.filter(x => x[4] != "").map(x => JSON.parse(x[4])[2]));
         
         //GENERAL CARGO
-        var cargo = match.map(x => sum(JSON.parse(x[3]).map(y =>  parseInt(y[0]))) + sum(JSON.parse(x[4]).map(y => parseInt(y[0]))));
+        var cargo = match.filter(x => x[3] != "" && x[4] != "").map(x => sum(JSON.parse(x[3]).map(y =>  parseInt(y[0]))) + sum(JSON.parse(x[4]).map(y => parseInt(y[0]))));
         data["Auto"]["Cargo"]["Max"] = Math.max(...cargo);
         data["Auto"]["Cargo"]["Avg"] = Math.round(sum(cargo) / cargo.length * 10) / 10;
 
