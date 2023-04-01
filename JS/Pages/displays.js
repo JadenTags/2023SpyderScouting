@@ -1184,7 +1184,7 @@ function compileAllTeamData(team, match, pre) {
         }
     
         //PLAYSTYLE
-        fillPercentData(data["Teleop"], "Playstyle%", match.map(x => x[10]).filter(x => x != ""), {
+        fillPercentData(data["Teleop"], "Playstyle%", match.filter(x => x != "").map(x => x[10]).filter(x => x != ""), {
             "Offensive": "Off",
             "Defensive": "Def",
             "Hybrid": "Hyb",
@@ -1325,6 +1325,9 @@ function fillScoreData(data, match) {
 }
 
 function fillPercentData(data, key, matches, equivObj) {
+    if (key == "Playstyle%") {
+        console.log(matches)
+    }
     if (matches.length != 0) {
         var occurencesObj = getOccurencesObj(matches, Object.keys(equivObj));
         Object.keys(occurencesObj).forEach(x => {
@@ -1729,24 +1732,35 @@ async function fillMatchDropdown() {
         document.getElementById("matchSearchDisplayDiv").remove();
     }
 
+    var counter = 0;
     if (stage == "FINALS") {
         teamMatches = teamMatches.filter(x => x.comp_level == "sf");
+        teamMatches.map(x => x.set_number).sort((x, y) => x - y).forEach(match => {
+            let option = document.createElement("option");
+    
+            if (teamMatches[counter++].actual_time != null) {
+                option.style.color = "#787878";
+            }
+    
+            option.value = match;
+            option.innerHTML = "#" + match;
+            dropdown.appendChild(option);
+        });
     } else {
         teamMatches = teamMatches.filter(x => x.comp_level != "sf");
+        teamMatches.map(x => x.match_number).sort((x, y) => x - y).forEach(match => {
+            let option = document.createElement("option");
+    
+            if (teamMatches[counter++].actual_time != null) {
+                option.style.color = "#787878";
+            }
+    
+            option.value = match;
+            option.innerHTML = "#" + match;
+            dropdown.appendChild(option);
+        });
     }
 
-    var counter = 0;
-    teamMatches.map(x => x.match_number).sort((x, y) => x - y).forEach(match => {
-        let option = document.createElement("option");
-
-        if (teamMatches[counter++].actual_time != null) {
-            option.style.color = "#787878";
-        }
-
-        option.value = match;
-        option.innerHTML = "#" + match;
-        dropdown.appendChild(option);
-    });
 }
 
 async function matchSearch() {
@@ -1760,11 +1774,11 @@ async function matchSearch() {
         var match;
         
         if (stage == "FINALS") {
-            match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum) && x.comp_level == "sf")[0];
+            match = getOrder(oN).filter(x => x.set_number == parseInt(matchNum) && x.comp_level == "sf")[0];
         } else {
             match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum))[0];
         }
-
+        
         if (match.alliances.blue.team_keys.map(x => x.replace("frc", "")).includes("1622")) {
             await allianceSearch(match.alliances.blue.team_keys.map(x => x.replace("frc", "")), "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
             await allianceSearch(match.alliances.red.team_keys.map(x => x.replace("frc", "")), "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
