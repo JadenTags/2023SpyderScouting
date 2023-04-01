@@ -197,5 +197,5 @@ document.onkeydown = function (e) {
 }
 
 // test();
-createTeamItems();
+// createTeamItems();
 createCompareTables();

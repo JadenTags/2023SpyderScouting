@@ -960,15 +960,17 @@ function calcTele(form) {
 
     //CONES AND CUBES
     [7, 8].forEach(type => {
-        type = JSON.parse(form[type]).map(x => parseInt(x[0]));
-        
-        for (var i = 0; i < 3; i++) {
-            if (i == 0) {
-                score += type[i] * 6;
-            } else if (i == 1) {
-                score += type[i] * 4;
-            } else if (i == 2) {
-                score += type[i] * 3;
+        if (form[type] != "") {
+            type = JSON.parse(form[type]).map(x => parseInt(x[0]));
+            
+            for (var i = 0; i < 3; i++) {
+                if (i == 0) {
+                    score += type[i] * 6;
+                } else if (i == 1) {
+                    score += type[i] * 4;
+                } else if (i == 2) {
+                    score += type[i] * 3;
+                }
             }
         }
     });
@@ -2229,10 +2231,9 @@ async function sort() {
     oN = curOrderNum++;
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/teams", oN);
     var teams = getOrder(oN).map(x => compileAllTeamData(x.key.replace("frc", ""), matchData, preData)).map(x => [x["General"]["Team"], x]);
-    console.log(teams)
-
     console.log("TOTAL CARGO SCORE----------------")
-    console.log(teams.filter(x => x[1]["Teleop"]["Score"]).sort((x, y) => (y[1]["Teleop"]["Score"]["Avg"] + y[1]["Auto"]["AVG Score"]) - (x[1]["Teleop"]["Score"]["Avg"] + x[1]["Auto"]["AVG Score"])).map(x => [x[0], x[1]["Teleop"]["Score"]["Avg"] + x[1]["Auto"]["AVG Score"], x[1]["General"]["DB Type"]]))
+    console.log(teams[0])
+    console.log(teams.filter(x => x[1]["Teleop"]["Score"]).sort((x, y) => (y[1]["Overall"]["Score"]["Avg"] + y[1]["Teleop"]["Cargo"]["Avg"] * (5/3)) - (x[1]["Overall"]["Score"]["Avg"] + x[1]["Teleop"]["Cargo"]["Avg"] * (5/3))).map(x => [x[0], x[1]["General"]["DB Type"], x[1]["Auto"]["Engaged%"], x[1]["Overall"]["Score"]["Avg"], x[1]["Overall"]["Cargo"]["Avg"]]));
 }
 
 async function test() {
