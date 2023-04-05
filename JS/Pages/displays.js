@@ -1362,7 +1362,6 @@ function fillData(data, key, pre, infoIndex) {
 function getOccurencesObj(data, keys) {
     var occurencesObj = {};
 
-
     keys.forEach(key => {
         occurencesObj[key] = 0;
     });
@@ -1722,6 +1721,8 @@ async function fillMatchDropdown() {
     var oN = curOrderNum++;
     await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
     var teamMatches = getOrder(oN);
+
+    console.log(teamMatches)
 
     if (teamMatches.length == 0) {
         var matchSearchButton = document.getElementById("matchSearchDisplayButton");
@@ -2269,59 +2270,79 @@ async function test() {
     // eval(document.getElementById("formsDisplaySearchButton").getAttribute("onclick"));
 }
 
-async function testerooni() {
+async function getPredictionStats() {
     await waitGlobalData();
 
     var oN = curOrderNum++;
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
     var teamMatches = getOrder(oN);
-    var scores = {};
-
-    teamMatches.filter(x => x.comp_level == "qm").forEach(x => {
-        scores[x.match_number] = {
-            "red": x.score_breakdown.red.totalPoints, 
-            "blue": x.score_breakdown.blue.totalPoints
-        };
-    })
     
     oN = curOrderNum++;
     await getSheetData(sheetID, "QUALS", oN);
     var matchData = getOrder(oN);
 
-    var predScores = {};
     var acc = [];
+    var diff = [];
+    var wins = [];
     teamMatches.filter(x => x.comp_level == "qm").forEach(x => {
         var match = matchData.filter(y => !isNaN(parseInt(y[1])) && parseInt(y[1]) < x.match_number);
+        var colorScores = {};
         //TODO: TEAM SCORES
         Object.keys(x.alliances).forEach(color => {
             let teams = x.alliances[color].team_keys.map(x => x.slice(3));
             let total = 20;
-            
+            let allianceCargos = 0;
+
             teams.forEach(team => {
                 let teamData = match.filter(x => x[0] == team);
-
+                
                 if (teamData.length > 0) {
-                    let auto = teamData.map(x => calcAuto(x));
-                    auto = sum(auto) / auto.length;
-                    let tele = teamData.map(x => calcTele(x));
-                    tele = sum(tele) / tele.length;
+                    let scores = teamData.map(x => calcAuto(x) + calcTele(x));
+
+                    let cargos = [];
+                    teamData.forEach(submission => {
+                        let cargo = 0;
+
+                        [3, 4, 7, 8].forEach(index => {
+                            try {
+                                cargo += sum(JSON.parse(submission[index]).map(x => sum(x.map(y => parseInt(y)))));
+                            } catch (e) {
+
+                            }
+                        });
+
+                        cargos.push(cargo);
+                    })
+                    allianceCargos += Math.round(sum(cargos) / cargos.length);
                     
-                    total += auto + tele;
+                    total += sum(scores) / scores.length;
                 }
             })
+            
+            if (total != 20) {
+                total += (Math.floor(allianceCargos / 3) * 5);
+                
+                diff.push(total - x.score_breakdown[color].totalPoints - x.score_breakdown[color].foulPoints) 
+                acc.push(Math.round(Math.abs(total - (x.score_breakdown[color].totalPoints - x.score_breakdown[color].foulPoints)) / total * 100));
 
-            acc.push(Math.round(Math.abs(total - scores[x.match_number][color]) / scores[x.match_number][color] * 100));
+                colorScores[color] = total;
+            }
         })
+
+        if (colorScores["blue"] > colorScores["red"]) {
+            wins.push(x.winning_alliance == "blue");
+        } else {
+            wins.push(x.winning_alliance == "red");
+        }
     })
 
-    console.log(100 - sum(acc) / acc.length);
-
-    // var percents = Object.keys(scores).map(x => [x, predScores[x], scores[x]]).filter(x => !isNaN(x[1])).map(x => Math.round(Math.abs(x[2] - x[1]) / x[2] * 100));
-    // console.log("Score Accuracy: " + (100 - sum(percents) / percents.length) + "%")
+    console.log("Score % Error: " + (100 - sum(acc) / acc.length));
+    console.log("Average Diff: " + (sum(diff) / diff.length));
+    var winOcc = getOccurencesObj(wins, [true, false]);
+    console.log("Win % Error: " + (winOcc[true] / sum(Object.values(winOcc)) * 100) + "%");
+    console.log(winOcc[false])
 }
 
 // test();
-testerooni();
+getPredictionStats();
 fillMatchDropdown();
-
-// sort();
