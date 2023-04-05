@@ -993,6 +993,10 @@ function compileAllTeamData(team, match, pre) {
             }
         }
     });
+    
+    if (match.length == 0) {
+        return {"w": 122};
+    }
 
     var data = structuredClone(dataTableWithMatchFormat);
 
@@ -1097,8 +1101,10 @@ function compileAllTeamData(team, match, pre) {
         
         //GENERAL CARGO
         var cargo = match.filter(x => x[3] != "" && x[4] != "").map(x => sum(JSON.parse(x[3]).map(y =>  parseInt(y[0]))) + sum(JSON.parse(x[4]).map(y => parseInt(y[0]))));
-        data["Auto"]["Cargo"]["Max"] = Math.max(...cargo);
-        data["Auto"]["Cargo"]["Avg"] = Math.round(sum(cargo) / cargo.length * 10) / 10;
+        if (cargo.length > 0) {
+            data["Auto"]["Cargo"]["Max"] = Math.max(...cargo);
+            data["Auto"]["Cargo"]["Avg"] = Math.round(sum(cargo) / cargo.length * 10) / 10;
+        }
 
         if (data["Auto"]["Cargo"]["Max"] == data["Auto"]["Cargo"]["Avg"]) {
             data["Auto"]["Cargo"] = {
@@ -1325,9 +1331,6 @@ function fillScoreData(data, match) {
 }
 
 function fillPercentData(data, key, matches, equivObj) {
-    if (key == "Playstyle%") {
-        console.log(matches)
-    }
     if (matches.length != 0) {
         var occurencesObj = getOccurencesObj(matches, Object.keys(equivObj));
         Object.keys(occurencesObj).forEach(x => {
@@ -2271,11 +2274,54 @@ async function testerooni() {
 
     var oN = curOrderNum++;
     await getTBAData("event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
-    console.log(getOrder(oN).fil)
+    var teamMatches = getOrder(oN);
+    var scores = {};
+
+    teamMatches.filter(x => x.comp_level == "qm").forEach(x => {
+        scores[x.match_number] = {
+            "red": x.score_breakdown.red.totalPoints, 
+            "blue": x.score_breakdown.blue.totalPoints
+        };
+    })
+    
+    oN = curOrderNum++;
+    await getSheetData(sheetID, "QUALS", oN);
+    var matchData = getOrder(oN);
+
+    var predScores = {};
+    var acc = [];
+    teamMatches.filter(x => x.comp_level == "qm").forEach(x => {
+        var match = matchData.filter(y => !isNaN(parseInt(y[1])) && parseInt(y[1]) < x.match_number);
+        //TODO: TEAM SCORES
+        Object.keys(x.alliances).forEach(color => {
+            let teams = x.alliances[color].team_keys.map(x => x.slice(3));
+            let total = 20;
+            
+            teams.forEach(team => {
+                let teamData = match.filter(x => x[0] == team);
+
+                if (teamData.length > 0) {
+                    let auto = teamData.map(x => calcAuto(x));
+                    auto = sum(auto) / auto.length;
+                    let tele = teamData.map(x => calcTele(x));
+                    tele = sum(tele) / tele.length;
+                    
+                    total += auto + tele;
+                }
+            })
+
+            acc.push(Math.round(Math.abs(total - scores[x.match_number][color]) / scores[x.match_number][color] * 100));
+        })
+    })
+
+    console.log(100 - sum(acc) / acc.length);
+
+    // var percents = Object.keys(scores).map(x => [x, predScores[x], scores[x]]).filter(x => !isNaN(x[1])).map(x => Math.round(Math.abs(x[2] - x[1]) / x[2] * 100));
+    // console.log("Score Accuracy: " + (100 - sum(percents) / percents.length) + "%")
 }
 
 // test();
-// testerooni();
+testerooni();
 fillMatchDropdown();
 
 // sort();
