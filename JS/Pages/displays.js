@@ -2344,5 +2344,5 @@ async function getPredictionStats() {
 }
 
 // test();
-getPredictionStats();
+// getPredictionStats();
 fillMatchDropdown();
