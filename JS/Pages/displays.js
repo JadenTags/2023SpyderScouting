@@ -1722,8 +1722,6 @@ async function fillMatchDropdown() {
     await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
     var teamMatches = getOrder(oN);
 
-    console.log(teamMatches)
-
     if (teamMatches.length == 0) {
         var matchSearchButton = document.getElementById("matchSearchDisplayButton");
 
@@ -2343,6 +2341,57 @@ async function getPredictionStats() {
     console.log(winOcc[false])
 }
 
+async function getMatchAlliances() {
+    await waitGlobalData();
+
+    var oN = curOrderNum++;
+    await getTBAData("team/frc1622/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
+    var teamMatches = getOrder(oN).filter(x => x.comp_level == "qm").sort((x, y) => x.match_number - y.match_number).map(x => [x.match_number, x.alliances.blue.team_keys.map(y => y.slice(3)), x.alliances.red.team_keys.map(y => y.slice(3))]);
+
+    var matchesToScout = {};
+
+    for (var i = 0; i < teamMatches.length; i++) {
+        let match = teamMatches[i][0];
+        
+        for (var l = 1; l < teamMatches[i].length; l++) {
+            let teams = teamMatches[i][l];
+            let alliance;
+
+            if (teams.includes("1622")) {
+                teams = teams.filter(x => x != "1622");
+                alliance = " ALLY";
+            } else {
+                alliance = " OPPOSE";
+            }
+
+            if (alliance) {
+                for (var y = 0; y < teams.length; y++) {
+                    let team = teams[y];
+                    oN = curOrderNum++;
+                    await getTBAData("team/frc" + team + "/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
+                    let matches = getOrder(oN).filter(x => x.comp_level == "qm" && x.match_number < match).map(x => x.match_number).sort((x, y) => y - x);
+        
+                    if (matches.length != 0) {
+                        if (matchesToScout[matches[0]] == undefined) {
+                            matchesToScout[matches[0]] = [team + alliance + " " + match];
+                        } else {
+                            matchesToScout[matches[0]].push(team + alliance + " " + match);
+                        }
+        
+                        teamMatches[i][l] = team + ": " + matches[0];
+                    } else {
+                        teamMatches[i][l] = team + ": no prev";
+                    }
+                }
+            }
+        }
+    }
+
+    console.log(teamMatches)
+    console.log(matchesToScout) 
+}
+
 // test();
 // getPredictionStats();
+// getMatchAlliances();
 fillMatchDropdown();
