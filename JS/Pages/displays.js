@@ -173,10 +173,91 @@ const dataTableWithMatchFormat = {
         "Score": {
             "Max": "",
             "Avg": "",
-            "INFO": [[1, 1], "NORMAL"],
+            "Pred": "",
+            "INFO": [[1, 1, 1], "NORMAL"],
         }
     }
 };
+const formsDisplayData = {
+    "AUTO": {
+        "MOBILE": "",
+        "CONES": "SPACER",
+        "CONE TOP": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "CONE MID": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "CONE LOW": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "CUBES": "SPACER",
+        "CUBE TOP": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "CUBE MID": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "CUBE LOW": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "DOCKED": "",
+        "ENGAGED": "",
+        "SCORE": ""
+    },
+    "TELEOP": {
+        "CONES": "SPACER",
+        "CONE TOP": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "CONE MID": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "CONE LOW": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "CUBES": "SPACER",
+        "CUBE TOP": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "CUBE MID": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "CUBE LOW": {
+            "Made": "",
+            "Miss": "",
+            "INFO": [[], 1]
+        },
+        "TIP": "",
+        "PLAYSTYLE": "",
+        "FAILURE": "",
+        "SCORE": "",
+        "EXTRA NOTES": "",
+        "USER": ""
+    }
+}
 const blueDataTableColors = {
     "singleCellHeader": "#a2abf6",
     "singleCellData": "#d2d6fa",
@@ -802,6 +883,7 @@ function buildHeaderTable(heightObj, color, headerOrder) {
 
 function getHeightObj(data, clone) {
     var heightsObj = structuredClone(clone);
+    console.log(clone)
 
     Object.keys(data).forEach(section => {
         let sectionInfo = data[section];
@@ -1261,6 +1343,7 @@ function compileAllTeamData(team, match, pre) {
             data["Overall"]["Score"]["Max"] = scoreMax;
             data["Overall"]["Score"]["Avg"] = Math.round(scoreAvg * 10) / 10;
         }
+        data["Overall"]["Score"]["Pred"] = predictScore(match);
     } else {
         delete data["Auto"];
         delete data["Teleop"];
@@ -1324,6 +1407,32 @@ function fillScoreData(data, match) {
 
         data["ACC"] = Math.round(made.reduce((x, y) => x + y) / (made.reduce((x, y) => x + y) + match.map(x => x[1]).reduce((x, y) => x + y)) * 100) + "%";
     }
+}
+
+//TODO: MAKE MORE ACCURATE PREDICTIONS
+function predictScore(teamData) {
+    let scores = teamData.filter(x => x[11] == "" && x[10] != "Defensive").map(x => calcAuto(x) + calcTele(x));
+    
+    if (scores.length == 0) {
+        return "ND";
+    }
+
+    let cargos = [];
+    teamData.forEach(submission => {
+        let cargo = 0;
+
+        [3, 4, 7, 8].forEach(index => {
+            try {
+                cargo += sum(JSON.parse(submission[index]).map(x => parseInt(x[0])));
+            } catch (e) {
+
+            }
+        });
+
+        cargos.push(cargo);
+    })
+    
+    return Math.round(((sum(scores) / scores.length) + (Math.round(sum(cargos) / cargos.length) / 3 * 5)) * 10) / 10;
 }
 
 function fillPercentData(data, key, matches, equivObj) {
@@ -1530,7 +1639,6 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     }
     
     teams.forEach(team => {
-        console.log(team)
         var noMatch = matchForms.filter(x => x[0] == team).length == 0;
         var noPrePit = preForms.filter(x => x[0] == team).length == 0;
         let teamData;
@@ -2088,88 +2196,9 @@ async function formsSearch() {
         });
 
         formsDisplayMatchForms = formsDisplayMatchForms.sort((x, y) => parseInt(x["MATCH NUM"]) - parseInt(y["MATCH NUM"]));
-        var order = fillMissingHeaders(formsDisplayMatchForms, {
-            "AUTO": {
-                "MOBILE": "",
-                "CONES": "SPACER",
-                "CONE TOP": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "CONE MID": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "CONE LOW": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "CUBES": "SPACER",
-                "CUBE TOP": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "CUBE MID": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "CUBE LOW": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "DOCKED": "",
-                "ENGAGED": "",
-                "SCORE": ""
-            },
-            "TELEOP": {
-                "CONES": "SPACER",
-                "CONE TOP": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "CONE MID": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "CONE LOW": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "CUBES": "SPACER",
-                "CUBE TOP": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "CUBE MID": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "CUBE LOW": {
-                    "Made": "",
-                    "Miss": "",
-                    "INFO": [[], 1]
-                },
-                "TIP": "",
-                "PLAYSTYLE": "",
-                "FAILURE": "",
-                "SCORE": "",
-                "EXTRA NOTES": "",
-                "USER": ""
-            }
-        });
+        var order = fillMissingHeaders(formsDisplayMatchForms, formsDisplayData);
         formsDisplayMatchForms.forEach(x => Object.keys(x).forEach(y => Object.keys(x[y]).forEach(z => x[y][z] = replaceND(x[y][z]))));
-        matchFormHeight = compareHeights(formsDisplayMatchForms.map(x => getHeightObj(x, order)));
+        matchFormHeight = compareHeights(formsDisplayMatchForms.map(x => getHeightObj(x, formsDisplayData)));
         formsDisplayMatchForms = formsDisplayMatchForms.map(x => buildTeamTable(x, blueDataTableColors, matchFormHeight, order, percentageBlueColorOrder, 50));
 
         displayMatchForm(0, order);
@@ -2290,7 +2319,7 @@ async function getPredictionStats() {
             let allianceCargos = 0;
 
             teams.forEach(team => {
-                let teamData = match.filter(x => x[0] == team);
+                let teamData = match.filter(x => x[0] == team).filter(x => x[11] == "" && x[10] != "Defensive");
                 
                 if (teamData.length > 0) {
                     let scores = teamData.map(x => calcAuto(x) + calcTele(x));
@@ -2301,7 +2330,7 @@ async function getPredictionStats() {
 
                         [3, 4, 7, 8].forEach(index => {
                             try {
-                                cargo += sum(JSON.parse(submission[index]).map(x => sum(x.map(y => parseInt(y)))));
+                                cargo += sum(JSON.parse(submission[index]).map(x => parseInt(x)));
                             } catch (e) {
 
                             }
