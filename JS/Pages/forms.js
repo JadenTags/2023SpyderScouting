@@ -199,8 +199,7 @@ function submitForm(selector) {
     } else if (selector == "matchInPerson") {
         //TEAM NUMBER
         var teamNum = getGroupButtonValue("inPersonAllianceButton");
-        console.log(document.getElementById("matchFormButtonSelectionDiv").style.display)
-        if (["none"].indexOf(document.getElementById("matchFormButtonSelectionDiv").style.display) == -1) {
+        if (["none"].indexOf(document.getElementById("inPersonMatchInnerDiv").style.display) == -1) {
             if (!teamNum) {
                 showElement("inPersonTeamNumNotifDiv");
                 changeNotif("inPersonTeamNumNotif", "You Did Not Select a Team!");
