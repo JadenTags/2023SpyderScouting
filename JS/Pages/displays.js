@@ -993,10 +993,6 @@ function compileAllTeamData(team, match, pre) {
             }
         }
     });
-    
-    if (match.length == 0) {
-        return {"w": 122};
-    }
 
     var data = structuredClone(dataTableWithMatchFormat);
 
@@ -1416,7 +1412,7 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     var dataTableDiv = document.getElementById(divId);
 
     dataTableDiv.innerHTML = "";
-    hideElement(notifSelector + "SearchNotifDiv");
+    hideElement("allianceSearchNotifDiv");
     document.getElementById("allianceTeam1SearchInput").style.border = "1px solid #c5c7c5";
     document.getElementById("allianceTeam2SearchInput").style.border = "1px solid #c5c7c5";
     document.getElementById("allianceTeam3SearchInput").style.border = "1px solid #c5c7c5";
@@ -1534,6 +1530,7 @@ async function allianceSearch(teams, divId, notifSelector, colors, percentColor)
     }
     
     teams.forEach(team => {
+        console.log(team)
         var noMatch = matchForms.filter(x => x[0] == team).length == 0;
         var noPrePit = preForms.filter(x => x[0] == team).length == 0;
         let teamData;
@@ -1781,6 +1778,7 @@ async function matchSearch() {
             match = getOrder(oN).filter(x => x.match_number == parseInt(matchNum))[0];
         }
         
+        hideElement("matchSearchNotifDiv");
         if (match.alliances.blue.team_keys.map(x => x.replace("frc", "")).includes("1622")) {
             await allianceSearch(match.alliances.blue.team_keys.map(x => x.replace("frc", "")), "alliedDiv", "match", blueDataTableColors, percentageBlueColorOrder);
             await allianceSearch(match.alliances.red.team_keys.map(x => x.replace("frc", "")), "opposedDiv", "match", redDataTableColors, percentageRedColorOrder);
@@ -2364,7 +2362,7 @@ async function getMatchAlliances() {
                 alliance = " OPPOSE";
             }
 
-            if (alliance) {
+            if (alliance == " OPPOSE") {
                 for (var y = 0; y < teams.length; y++) {
                     let team = teams[y];
                     oN = curOrderNum++;
