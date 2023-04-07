@@ -546,6 +546,16 @@ async function changeMatchAllianceButtons(selector) {
     });
 }
 
+async function cycleCheckChangeAllianceButtons() {
+    while(true) {
+        await wait(4000);
+
+        if (document.getElementById("inPersonBlue1Button").innerHTML != "One") {
+            changeMatchAllianceButtons("inPerson")
+        }
+    }
+}
+
 function changeCounter(counterId, isAdding) {
     var counter = document.getElementById(counterId);
     var counterValue = parseInt(counter.innerHTML);
@@ -600,7 +610,9 @@ async function adjustStage() {
         document.getElementById("inPersonMatchInnerDiv").style.display = "none";
 
         document.getElementById("matchUseInputButton").style.display = "none";
-    } 
+    } else {
+        cycleCheckChangeAllianceButtons();
+    }
     
     if (!tbaNotWorking) {
         if (stage != "FINALS" && document.getElementById("matchFormFinalDropdown")) {
