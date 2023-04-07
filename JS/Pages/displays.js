@@ -883,7 +883,6 @@ function buildHeaderTable(heightObj, color, headerOrder) {
 
 function getHeightObj(data, clone) {
     var heightsObj = structuredClone(clone);
-    console.log(clone)
 
     Object.keys(data).forEach(section => {
         let sectionInfo = data[section];
