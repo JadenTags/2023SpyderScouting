@@ -526,8 +526,8 @@ async function changeMatchAllianceButtons(selector) {
 
         alliance.team_keys.forEach(team => {
             let button = document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button");
-            
-            if (scoutedTeams.includes(button.innerHTML)) {
+
+            if (scoutedTeams.includes(team.slice(3))) {
                 button.innerHTML = "OK";
                 button.setAttribute("onclick", "return;" + button.getAttribute("onclick"));
 
