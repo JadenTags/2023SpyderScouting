@@ -509,21 +509,7 @@ async function changeMatchAllianceButtons(selector) {
         changeNotif(selector + "MatchNotif", "")
         document.getElementById(selector + "MatchNumInput").style.border = "1px solid #c5c7c5";
     }
-
-
-    Object.keys(match.alliances).forEach(key => {
-        var alliance = match.alliances[key];
-        var counter = 1;
-
-        alliance.team_keys.forEach(team => {
-            let button = document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button");
-            button.innerHTML = team.replace("frc", "");
-            button.setAttribute("onclick", button.getAttribute("onclick").replace("return;", ""));
-        });
-    });
     
-    showElement(selector + "MatchInnerDiv");
-
     var scoutedTeams = [];
     
     var orderNum = curOrderNum++;
@@ -534,16 +520,42 @@ async function changeMatchAllianceButtons(selector) {
         }
     });
 
-    Array.from(document.getElementsByClassName("inPersonAllianceButton")).forEach(button => {
-        if (scoutedTeams.includes(button.innerHTML)) {
-            button.innerHTML = "OK";
-            button.setAttribute("onclick", "return;" + button.getAttribute("onclick"));
+    Object.keys(match.alliances).forEach(key => {
+        var alliance = match.alliances[key];
+        var counter = 1;
 
-            if (button.getAttribute("class").includes("selectedButton")) {
-                togglePushButton(button.id);
+        alliance.team_keys.forEach(team => {
+            let button = document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button");
+
+            if (scoutedTeams.includes(team.slice(3))) {
+                button.innerHTML = "OK";
+                button.setAttribute("onclick", "return;" + button.getAttribute("onclick"));
+
+                if (button.getAttribute("class").includes("selectedButton")) {
+                    togglePushButton(button.id);
+                }
+            } else {
+                button.innerHTML = team.replace("frc", "");
+                button.setAttribute("onclick", button.getAttribute("onclick").replace("return;", ""));
             }
-        }
+        });
     });
+    
+    showElement(selector + "MatchInnerDiv");
+
+    Array.from(document.getElementsByClassName("inPersonAllianceButton")).forEach(button => {
+        
+    });
+}
+
+async function cycleCheckChangeAllianceButtons() {
+    while(true) {
+        await wait(10000);
+
+        if (document.getElementById("inPersonBlue1Button").innerHTML != "One") {
+            changeMatchAllianceButtons("inPerson")
+        }
+    }
 }
 
 function changeCounter(counterId, isAdding) {
@@ -600,7 +612,9 @@ async function adjustStage() {
         document.getElementById("inPersonMatchInnerDiv").style.display = "none";
 
         document.getElementById("matchUseInputButton").style.display = "none";
-    } 
+    } else {
+        cycleCheckChangeAllianceButtons();
+    }
     
     if (!tbaNotWorking) {
         if (stage != "FINALS" && document.getElementById("matchFormFinalDropdown")) {
