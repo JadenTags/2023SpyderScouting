@@ -464,7 +464,7 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor, 
                 }
 
                 if (header == "Name" && teamData["General"]["Team"] != "") {
-                    miniData.style.fontSize = "3vw";
+                    miniData.style.fontSize = "15px";
                     miniData.style.height = nameHeight;
                     fillTeamNameCell(teamData["General"]["Team"], miniData);
                 }

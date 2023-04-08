@@ -39,6 +39,7 @@ async function getSheetData(gsId, sheet, mainOrderNum) {
     .then(response => response.json())
     .then(data => {
       if (!data.range) {
+        console.log(data)
         console.log("GET NEW REFRESH KEY");
       }
 
