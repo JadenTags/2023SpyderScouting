@@ -552,7 +552,9 @@ async function cycleCheckChangeAllianceButtons() {
     while(true) {
         await wait(10000);
 
-        if (document.getElementById("inPersonBlue1Button").innerHTML != "One") {
+        if (document.getElementById("inPersonBlue1Button") == undefined) {
+            break;
+        } if (document.getElementById("inPersonBlue1Button").innerHTML != "One") {
             changeMatchAllianceButtons("inPerson")
         }
     }
