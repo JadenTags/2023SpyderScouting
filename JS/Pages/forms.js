@@ -529,7 +529,9 @@ async function changeMatchAllianceButtons(selector) {
 
             if (scoutedTeams.includes(team.slice(3))) {
                 button.innerHTML = "OK";
-                button.setAttribute("onclick", "return;" + button.getAttribute("onclick"));
+                if (button.getAttribute("onclick").indexOf("return") == -1) {
+                    button.setAttribute("onclick", "return;" + button.getAttribute("onclick"));
+                }
 
                 if (button.getAttribute("class").includes("selectedButton")) {
                     togglePushButton(button.id);
