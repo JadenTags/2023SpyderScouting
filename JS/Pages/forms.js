@@ -9,6 +9,7 @@ var submittedForms = {};
 var curDiv = "mainDiv";
 var notifColor = "#eb776e";
 var borderColor = "#c5c7c5";
+var cycleDropdown = true;
 
 async function fillTeamDropdown(selector) {
     var dropdown = document.getElementById(selector + "TeamNumDropdown");
@@ -18,6 +19,8 @@ async function fillTeamDropdown(selector) {
 
     if (teams != "none") {
         teams = teams[0];
+    } else {
+        cycleDropdown = false;
     }
 
     if (teams != "none" && !dropdown && document.getElementById(selector + "NoTeamsDiv").style.display != "none") {
@@ -423,7 +426,7 @@ async function changeTeamName(selector) {
 }
 
 async function cycleCheckDropdown(selector) {
-    while (true) {
+    while (cycleDropdown) {
         await fillTeamDropdown(selector);
         
         await wait(10000);
