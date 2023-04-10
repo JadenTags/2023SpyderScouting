@@ -1,8 +1,8 @@
-var testDate = new Date("2023-04-06"); 
+var testDate = new Date(); 
 //COMP: TYPE FIRST DATE OF COMP IN YEAR MONTH DAY FORM
 //NOT COMP: TYPE TEST DATE IN YEAR MONTH DAY FORM
 
-var sheetID = "1X0r-ZXlazO1spQzebWH6v6bvmVZ5EZKVWi1ab9GRDHw";
+var sheetID = "1DGmIP0O3xx5Kt1TGLkmG93blUA9-LQ2YdLcH1gVTX28";
 //COMP: USE THE ID THAT THE SHEETS USE
 //NOT COMP: LEAVE AS "1lydmTcdvkiqX3hrqJMzbgS5gNUQc97C-4zEcNFIbh_Y"
 //SD: 1lQFSP7u7PIwLp_dZhNAbfgSY1MM3Cgn2OC46d7ksz9g
@@ -16,7 +16,7 @@ var roboPicsFolderId = "1gtz-9L2DWtX7kJwjKwjWrKLT1GgcOUpc";
 //BAYOU: 15gtjdXvbqQQBifq9lvD6v4iYi67EShsd
 //ROCKET CITY: 1gtz-9L2DWtX7kJwjKwjWrKLT1GgcOUpc
 
-var stage = ["WARMUPS", "QUALS", "FINALS"][2];
+var stage = ["WARMUPS", "QUALS", "FINALS"][0];
 if (localStorage.getItem("displayData") == undefined) {
     localStorage.setItem("displayData", stage);
 }

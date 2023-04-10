@@ -1046,11 +1046,11 @@ function calcTele(form) {
             
             for (var i = 0; i < 3; i++) {
                 if (i == 0) {
-                    score += type[i] * 6;
+                    score += type[i] * 5;
                 } else if (i == 1) {
-                    score += type[i] * 4;
-                } else if (i == 2) {
                     score += type[i] * 3;
+                } else if (i == 2) {
+                    score += type[i] * 2;
                 }
             }
         }
@@ -2275,7 +2275,7 @@ async function sort() {
     var teams = getOrder(oN).map(x => compileAllTeamData(x.key.replace("frc", ""), matchData, preData)).map(x => [x["General"]["Team"], x]);
     console.log("TOTAL CARGO SCORE----------------")
     console.log(teams[0])
-    console.log(teams.filter(x => x[1]["Teleop"]["Score"] && x[1]["General"]["Matches"] >= 3 && x[1]["Teleop"]["Playstyle%"] && x[1]["Teleop"]["Playstyle%"]["Def"]).sort((x, y) => (predictScore(matchData.filter(z => z[0] == y[0]))) - (predictScore(matchData.filter(z => z[0] == x[0])))).map(x => [x[0], x[1]["General"]["DB Type"], x[1]["Overall"]["Cargo"]["Avg"], x[1]["General"]["Matches"], predictScore(matchData.filter(y => y[0] == x[0]))]));
+    console.log(teams.filter(x => x[1]["Teleop"]["Score"] && x[1]["General"]["Matches"] >= 3).sort((x, y) => (predictScore(matchData.filter(z => z[0] == y[0]))) - (predictScore(matchData.filter(z => z[0] == x[0])))).map(x => [x[0], x[1]["General"]["DB Type"], x[1]["Overall"]["Cargo"]["Avg"], x[1]["General"]["Matches"], predictScore(matchData.filter(y => y[0] == x[0]))]));
 }
 
 async function test() {
