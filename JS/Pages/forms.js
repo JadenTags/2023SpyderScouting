@@ -322,7 +322,8 @@ function submitForm(selector) {
         //USER
         form.push(localStorage.getItem("user"));
 
-        if (failure != "" || playstyle == "Defensive") {
+        //TODO: CHANGE BACK MAYBE TEMPORARY
+        if (failure == "No Show" || playstyle == "Defensive") {
             let counter = 0;
             form = form.map(x => {
                 if (![0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13].includes(counter++)) {
