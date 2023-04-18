@@ -91,6 +91,9 @@
       <textarea id="drivebaseNotes" class="notesArea" placeholder="Drivebase Notes"></textarea>
 
       <br>
+      <p id="buddyPreClimbButton" class="pushButton">Buddy Climb</p>
+
+      <br>
 
       <p class="sectionHeader">Autonomous</p>
       <hr class="sectionLine">
@@ -113,6 +116,17 @@
 
       <p class="sectionHeader">Teleop</p>
       <hr class="sectionLine">
+
+      <p class="formSubheader">Cone Pickups</p>
+      <p id="conePreGroundTippedButton" class="pushButton">Ground Tipped</p>
+      <p id="conePreGroundUntippedButton" class="pushButton">Ground Untipped</p>
+      <p id="conePreSingleButton" class="pushButton">Single</p>
+      <p id="conePreDoubleButton" class="pushButton">Double</p>
+
+      <p class="formSubheader">Cube Pickups</p>
+      <p id="cubeGroundButton" class="pushButton">Ground</p>
+      <p id="cubeSingleButton" class="pushButton">Single</p>
+      <p id="cubeDoubleButton" class="pushButton">Double</p>
 
       <p class="formSubheader">Cone Reach</p>
       <br>
@@ -142,9 +156,6 @@
       <p id="preferConeButton" class="preferGPButton startGroupedButton groupedButton">Cone</p>
       <p id="preferCubeButton" class="preferGPButton groupedButton">Cube</p>
       <p id="preferNoneButton" class="preferGPButton endGroupedButton groupedButton">None</p>
-
-      <br>
-      <p id="canPickupTippedConesButton" class="pushButton" style="margin-top: 10px;">Can Pickup Tipped Cones</p>
 
       <p class="formSubheader">Preferred Playstyle</p>
       <p id="preferOffButton" class="preferButton startGroupedButton groupedButton">Offensive</p>
@@ -227,6 +238,11 @@
           <p id="inPersonTeamNumNotif" class="notifText" style="margin: 0;"></p>
           <br>
         </div>
+
+        <br>
+        <p id="recentMatchButton" class="pushButton">Recent</p>
+        <p id="highestMatchButton" class="pushButton">Highest</p>
+        <p id="averageMatchButton" class="pushButton">Average</p>
 
         <p id="matchUseInputButton" class="pushButton" onclick="toggleElement('matchFormButtonSelectionDiv');toggleElement('inPersonTeamNumInputDiv');" style="margin-top: 10px;">Type Team</p>
 
@@ -400,6 +416,10 @@
         <p id="inPersonAutoDockedButton" class="pushButton"onclick="toggleElement('inPersonAutoEngagedButton');">Docked</p>
 
         <p id="inPersonAutoEngagedButton" class="pushButton" style="display: none;">Engaged</p>
+
+        <br>
+
+        <textarea id="matchAutoExtraNotes" class="notesArea" placeholder="Auto (Describe robot's starting position and any game elements it failed to pickup)"></textarea>
 
         <p class="sectionHeader">Teleop</p>
         <hr class="sectionLine">
@@ -593,6 +613,11 @@
         <p id="inPersonTeleOffButton" class="inPersonTelePlaystyleButton startGroupedButton groupedButton">Offensive</p>
         <p id="inPersonTeleHybDockedButton" class="inPersonTelePlaystyleButton groupedButton">Hybrid</p>
         <p id="inPersonTeleDefButton" class="inPersonTelePlaystyleButton endGroupedButton groupedButton">Defensive</p>
+
+        <br>
+        <p class="formSubheader" style="margin-top: 10px;">Endgame</p>
+        <p id="matchEndgameScoringButton" class="matchEndgameButton groupedButton startGroupedButton">Scoring</p>
+        <p id="matchEndgameDockingButton" class="matchEndgameButton groupedButton endGroupedButton">Dock Attempt</p>
 
         <p class="sectionHeader">Other Notes</p>
         <hr class="sectionLine">
