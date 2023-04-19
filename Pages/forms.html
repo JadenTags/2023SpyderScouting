@@ -118,15 +118,15 @@
       <hr class="sectionLine">
 
       <p class="formSubheader">Cone Pickups</p>
-      <p id="conePreGroundTippedButton" class="pushButton">Ground Tipped</p>
-      <p id="conePreGroundUntippedButton" class="pushButton">Ground Untipped</p>
-      <p id="conePreSingleButton" class="pushButton">Single</p>
-      <p id="conePreDoubleButton" class="pushButton">Double</p>
+      <p id="conePreGroundTippedButton" class="conePickupsButton pushButton">Ground Tipped</p>
+      <p id="conePreGroundUntippedButton" class="conePickupsButton pushButton">Ground Untipped</p>
+      <p id="conePreSingleButton" class="conePickupsButton pushButton">Single</p>
+      <p id="conePreDoubleButton" class="conePickupsButton pushButton">Double</p>
 
       <p class="formSubheader">Cube Pickups</p>
-      <p id="cubeGroundButton" class="pushButton">Ground</p>
-      <p id="cubeSingleButton" class="pushButton">Single</p>
-      <p id="cubeDoubleButton" class="pushButton">Double</p>
+      <p id="cubeGroundButton" class="cubePickupsButton pushButton">Ground</p>
+      <p id="cubeSingleButton" class="cubePickupsButton pushButton">Single</p>
+      <p id="cubeDoubleButton" class="cubePickupsButton pushButton">Double</p>
 
       <p class="formSubheader">Cone Reach</p>
       <br>
@@ -238,11 +238,6 @@
           <p id="inPersonTeamNumNotif" class="notifText" style="margin: 0;"></p>
           <br>
         </div>
-
-        <br>
-        <p id="recentMatchButton" class="pushButton">Recent</p>
-        <p id="highestMatchButton" class="pushButton">Highest</p>
-        <p id="averageMatchButton" class="pushButton">Average</p>
 
         <p id="matchUseInputButton" class="pushButton" onclick="toggleElement('matchFormButtonSelectionDiv');toggleElement('inPersonTeamNumInputDiv');" style="margin-top: 10px;">Type Team</p>
 
@@ -616,8 +611,15 @@
 
         <br>
         <p class="formSubheader" style="margin-top: 10px;">Endgame</p>
-        <p id="matchEndgameScoringButton" class="matchEndgameButton groupedButton startGroupedButton">Scoring</p>
-        <p id="matchEndgameDockingButton" class="matchEndgameButton groupedButton endGroupedButton">Dock Attempt</p>
+        <p id="matchEndgameScoringButton" class="matchEndgameButton groupedButton startGroupedButton" onclick="hideElement('matchDockAtptDiv');">Scoring</p>
+        <p id="matchEndgameDockingButton" class="matchEndgameButton groupedButton endGroupedButton" onclick="if (document.getElementById('matchEndgameDockingButton').value) {showElement('matchDockAtptDiv')} else {hideElement('matchDockAtptDiv')};" style="margin-bottom: 10px;">Dock Attempt</p>
+
+        <br>
+
+        <div id="matchDockAtptDiv" style="display: none;">
+          <p id="matchDockAtptFailButton" class="matchDockAtptButton groupedButton startGroupedButton">Failed</p>
+          <p id="matchDockAtptEngButton" class="matchDockAtptButton groupedButton endGroupedButton">Engaged</p>
+        </div> 
 
         <p class="sectionHeader">Other Notes</p>
         <hr class="sectionLine">

@@ -1,4 +1,4 @@
-var globalDataStored;
+var globalDataStored = true;
 
 //GET CUR/CLOSEST COMP AND STORE IN LOCAL STORAGE
 async function storeGlobalData() {

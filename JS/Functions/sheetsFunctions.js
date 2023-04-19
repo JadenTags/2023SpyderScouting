@@ -136,3 +136,11 @@ async function getSheet(gsId, mainOrderNum) {
         await wait(100);
     }
 }
+
+async function test() {
+  var oN = curOrderNum++;
+  await getSheetData(sheetID, "PRE", oN);
+  localStorage.setItem("PRE", JSON.stringify(getOrder(oN)));
+}
+
+// test();

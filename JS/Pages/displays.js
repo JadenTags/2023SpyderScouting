@@ -10,7 +10,21 @@ const dataTableWithMatchFormat = {
         "DB Type": "",
         "Has Auto": "",
         "Auto-Gen": "",
+        "Buddy": "",
         "Bal Type": "",
+        "Cone Pickup": {
+            "Tipped": "",
+            "Untipped": "",
+            "Single": "",
+            "Double": "",
+            "INFO": [[1, 1, 1, 1], "HAVE"]
+        },
+        "Cube Pickup": {
+            "Ground": "",
+            "Single": "",
+            "Double": "",
+            "INFO": [[1, 1, 1], "HAVE"]
+        },
         "Cones": {
             "Top": "",
             "Mid": "",
@@ -23,7 +37,6 @@ const dataTableWithMatchFormat = {
             "Low": "",
             "INFO": [[1, 1, 1], "HAVE"]
         },
-        "Pick Tip": "",
         "Pref PS": "",
         "Pref GP": "",
         "Failure%": {
@@ -134,11 +147,6 @@ const dataTableWithMatchFormat = {
             "ACC": "",
             "INFO": [[2, 1], "NORMAL"]
         },
-        "Cargo": {
-            "Max": "",
-            "Avg": "",
-            "INFO": [[1, 1], "NORMAL"]
-        },
         "Almost Tipped": {
             "Type%": {
                 "CS": "",
@@ -152,11 +160,30 @@ const dataTableWithMatchFormat = {
             },
             "INFO": [[1, 1], "NESTED"]
         },
+        "Endgame": {
+            "Endgame%": {
+                "Scoring": "",
+                "Dock": "",
+                "INFO": [[2], "%"]
+            },
+            "Dock%": {
+                "Engaged": "",
+                "Docked": "",
+                "Failed": "",
+                "INFO": [[2], "%"]
+            },
+            "INFO": [[], "NESTED"]
+        },
         "Playstyle%": {
             "Off": "",
             "Hyb": "",
             "Def": "",
             "INFO": [[3], "%"]
+        },
+        "Cargo": {
+            "Max": "",
+            "Avg": "",
+            "INFO": [[1, 1], "NORMAL"]
         },
         "Score": {
             "Max": "",
@@ -896,7 +923,7 @@ function getHeightObj(data, clone) {
                     heightsObj[section][header] = cellHeight + "px";
                     if (header == "Name") {
                         heightsObj[section][header] = nameHeight;
-                    } if (header == "EXTRA NOTES" || header == "DB NOTES") {
+                    } if (header == "EXTRA NOTES" || header == "DB Notes") {
                         heightsObj[section][header] = "400px";
                     }
                 } if (clone[section][header] == "SPACER") {
@@ -1040,7 +1067,7 @@ function calcTele(form) {
     var score = 0;
 
     //CONES AND CUBES
-    [7, 8].forEach(type => {
+    [8, 9].forEach(type => {
         if (form[type] != "") {
             type = JSON.parse(form[type]).map(x => parseInt(x[0]));
             
@@ -1063,6 +1090,7 @@ function calcTele(form) {
 function compileAllTeamData(team, match, pre) {
     pre = pre.slice(1).filter(x => x[0] == team);
     pre = pre[pre.length - 1];
+    console.log(match[0])
     match = match.slice(1).filter(x => x[0] == team);
 
     match.forEach(submission => {
@@ -1097,23 +1125,50 @@ function compileAllTeamData(team, match, pre) {
     
         //DB INFO
         fillData(data["General"], "DB Type", pre[2], null);
+        
+        //BUDDY
+        fillData(data["General"], "Buddy", pre[4], null);
 
         //HAS AUTO
-        fillData(data["General"], "Has Auto", pre[4], null);
+        fillData(data["General"], "Has Auto", pre[5], null);
 
         if (data["General"]["Has Auto"]) {
             //AUTO GENERATING AUTO
-            fillData(data["General"], "Auto-Gen", pre[5], null);
+            fillData(data["General"], "Auto-Gen", pre[6], null);
     
             //BAL TYPE
-            fillData(data["General"], "Bal Type", pre[6], null);
+            fillData(data["General"], "Bal Type", pre[7], null);
+            
         } else {
             delete data["General"]["Auto-Gen"];
             delete data["General"]["Bal Type"];
         }
+
+        //CONTINUE HERE
+        //CONE PICKUPS
+        var conePickups = JSON.parse(pre[8]);
+        var conePickHeaders = Object.keys(data["General"]["Cone Pickup"]);
+        for (var i = 0; i < conePickups.length; i++) {
+            data["General"]["Cone Pickup"][conePickHeaders[i]] = conePickups[i];
+        }
+
+        if (Object.values(conePickups).filter(x => x && typeof x == "boolean").length == 0) {
+            delete data["General"]["Cone Pickup"];
+        }
+        
+        //CUBE PICKUPS
+        var cubePickups = JSON.parse(pre[9]);
+        var cubePickHeaders = Object.keys(data["General"]["Cube Pickup"]);
+        for (var i = 0; i < cubePickups.length; i++) {
+            data["General"]["Cube Pickup"][cubePickHeaders[i]] = cubePickups[i];
+        }
+
+        if (Object.values(cubePickups).filter(x => x && typeof x == "boolean").length == 0) {
+            delete data["General"]["Cube Pickup"];
+        }
     
         //CONES REACHES
-        var cones = JSON.parse(pre[7]);
+        var cones = JSON.parse(pre[10]);
         var coneHeaders = Object.keys(data["General"]["Cones"]);
         for (var i = 0; i < cones.length; i++) {
             data["General"]["Cones"][coneHeaders[i]] = cones[i];
@@ -1124,7 +1179,7 @@ function compileAllTeamData(team, match, pre) {
         }
     
         //CUBES REACHES
-        var cubes = JSON.parse(pre[8]);
+        var cubes = JSON.parse(pre[11]);
         var cubeHeaders = Object.keys(data["General"]["Cubes"]);
         for (var i = 0; i < cubes.length; i++) {
             data["General"]["Cubes"][cubeHeaders[i]] = cubes[i];
@@ -1133,22 +1188,20 @@ function compileAllTeamData(team, match, pre) {
         if (Object.values(cubes).filter(x => x && typeof x == "boolean").length == 0) {
             delete data["General"]["Cubes"];
         }
-
-        //PICK TIPPED CONE
-        fillData(data["General"], "Pick Tip", pre[10], null);
         
         //PREFERRED PLAYSTYLE
-        fillData(data["General"], "Pref PS", pre[11], null);
+        fillData(data["General"], "Pref PS", pre[13], null);
         
         //PREFERRED GP
-        fillData(data["General"], "Pref GP", pre[9], null);
+        fillData(data["General"], "Pref GP", pre[12], null);
     } else {
-        ["DIM", "DB Type", "Has Auto", "Pick Tip", "Auto-Gen", "Bal Type", "Cones", "Cubes", "Pref PS", "Pref GP"].forEach(preData => {
+        ["DIM", "DB Type", "Has Auto", "Pick Tip", "Auto-Gen", "Bal Type", "Cones", "Cubes", "Pref PS", "Pref GP", "Buddy", "Cone Pickup", "Cube Pickup"].forEach(preData => {
             delete data["General"][preData];
         });
     } if (match.length != 0) {
+        console.log(match)
         //FAILURE%
-        fillPercentData(data["General"], "Failure%", match.map(x => x[11]), {
+        fillPercentData(data["General"], "Failure%", match.map(x => x[14]), {
             "Mech Fail": "MF",
             "Comm Fail": "CF",
             "Tipped": "T",
@@ -1210,39 +1263,33 @@ function compileAllTeamData(team, match, pre) {
         
         ///////////////////////////Teleop
         //CONES
-        fillScoreData(data["Teleop"]["CONE Top Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[0])); 
-        fillScoreData(data["Teleop"]["CONE Mid Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[1]));
-        fillScoreData(data["Teleop"]["CONE Bot Row"], match.filter(x => x[7] != "").map(x => JSON.parse(x[7])[2]));
+        fillScoreData(data["Teleop"]["CONE Top Row"], match.filter(x => x[8] != "").map(x => JSON.parse(x[8])[0])); 
+        fillScoreData(data["Teleop"]["CONE Mid Row"], match.filter(x => x[8] != "").map(x => JSON.parse(x[8])[1]));
+        fillScoreData(data["Teleop"]["CONE Bot Row"], match.filter(x => x[8] != "").map(x => JSON.parse(x[8])[2]));
     
         //CUBES
-        fillScoreData(data["Teleop"]["CUBE Top Row"], match.filter(x => x[8] != "").map(x => JSON.parse(x[8])[0])); 
-        fillScoreData(data["Teleop"]["CUBE Mid Row"], match.filter(x => x[8] != "").map(x => JSON.parse(x[8])[1]));
-        fillScoreData(data["Teleop"]["CUBE Bot Row"], match.filter(x => x[8] != "").map(x => JSON.parse(x[8])[2]));
-    
-        //CARGO AVG
-        var teleCargo = match.filter(x => x[7] != "" && x[8] != "").map(x => sum(JSON.parse(x[7]).map(y =>  parseInt(y[0]))) + sum(JSON.parse(x[8]).map(y => parseInt(y[0]))));
-        if (teleCargo.length != 0) {
-            data["Teleop"]["Cargo"]["Max"] = Math.max(...teleCargo);
-            data["Teleop"]["Cargo"]["Avg"] = Math.round(sum(teleCargo) / teleCargo.length * 10) / 10;
-    
-            if (data["Teleop"]["Cargo"]["Max"] == data["Teleop"]["Cargo"]["Avg"]) {
-                data["Teleop"]["Cargo"] = {
-                    "Always": data["Teleop"]["Cargo"]["Max"],
-                    "INFO": [[1], "NORMAL"]
-                }
-            }
-        } else {
-            data["Teleop"]["Cargo"] = {
-            "Always": 0,
-            "INFO": [[1], "NORMAL"]
-        }
-        }
+        fillScoreData(data["Teleop"]["CUBE Top Row"], match.filter(x => x[9] != "").map(x => JSON.parse(x[9])[0])); 
+        fillScoreData(data["Teleop"]["CUBE Mid Row"], match.filter(x => x[9] != "").map(x => JSON.parse(x[9])[1]));
+        fillScoreData(data["Teleop"]["CUBE Bot Row"], match.filter(x => x[9] != "").map(x => JSON.parse(x[9])[2]));
+
+        //ENDGAME
+        fillPercentData(data["Teleop"]["Endgame"], "Endgame%", match.map(x => x[12]).filter(x => x != ""), {
+            "Dock Attempt": "Dock",
+            "Scoring": "Scoring"
+        });
+
+        //DOCK SUCCESS
+        fillPercentData(data["Teleop"]["Endgame"], "Dock%", match.filter(x => x[12] == "Dock Attempt").map(x => x[13]), {
+            "Failed": "Failed",
+            "": "Docked",
+            "Engaged": "Engaged"
+        });
     
         //ALMOST TIPPED
-        if (match.filter(x => x[9] != "").map(x => JSON.parse(x[9]).map(y => parseInt(y))).map(x => x[0]).length == 0) {
+        if (match.filter(x => x[10] != "").map(x => JSON.parse(x[10]).map(y => parseInt(y))).map(x => x[0]).length == 0) {
             delete data["Teleop"]["Almost Tipped"];
         } else {
-            var tipData = match.filter(x => x[9] != "").map(x => JSON.parse(x[9]).map(y => parseInt(y)));
+            var tipData = match.filter(x => x[10] != "").map(x => JSON.parse(x[10]).map(y => parseInt(y)));
             var total = sum(tipData.map(x => x[0])) + sum(tipData.map(x => x[1]));
             
             data["Teleop"]["Almost Tipped"]["Type%"]["Not"] = Math.round(sum(tipData.map(x => x[0])) / total * 100) + "%";
@@ -1267,14 +1314,33 @@ function compileAllTeamData(team, match, pre) {
         }
     
         //PLAYSTYLE
-        fillPercentData(data["Teleop"], "Playstyle%", match.filter(x => x != "").map(x => x[10]).filter(x => x != ""), {
+        fillPercentData(data["Teleop"], "Playstyle%", match.filter(x => x != "").map(x => x[11]).filter(x => x != ""), {
             "Offensive": "Off",
             "Defensive": "Def",
             "Hybrid": "Hyb",
         });
+        
+        //CARGO AVG
+        var teleCargo = match.filter(x => x[8] != "" && x[9] != "").map(x => sum(JSON.parse(x[8]).map(y =>  parseInt(y[0]))) + sum(JSON.parse(x[8]).map(y => parseInt(y[0]))));
+        if (teleCargo.length != 0) {
+            data["Teleop"]["Cargo"]["Max"] = Math.max(...teleCargo);
+            data["Teleop"]["Cargo"]["Avg"] = Math.round(sum(teleCargo) / teleCargo.length * 10) / 10;
+    
+            if (data["Teleop"]["Cargo"]["Max"] == data["Teleop"]["Cargo"]["Avg"]) {
+                data["Teleop"]["Cargo"] = {
+                    "Always": data["Teleop"]["Cargo"]["Max"],
+                    "INFO": [[1], "NORMAL"]
+                }
+            }
+        } else {
+            data["Teleop"]["Cargo"] = {
+                "Always": 0,
+                "INFO": [[1], "NORMAL"]
+            }
+        }
     
         //SCORE
-        var teleScores = match.filter(x => x[7] != "").map(x => calcTele(x));
+        var teleScores = match.filter(x => x[8] != "").map(x => calcTele(x));
         if (teleScores.length != 0) {
             data["Teleop"]["Score"]["Max"] = Math.max(...teleScores);
             data["Teleop"]["Score"]["Avg"] = Math.round(sum(teleScores) / teleScores.length * 10) / 10;
@@ -1437,6 +1503,7 @@ function predictScore(teamData) {
 function fillPercentData(data, key, matches, equivObj) {
     if (matches.length != 0) {
         var occurencesObj = getOccurencesObj(matches, Object.keys(equivObj));
+        console.log(occurencesObj, equivObj)
         Object.keys(occurencesObj).forEach(x => {
             let percent = occurencesObj[x] / matches.length;
            
@@ -1970,14 +2037,17 @@ async function formsSearch() {
         document.getElementById("formsDisplayPreTableDiv").innerHTML = "<br>";
 
         for (var i = 0; i < preHeaders.length; i++) {
-            if (i == 6) {
+            console.log(preHeaders[i], i)
+            if (i == 7) {
                 preObj["PRE"]["CONE"] = "SPACER";
-            } else if (i == 7) {
+            } else if (i == 9) {
                 preObj["PRE"]["CUBE"] = "SPACER";
             }
 
             preObj["PRE"][preHeaders[i]] = preForms[i];
         }
+
+        console.log(preObj)
 
         //DIMENSIONS
         var dims = JSON.parse(preForms[0]);
@@ -1986,18 +2056,37 @@ async function formsSearch() {
             "Side": dims[1],
             "INFO": [[1, 1], "NORMAL"]
         }
+        
+        //CONE PICKUPS
+        var conePickups = JSON.parse(preForms[7]);
+        preObj["PRE"]["CONE PICKUP"] = {
+            "Tipped": conePickups[0],
+            "Untipped": conePickups[1],
+            "Single": conePickups[2],
+            "Double": conePickups[3],
+            "INFO": [[1, 1, 1, 1], "NORMAL"]
+        }
 
         //CONE REACHES
-        var cones = JSON.parse(preForms[6]);
+        var cones = JSON.parse(preForms[9]);
         preObj["PRE"]["CONE REACHES"] = {
             "HIGH": cones[0],
             "MID": cones[1],
             "LOW": cones[2],
             "INFO": [[1, 1, 1], "NORMAL"]
         }
+        
+        //CUBE PICKUPS
+        var cubePickups = JSON.parse(preForms[8]);
+        preObj["PRE"]["CUBE PICKUP"] = {
+            "Ground": cubePickups[0],
+            "Single": cubePickups[1],
+            "Double": cubePickups[2],
+            "INFO": [[1, 1, 1], "NORMAL"]
+        }
 
         //CUBE REACHES
-        var cubes = JSON.parse(preForms[7]);
+        var cubes = JSON.parse(preForms[10]);
         preObj["PRE"]["CUBE REACHES"] = {
             "HIGH": cubes[0],
             "MID": cubes[1],
@@ -2419,6 +2508,6 @@ async function getMatchAlliances() {
 
 // sort();
 // test();
-getPredictionStats();
+// getPredictionStats();
 // getMatchAlliances();
 fillMatchDropdown();

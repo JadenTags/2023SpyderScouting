@@ -127,6 +127,9 @@ function submitForm(selector) {
         
         //DB NOTES
         form.push(document.getElementById("drivebaseNotes").value);
+
+        //BUDDY CLIMB
+        form.push(document.getElementById("buddyPreClimbButton").value == true);
         
         //NO AUTO
         form.push(document.getElementById("noAutoButton").value == true);
@@ -146,6 +149,20 @@ function submitForm(selector) {
             form.push("");
             form.push("");
         }
+
+        //CONE PICKUPS
+        var conePickups = [];
+        Array.from(document.getElementsByClassName("conePickupsButton")).forEach(button => {
+            conePickups.push(button.value == true);
+        });
+        form.push(JSON.stringify(conePickups));
+
+        //CUBE PICKUPS
+        var cubePickups = [];
+        Array.from(document.getElementsByClassName("cubePickupsButton")).forEach(button => {
+            cubePickups.push(button.value == true);
+        });
+        form.push(JSON.stringify(cubePickups));
 
         //REACHES
         var cones = [];
@@ -172,9 +189,6 @@ function submitForm(selector) {
 
         //PREFERRED GAME PIECE
         form.push(getGroupButtonValue("preferGPButton"));
-
-        //CAN PICKUP TIPPED CONES
-        form.push(document.getElementById("canPickupTippedConesButton").value == true);
 
         //PREFERRED PLAYSTYLE
         form.push(getGroupButtonValue("preferButton"));
@@ -281,6 +295,9 @@ function submitForm(selector) {
         }  else {
             form.push("");
         }
+
+        //AUTO NOTES
+        form.push(document.getElementById("matchAutoExtraNotes").value);
         
         //TELE SCORES
         cones = [];
@@ -314,6 +331,16 @@ function submitForm(selector) {
         //PLAYSTYLE
         form.push(getGroupButtonValue("inPersonTelePlaystyleButton"));
         var playstyle = form[form.length - 1];
+        
+        //ENDGAME
+        form.push(getGroupButtonValue("matchEndgameButton"));
+
+        //DOCK ATPT
+        if (form[form.length - 1] == "Dock Atpt") {
+            form.push(getGroupButtonValue("matchDockAtptButton"));
+        } else {
+            form.push("");
+        }
 
         //FAILURES
         form.push(getGroupButtonValue("matchInPersonTagButton"));
