@@ -629,8 +629,8 @@ function buildTeamTable(teamData, color, heightsObj, headerOrder, percentColor, 
                             var headers = Object.keys(headerInfo[innerHeader]).filter(x => x != "INFO" && headerInfo[innerHeader][x] != "0%");
                             if (headers[0] == "0") {
                                 headers = ["N"];
-                                headerInfo[innerHeader] = {};
-                                headerInfo[innerHeader]["N"] = "D";
+                                // headerInfo[innerHeader] = {};
+                                // headerInfo[innerHeader]["N"] = "D";
                                 nd = true;
                             }
                             
@@ -1090,7 +1090,6 @@ function calcTele(form) {
 function compileAllTeamData(team, match, pre) {
     pre = pre.slice(1).filter(x => x[0] == team);
     pre = pre[pre.length - 1];
-    console.log(match[0])
     match = match.slice(1).filter(x => x[0] == team);
 
     match.forEach(submission => {
@@ -1199,7 +1198,6 @@ function compileAllTeamData(team, match, pre) {
             delete data["General"][preData];
         });
     } if (match.length != 0) {
-        console.log(match)
         //FAILURE%
         fillPercentData(data["General"], "Failure%", match.map(x => x[14]), {
             "Mech Fail": "MF",
@@ -1284,6 +1282,8 @@ function compileAllTeamData(team, match, pre) {
             "": "Docked",
             "Engaged": "Engaged"
         });
+        
+        checkEmpty(data["Teleop"], "Endgame");
     
         //ALMOST TIPPED
         if (match.filter(x => x[10] != "").map(x => JSON.parse(x[10]).map(y => parseInt(y))).map(x => x[0]).length == 0) {
@@ -1503,7 +1503,6 @@ function predictScore(teamData) {
 function fillPercentData(data, key, matches, equivObj) {
     if (matches.length != 0) {
         var occurencesObj = getOccurencesObj(matches, Object.keys(equivObj));
-        console.log(occurencesObj, equivObj)
         Object.keys(occurencesObj).forEach(x => {
             let percent = occurencesObj[x] / matches.length;
            
@@ -1570,7 +1569,7 @@ function getPercent(percent, whole) {
 }
 
 function checkEmpty(data, key) {
-    if (Object.keys(data).map(header => header != "INFO").length == 0) {
+    if (Object.keys(data[key]).filter(header => header != "INFO").length == 0) {
         delete data[key];
     }
 }
@@ -1808,6 +1807,8 @@ function fillMissingHeaders(objs, supposedOrderList) {
 
         Object.keys(obj).forEach(key => {
             Object.keys(obj[key]).forEach(header => {
+                if (header == "Endgame") {
+                }
                 if (Object.values(obj[key][header]).filter(x => typeof x == "object").length > 1) {
                     Object.keys(obj[key][header]).forEach(x => {
                         let id = header + "|" + x;
@@ -1873,6 +1874,7 @@ function fillMissingHeaders(objs, supposedOrderList) {
                     i += keys.length;
                 }
             }
+
             allHeaders[section] = supposedOrder.filter(x => allHeaders[section].includes(x)).filter(x => x.indexOf("INFO") == -1);
         });
     }
@@ -2037,7 +2039,6 @@ async function formsSearch() {
         document.getElementById("formsDisplayPreTableDiv").innerHTML = "<br>";
 
         for (var i = 0; i < preHeaders.length; i++) {
-            console.log(preHeaders[i], i)
             if (i == 7) {
                 preObj["PRE"]["CONE"] = "SPACER";
             } else if (i == 9) {
@@ -2046,8 +2047,6 @@ async function formsSearch() {
 
             preObj["PRE"][preHeaders[i]] = preForms[i];
         }
-
-        console.log(preObj)
 
         //DIMENSIONS
         var dims = JSON.parse(preForms[0]);
@@ -2466,7 +2465,7 @@ async function getMatchAlliances() {
     var matchesToScout = {};
 
     for (var i = 0; i < teamMatches.length; i++) {
-        let match = teamMatches[i][0];
+        let playMatch = teamMatches[i][0];
         
         for (var l = 1; l < teamMatches[i].length; l++) {
             let teams = teamMatches[i][l];
@@ -2479,21 +2478,22 @@ async function getMatchAlliances() {
                 alliance = " OPPOSE";
             }
 
-            if (alliance == " OPPOSE") {
+            if (alliance) { // == " OPPOSE"
                 for (var y = 0; y < teams.length; y++) {
                     let team = teams[y];
                     oN = curOrderNum++;
                     await getTBAData("team/frc" + team + "/event/" + JSON.parse(localStorage.getItem("closestComp")).key + "/matches", oN);
-                    let matches = getOrder(oN).filter(x => x.comp_level == "qm" && x.match_number < match).map(x => x.match_number).sort((x, y) => y - x);
-        
+                    let matches = getOrder(oN).filter(x => x.comp_level == "qm" && x.match_number < playMatch).map(x => x.match_number).sort((x, y) => y - x);
                     if (matches.length != 0) {
-                        if (matchesToScout[matches[0]] == undefined) {
-                            matchesToScout[matches[0]] = [team + alliance + " " + match];
-                        } else {
-                            matchesToScout[matches[0]].push(team + alliance + " " + match);
-                        }
-        
-                        teamMatches[i][l] = team + ": " + matches[0];
+                        matches.forEach(match => {
+                            if (matchesToScout[match] == undefined) {
+                                matchesToScout[match] = [team + alliance + " " + playMatch];
+                            } else {
+                                matchesToScout[match].push(team + alliance + " " + playMatch);
+                            }
+            
+                            teamMatches[i][l] = team + ": " + match;
+                        })
                     } else {
                         teamMatches[i][l] = team + ": no prev";
                     }
@@ -2509,5 +2509,5 @@ async function getMatchAlliances() {
 // sort();
 // test();
 // getPredictionStats();
-// getMatchAlliances();
+getMatchAlliances();
 fillMatchDropdown();
