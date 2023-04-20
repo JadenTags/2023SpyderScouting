@@ -1282,8 +1282,6 @@ function compileAllTeamData(team, match, pre) {
             "": "Docked",
             "Engaged": "Engaged"
         });
-        
-        checkEmpty(data["Teleop"], "Endgame");
     
         //ALMOST TIPPED
         if (match.filter(x => x[10] != "").map(x => JSON.parse(x[10]).map(y => parseInt(y))).map(x => x[0]).length == 0) {
@@ -1416,6 +1414,15 @@ function compileAllTeamData(team, match, pre) {
         delete data["General"]["Matches"];
         delete data["Overall"]
     }
+
+    console.log(data)
+    Object.keys(data).forEach(section => {
+        Object.keys(data[section]).forEach(point => {
+            if (typeof data[section][point] == "object" && data[section][point]["INFO"][1] == "NESTED") {
+                checkEmpty(data[section], point);
+            }
+        });
+    });
     
     return data;
 }
