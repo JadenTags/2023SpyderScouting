@@ -2509,5 +2509,5 @@ async function getMatchAlliances() {
 // sort();
 // test();
 // getPredictionStats();
-getMatchAlliances();
+// getMatchAlliances();
 fillMatchDropdown();
