@@ -18,7 +18,7 @@ var roboPicsFolderId = "1jhOlr3TeDN3L2OeTQWc-OaNgLmMKinsP";
 //ROCKET CITY: 1gtz-9L2DWtX7kJwjKwjWrKLT1GgcOUpc
 //GALILEO: 1jhOlr3TeDN3L2OeTQWc-OaNgLmMKinsP
 
-var stage = ["WARMUPS", "QUALS", "FINALS"][0];
+var stage = ["WARMUPS", "QUALS", "FINALS"][1];
 if (localStorage.getItem("displayData") == undefined) {
     localStorage.setItem("displayData", stage);
 }
