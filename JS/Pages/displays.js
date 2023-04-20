@@ -1319,7 +1319,8 @@ function compileAllTeamData(team, match, pre) {
         });
         
         //CARGO AVG
-        var teleCargo = match.filter(x => x[8] != "" && x[9] != "").map(x => sum(JSON.parse(x[8]).map(y =>  parseInt(y[0]))) + sum(JSON.parse(x[8]).map(y => parseInt(y[0]))));
+        var teleCargo = match.filter(x => x[8] != "" && x[9] != "").map(x => sum(JSON.parse(x[8]).map(y =>  parseInt(y[0]))) + sum(JSON.parse(x[9]).map(y => parseInt(y[0]))));
+        console.log(teleCargo)
         if (teleCargo.length != 0) {
             data["Teleop"]["Cargo"]["Max"] = Math.max(...teleCargo);
             data["Teleop"]["Cargo"]["Avg"] = Math.round(sum(teleCargo) / teleCargo.length * 10) / 10;
