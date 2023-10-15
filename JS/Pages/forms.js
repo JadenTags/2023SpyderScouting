@@ -216,37 +216,38 @@ function submitForm(selector) {
     } else if (selector == "matchInPerson") {
         //TEAM NUMBER
         var teamNum = getGroupButtonValue("inPersonAllianceButton");
-        if (["none"].indexOf(document.getElementById("inPersonMatchInnerDiv").style.display) == -1) {
-            if (!teamNum) {
-                showElement("inPersonTeamNumNotifDiv");
-                changeNotif("inPersonTeamNumNotif", "You Did Not Select a Team!");
-                end = true;
-            } else if (isNaN(parseInt(teamNum))) {
-                showElement("inPersonTeamNumNotifDiv");
-                changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
-                end = true;
-            } else {
-                hideElement("inPersonTeamNumNotifDiv");
-                changeNotif("inPersonTeamNumNotif", "");
-            }
-            form.push(teamNum);
-        } else {
-            teamNum = document.getElementById("inPersonTeamNumInput").value;
+        // if (["none"].indexOf(document.getElementById("inPersonMatchInnerDiv").style.display) == -1) {
+        //     if (!teamNum) {
+        //         showElement("inPersonTeamNumNotifDiv");
+        //         changeNotif("inPersonTeamNumNotif", "You Did Not Select a Team!");
+        //         end = true;
+        //     } else if (isNaN(parseInt(teamNum))) {
+        //         showElement("inPersonTeamNumNotifDiv");
+        //         changeNotif("inPersonTeamNumNotif", "You Did Not Select a Valid Team!");
+        //         end = true;
+        //     } else {
+        //         hideElement("inPersonTeamNumNotifDiv");
+        //         changeNotif("inPersonTeamNumNotif", "");
+        //     }
+        //     form.push(teamNum);
+        // } else {
+        //     teamNum = document.getElementById("inPersonTeamNumInput").value;
 
-            if (teamNum == "") {
-                showElement("inPersonTeamNumNotifDiv");
-                changeNotif("inPersonTeamNumNotif", "You Did Not Input a Team!");
-                end = true;
-            } else if (isNaN(parseInt(teamNum))) {
-                showElement("inPersonTeamNumNotifDiv");
-                changeNotif("inPersonTeamNumNotif", "You Did Not Input a Valid Team!");
-                end = true;
-            } else {
-                hideElement("inPersonTeamNumNotifDiv");
-                changeNotif("inPersonTeamNumNotif", "");
-            }
-            form.push(teamNum);
-        }
+        //     if (teamNum == "") {
+        //         showElement("inPersonTeamNumNotifDiv");
+        //         changeNotif("inPersonTeamNumNotif", "You Did Not Input a Team!");
+        //         end = true;
+        //     } else if (isNaN(parseInt(teamNum))) {
+        //         showElement("inPersonTeamNumNotifDiv");
+        //         changeNotif("inPersonTeamNumNotif", "You Did Not Input a Valid Team!");
+        //         end = true;
+        //     } else {
+        //         hideElement("inPersonTeamNumNotifDiv");
+        //         changeNotif("inPersonTeamNumNotif", "");
+        //     }
+        //     form.push(teamNum);
+        // }
+        form.push(teamNum);
 
         //MATCH NUMBER
         form.push(document.getElementById("inPersonMatchNumInput").value);
