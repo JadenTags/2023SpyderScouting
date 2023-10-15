@@ -531,7 +531,8 @@ async function changeMatchAllianceButtons(selector) {
         match = match.filter(x => x.match_number == parseInt(document.getElementById(selector + "MatchNumInput").value))[0];
     }
     
-    if (!match) {
+    // if (!match) {
+    if (false) {
         hideElement(selector + "MatchInnerDiv");
         changeNotif(selector + "MatchNotif", "That Is Not A Valid Match!");
         document.getElementById(selector + "MatchNumInput").style.border = "1px solid #eb776e";
@@ -543,36 +544,36 @@ async function changeMatchAllianceButtons(selector) {
     
     var scoutedTeams = [];
     
-    var orderNum = curOrderNum++;
-    await getSheetData(sheetID, stage, orderNum);
-    getOrder(orderNum).forEach(form => {
-        if (form[1] == document.getElementById(selector + "MatchNumInput").value) {
-            scoutedTeams.push(form[0]);
-        }
-    });
+    // var orderNum = curOrderNum++;
+    // await getSheetData(sheetID, stage, orderNum);
+    // getOrder(orderNum).forEach(form => {
+    //     if (form[1] == document.getElementById(selector + "MatchNumInput").value) {
+    //         scoutedTeams.push(form[0]);
+    //     }
+    // });
 
-    Object.keys(match.alliances).forEach(key => {
-        var alliance = match.alliances[key];
-        var counter = 1;
+    // Object.keys(match.alliances).forEach(key => {
+    //     var alliance = match.alliances[key];
+    //     var counter = 1;
 
-        alliance.team_keys.forEach(team => {
-            let button = document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button");
+    //     alliance.team_keys.forEach(team => {
+    //         let button = document.getElementById(selector + key[0].toUpperCase() + key.slice(1) + counter++ + "Button");
 
-            if (scoutedTeams.includes(team.slice(3))) {
-                button.innerHTML = "OK";
-                if (button.getAttribute("onclick").indexOf("return") == -1) {
-                    button.setAttribute("onclick", "return;" + button.getAttribute("onclick"));
-                }
+    //         if (scoutedTeams.includes(team.slice(3))) {
+    //             button.innerHTML = "OK";
+    //             if (button.getAttribute("onclick").indexOf("return") == -1) {
+    //                 button.setAttribute("onclick", "return;" + button.getAttribute("onclick"));
+    //             }
 
-                if (button.getAttribute("class").includes("selectedButton")) {
-                    togglePushButton(button.id);
-                }
-            } else {
-                button.innerHTML = team.replace("frc", "");
-                button.setAttribute("onclick", button.getAttribute("onclick").replace("return;", ""));
-            }
-        });
-    });
+    //             if (button.getAttribute("class").includes("selectedButton")) {
+    //                 togglePushButton(button.id);
+    //             }
+    //         } else {
+    //             button.innerHTML = team.replace("frc", "");
+    //             button.setAttribute("onclick", button.getAttribute("onclick").replace("return;", ""));
+    //         }
+    //     });
+    // });
     
     showElement(selector + "MatchInnerDiv");
 
